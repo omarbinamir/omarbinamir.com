@@ -1,0 +1,68 @@
+.sparkly-menu {
+  background: linear-gradient(135deg, #fceaff, #d4b0ff);
+  padding: 20px 40px;
+  border-radius: 15px;
+  box-shadow:
+    0 0 10px 3px rgba(212, 176, 255, 0.6),
+    0 0 20px 6px rgba(255, 182, 193, 0.5);
+  width: max-content;
+  margin: 30px auto;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.sparkly-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 30px;
+}
+
+.sparkly-menu li {
+  position: relative;
+}
+
+.menu-item {
+  text-decoration: none;
+  font-size: 1.3rem;
+  color: #6a2c91;
+  padding: 10px 15px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 0 5px #dcb0ff,
+    inset 0 0 10px #f8d1ff;
+  transition: all 0.3s ease;
+  display: inline-block;
+  font-weight: 700;
+  user-select: none;
+}
+
+.menu-item:hover,
+.menu-item:focus {
+  color: #ff5ec4;
+  background: #fce4fb;
+  box-shadow:
+    0 0 15px 5px #ffb6c1,
+    inset 0 0 15px #ffb6c1;
+  cursor: pointer;
+  text-shadow:
+    0 0 8px #ff5ec4,
+    0 0 15px #ff99cc;
+}
+
+.menu-item::after {
+  content: '✨';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 1rem;
+  opacity: 0.7;
+  animation: sparkle 2s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.7; transform: rotate(0deg) scale(1); }
+  50% { opacity: 1; transform: rotate(20deg) scale(1.2); }
+}
