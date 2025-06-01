@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coming Soon 🎉</title>
+  <link rel="stylesheet" href="soondone.css" />
+</head>
+<body>
+    <a href="index.html"><h1>go back</h1></a>
+  <div class="container">
+    <h1>🚀 Something Awesome is Coming Soon! 🚀</h1>
+    <p>We’re cooking up something amazing just for you. Stay tuned! 🎈🎉</p>
+
+    <div class="countdown">
+      <span>⌛ Launching in:</span>
+      <span id="timer" class="timer">Loading...</span>
+    </div>
+
+    <button class="notify-btn">Notify Me When It’s Ready! 📬</button>
+  </div>
+
+  <div class="game-container">
+    <h2>🎯 Pop the Happy Bubbles! 🎉</h2>
+    <div id="game-area"></div>
+    <p>Score: <span id="score">0</span></p>
+  </div>
+
+  <script>
+    // === COUNTDOWN TIMER ===
+    const timerEl = document.getElementById('timer');
+
+    // Set target date 5 months from now
+    const now = new Date();
+    const targetDate = new Date(now.getFullYear(), now.getMonth() + 5, now.getDate(), 0, 0, 0);
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        timerEl.textContent = "🎉 We're live now! 🎉";
+        clearInterval(timerInterval);
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      timerEl.textContent = 
+        `${days.toString().padStart(2,'0')} : ` +
+        `${hours.toString().padStart(2,'0')} : ` +
+        `${minutes.toString().padStart(2,'0')} : ` +
+        `${seconds.toString().padStart(2,'0')}`;
+    }
+
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // === SIMPLE FUN GAME: POP THE HAPPY BUBBLES ===
+    const gameArea = document.getElementById('game-area');
+    const scoreEl = document.getElementById('score');
+    let score = 0;
+
+    function createBubble() {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+      bubble.textContent = '😊';
+
+      // Random position inside game area
+      const maxX = gameArea.clientWidth - 50;
+      const maxY = gameArea.clientHeight - 50;
+      bubble.style.left = Math.random() * maxX + 'px';
+      bubble.style.top = Math.random() * maxY + 'px';
+
+      // When clicked: pop bubble, increase score
+      bubble.addEventListener('click', () => {
+        score++;
+        scoreEl.textContent = score;
+        bubble.remove();
+        createBubble(); // spawn a new one
+      });
+
+      gameArea.appendChild(bubble);
+    }
+
+    // Start with 5 bubbles
+    for(let i=0; i<5; i++) {
+      createBubble();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #fdf6f0, #f7c6e7);
+  font-family: 'Fredoka One', cursive, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  color: #a03288;
+  user-select: none;
+  padding: 40px 20px 80px;
+}
+
+.container {
+  background: white;
+  padding: 40px 60px;
+  border-radius: 40px;
+  box-shadow:
+    0 0 30px 10px rgba(255, 118, 188, 0.6),
+    0 8px 20px rgba(160, 50, 136, 0.3);
+  max-width: 420px;
+  width: 90%;
+  margin-bottom: 50px;
+}
+
+h1 {
+  font-size: 2.8rem;
+  margin-bottom: 20px;
+  animation: bounce 2.5s infinite ease-in-out;
+}
+
+p {
+  font-size: 1.4rem;
+  margin-bottom: 30px;
+  color: #7a2670;
+}
+
+.countdown {
+  font-size: 1.2rem;
+  margin-bottom: 35px;
+  color: #b55ba5;
+  letter-spacing: 0.08em;
+}
+
+.timer {
+  font-weight: 900;
+  font-size: 2.2rem;
+  display: block;
+  margin-top: 10px;
+  color: #e85ca8;
+  text-shadow: 0 0 15px #ff7ac9;
+  animation: pulse 2.5s infinite ease-in-out;
+}
+
+.notify-btn {
+  background: linear-gradient(45deg, #ff70b8, #ff9ade);
+  border: none;
+  color: white;
+  font-weight: 700;
+  font-size: 1.3rem;
+  padding: 15px 35px;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow:
+    0 0 20px #ff70b8,
+    inset 0 0 15px #ff9ade;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.notify-btn:hover {
+  background: linear-gradient(45deg, #ff9ade, #ff70b8);
+  box-shadow:
+    0 0 35px #ff70b8,
+    inset 0 0 25px #ff9ade;
+  transform: scale(1.1);
+}
+
+/* Game styles */
+.game-container {
+  background: #ffe4f5;
+  border-radius: 30px;
+  width: 420px;
+  max-width: 90vw;
+  padding: 30px 20px 40px;
+  box-shadow: 0 0 30px 6px #ff99ccaa;
+}
+
+.game-container h2 {
+  color: #a02e9e;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  user-select: none;
+}
+
+#game-area {
+  position: relative;
+  height: 220px;
+  background: #f9d6f2;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  cursor: pointer;
+  box-shadow: inset 0 0 12px #ffa6db;
+}
+
+.bubble {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: #ff8bcf;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  user-select: none;
+  box-shadow: 0 0 15px #ff70b8;
+  transition: transform 0.2s ease;
+}
+
+.bubble:hover {
+  transform: scale(1.3);
+}
+
+/* Animations */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes pulse {
+  0%, 100% { text-shadow: 0 0 15px #ff7ac9; }
+  50% { text-shadow: 0 0 30px #ff4a93; }
+}
