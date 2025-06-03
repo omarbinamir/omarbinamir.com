@@ -1,0 +1,588 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OmarGames - 3D Obby Adventure</title>
+  <style>
+    body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; background: #111; color: white; }
+    #ui {
+      position: fixed; top: 10px; left: 10px; color: white; z-index: 10;
+      background: rgba(0,0,0,0.7); padding: 10px; border-radius: 5px;
+      width: 260px;
+      user-select: none;
+    }
+    #ui h1 {
+      margin: 0 0 10px 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: #55ccff;
+      text-align: center;
+      text-shadow: 0 0 8px #55ccff;
+    }
+    #leaderboard {
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    button {
+      margin-top: 8px;
+      width: 100%;
+      padding: 5px;
+      border: none;
+      border-radius: 3px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #popupOverlay {
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    #popup {
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      width: 320px;
+      max-height: 400px;
+      overflow-y: auto;
+      color: #eee;
+      position: relative;
+    }
+    #popup h2 {
+      margin-top: 0;
+    }
+    #tutorial {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      width: 350px;
+      color: white;
+      z-index: 200;
+      user-select: none;
+      text-align: center;
+    }
+    #tutorial button {
+      margin-top: 15px;
+    }
+    #countdown {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 72px;
+      font-weight: bold;
+      color: #55ccff;
+      text-shadow: 0 0 15px #55ccff;
+      z-index: 300;
+      user-select: none;
+      display: none;
+    }
+    /* Star collectible style */
+    .star {
+      color: yellow;
+      font-size: 18px;
+      text-shadow: 0 0 5px gold;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="ui">
+    <h1>OmarGames</h1>
+    <div>Stage: <span id="stage">1</span></div>
+    <div>WCoins: <span id="wcoins">0</span></div>
+    <div>Timer: <span id="timer">0.00</span>s</div>
+
+    <button id="questboardBtn">Open Questboard</button>
+    <button id="shopBtn">Open Shop</button>
+
+    <div id="leaderboard">
+      <h3>Leaderboard (Best Times)</h3>
+      <ol id="leaderboardList"></ol>
+    </div>
+  </div>
+
+  <div id="popupOverlay">
+    <div id="popup">
+      <button id="closePopup" style="position:absolute; top:10px; right:10px; background:#b33; padding:2px 8px; border:none; cursor:pointer;">X</button>
+      <div id="popupContent"></div>
+    </div>
+  </div>
+
+  <div id="tutorial">
+    <h2>Welcome to OmarGames!</h2>
+    <p><strong>Controls:</strong> Use <b>WASD</b> to move, <b>Space</b> to jump.</p>
+    <p><strong>Goal:</strong> Reach the yellow platform to complete each stage.</p>
+    <p>Collect stars for extra WCoins!</p>
+    <p>Buy upgrades in the shop.</p>
+    <p>Try to finish all 10 stages as fast as possible!</p>
+    <button id="startGameBtn">Start Game</button>
+  </div>
+
+  <div id="countdown"></div>
+
+  <audio id="bgMusic" loop src="https://cdn.pixabay.com/download/audio/2022/03/29/audio_8bf2d382c9.mp3?filename=chill-vibes-111.mp3"></audio>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // Setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Light
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(10, 10, 10);
+    scene.add(light);
+
+    // Ground
+    const groundGeo = new THREE.PlaneGeometry(100, 100);
+    const groundMat = new THREE.MeshLambertMaterial({ color: 0x444444 });
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -1;
+    scene.add(ground);
+
+    // Player
+    const playerGeo = new THREE.BoxGeometry(1, 2, 1);
+    const playerMat = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+    const player = new THREE.Mesh(playerGeo, playerMat);
+    player.position.set(0, 1, 0);
+    scene.add(player);
+
+    // Variables
+    const platforms = [];
+    let stage = 1;
+    const maxStages = 10;
+    let wcoins = 0;
+
+    let timerStart = null;
+    let timerRunning = false;
+
+    // Powerups
+    let speedBoostActive = false;
+    let doubleJumpUnlocked = false;
+    let speedMultiplier = 1;
+    let canDoubleJump = false;
+
+    // Stars collectibles
+    const stars = [];
+
+    // UI Elements
+    const stageEl = document.getElementById('stage');
+    const wcoinsEl = document.getElementById('wcoins');
+    const timerEl = document.getElementById('timer');
+    const leaderboardList = document.getElementById('leaderboardList');
+
+    const questboardBtn = document.getElementById('questboardBtn');
+    const shopBtn = document.getElementById('shopBtn');
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popupContent = document.getElementById('popupContent');
+    const closePopup = document.getElementById('closePopup');
+
+    const tutorial = document.getElementById('tutorial');
+    const startGameBtn = document.getElementById('startGameBtn');
+
+    const countdownEl = document.getElementById('countdown');
+
+    // Background Music
+    const bgMusic = document.getElementById('bgMusic');
+
+    // Leaderboard data
+    let leaderboard = JSON.parse(localStorage.getItem('obbyLeaderboard')) || [];
+
+    // Create Platforms + stars for stage
+    function createPlatformsForStage(stageNum) {
+      // Clear old platforms and stars
+      for (let p of platforms) scene.remove(p);
+      platforms.length = 0;
+
+      for (let s of stars) scene.remove(s.mesh);
+      stars.length = 0;
+
+      // Create platforms with color depending on stage parity
+      const baseX = 0;
+      for (let i = 0; i < 5 + stageNum; i++) {
+        let y = 0.5 * Math.floor(i / 3);
+        let z = (i % 2) * 3;
+        let color = stageNum % 2 === 0 ? 0x00ffff : 0xff8800;
+        if (i === 5 + stageNum - 1) color = 0xffff00; // Final platform yellow
+
+        let plat = new THREE.Mesh(
+          new THREE.BoxGeometry(4, 0.5, 4),
+          new THREE.MeshLambertMaterial({ color })
+        );
+        plat.position.set(baseX + i * 6, y, z);
+        scene.add(plat);
+        platforms.push(plat);
+
+        // Add a star on some platforms (not final)
+        if (i !== platforms.length - 1 && i % 2 === 0) {
+          addStar(plat.position.x, plat.position.y + 1.5, plat.position.z);
+        }
+      }
+    }
+
+    // Add a star collectible mesh
+    function addStar(x, y, z) {
+      const starGeo = new THREE.OctahedronGeometry(0.5);
+      const starMat = new THREE.MeshBasicMaterial({color: 0xffff00});
+      const starMesh = new THREE.Mesh(starGeo, starMat);
+      starMesh.position.set(x, y, z);
+      scene.add(starMesh);
+      stars.push({mesh: starMesh, collected: false});
+    }
+
+    // Player physics and controls variables
+    let velocityY = 0;
+    let onPlatform = false;
+    let jumpCount = 0;
+
+    // Controls state
+    let keys = {};
+    document.addEventListener('keydown', e => {
+      keys[e.key.toLowerCase()] = true;
+      if(e.key === ' ' && doubleJumpUnlocked && jumpCount === 1 && !onPlatform) {
+        velocityY = 0.25; // Double jump power
+        jumpCount++;
+      }
+    });
+    document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+    // Player speed
+    let baseSpeed = 0.2;
+
+    // Check collisions with platforms
+    function checkPlatformCollisions() {
+      onPlatform = false;
+      for (let p of platforms) {
+        if (Math.abs(player.position.x - p.position.x) < 2 &&
+            Math.abs(player.position.z - p.position.z) < 2 &&
+            player.position.y <= p.position.y + 1.1 &&
+            player.position.y >= p.position.y + 0.5) {
+          player.position.y = p.position.y + 1;
+          velocityY = 0;
+          onPlatform = true;
+          jumpCount = 0;
+          checkpoint.copy(p.position);
+        }
+      }
+    }
+
+    // Check collisions with stars
+    function checkStarCollisions() {
+      for (let star of stars) {
+        if (!star.collected &&
+            player.position.distanceTo(star.mesh.position) < 1.5) {
+          star.collected = true;
+          scene.remove(star.mesh);
+          wcoins++;
+          wcoinsEl.textContent = wcoins;
+          // Particle effect could be added here (simple for demo)
+        }
+      }
+    }
+
+    // Variables for checkpoint and player respawn
+    const checkpoint = new THREE.Vector3(0,1,0);
+
+    // Physics update loop
+    function physics() {
+      velocityY -= 0.01;
+      player.position.y += velocityY;
+
+      checkPlatformCollisions();
+      checkStarCollisions();
+
+      // Respawn if fall below threshold
+      if (player.position.y < -10) {
+        player.position.set(checkpoint.x, checkpoint.y + 1, checkpoint.z);
+        velocityY = 0;
+        jumpCount = 0;
+      }
+    }
+
+    // Update player position based on keys
+    function updatePlayer() {
+      const speed = baseSpeed * speedMultiplier;
+      if (keys['w']) player.position.z -= speed;
+      if (keys['s']) player.position.z += speed;
+      if (keys['a']) player.position.x -= speed;
+      if (keys['d']) player.position.x += speed;
+      if (keys[' '] && onPlatform) {
+        velocityY = 0.25;
+        jumpCount = 1;
+      }
+    }
+
+    // Camera follows player with smooth movement and minecraft-y style
+    const cameraOffset = new THREE.Vector3(0, 5, 10);
+    const cameraLookOffset = new THREE.Vector3(0, 1, 0);
+    function updateCamera() {
+      // Minecraft style camera: fixed angle behind player
+      let desiredPos = player.position.clone().add(cameraOffset);
+      camera.position.lerp(desiredPos, 0.1);
+      let lookAtPos = player.position.clone().add(cameraLookOffset);
+      camera.lookAt(lookAtPos);
+    }
+
+    // Timer functions
+    function startTimer() {
+      timerStart = performance.now();
+      timerRunning = true;
+    }
+
+    function stopTimer() {
+      timerRunning = false;
+    }
+
+    function updateTimer() {
+      if (!timerRunning) return;
+      let elapsed = (performance.now() - timerStart) / 1000;
+      timerEl.textContent = elapsed.toFixed(2);
+    }
+
+    // Particle effect on stage complete
+    function showStageCompleteParticles() {
+      // Simple spark effect: small cubes shoot up and fade
+      for (let i = 0; i < 15; i++) {
+        const particleGeo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+        const particleMat = new THREE.MeshBasicMaterial({color: 0xffff00});
+        const particle = new THREE.Mesh(particleGeo, particleMat);
+        particle.position.copy(player.position);
+        scene.add(particle);
+
+        let velocity = new THREE.Vector3(
+          (Math.random()-0.5) * 0.2,
+          Math.random() * 0.3 + 0.1,
+          (Math.random()-0.5) * 0.2
+        );
+
+        let life = 60;
+        function animateParticle() {
+          if (life <= 0) {
+            scene.remove(particle);
+            return;
+          }
+          particle.position.add(velocity);
+          velocity.y -= 0.01;
+          particle.material.opacity = life / 60;
+          particle.material.transparent = true;
+          life--;
+          requestAnimationFrame(animateParticle);
+        }
+        animateParticle();
+      }
+    }
+
+    // Check if player reached final platform this stage
+    function checkStageComplete() {
+      const finalPlatform = platforms[platforms.length - 1];
+      if (!finalPlatform) return false;
+
+      let dist = player.position.distanceTo(finalPlatform.position);
+      if (dist < 3 && player.position.y > finalPlatform.position.y + 0.5) {
+        return true;
+      }
+      return false;
+    }
+
+    // Next stage logic
+    function nextStage() {
+      wcoins++;
+      wcoinsEl.textContent = wcoins;
+      stage++;
+      if (stage > maxStages) {
+        stopTimer();
+        addScoreToLeaderboard();
+        showPopup('Congrats!', `<p>You completed all stages!</p><p>Best Time: ${getBestTime().toFixed(2)} seconds</p>`);
+        return;
+      }
+      showStageCompleteParticles();
+      createPlatformsForStage(stage);
+      player.position.set(0, 1, 0);
+      checkpoint.set(0,1,0);
+      startTimer();
+      stageEl.textContent = stage;
+    }
+
+    // Leaderboard storage and display
+    function addScoreToLeaderboard() {
+      let finalTime = parseFloat(timerEl.textContent);
+      // Add new score only if better than existing or leaderboard empty
+      if (leaderboard.length === 0 || finalTime < leaderboard[leaderboard.length - 1].time) {
+        leaderboard.push({name: 'Player', time: finalTime});
+        leaderboard.sort((a,b) => a.time - b.time);
+        if (leaderboard.length > 5) leaderboard.pop();
+        localStorage.setItem('obbyLeaderboard', JSON.stringify(leaderboard));
+        updateLeaderboardUI();
+      }
+    }
+
+    function updateLeaderboardUI() {
+      leaderboardList.innerHTML = '';
+      if (leaderboard.length === 0) {
+        leaderboardList.innerHTML = '<li>No scores yet</li>';
+        return;
+      }
+      leaderboard.forEach(score => {
+        leaderboardList.innerHTML += `<li>${score.name}: ${score.time.toFixed(2)}s</li>`;
+      });
+    }
+
+    function getBestTime() {
+      if (leaderboard.length === 0) return 0;
+      return leaderboard[0].time;
+    }
+
+    // Popup UI logic
+    function showPopup(title, content) {
+      popupContent.innerHTML = `<h2>${title}</h2>${content}`;
+      popupOverlay.style.display = 'flex';
+    }
+    function closePopupFunc() {
+      popupOverlay.style.display = 'none';
+    }
+    closePopup.onclick = closePopupFunc;
+
+    // Questboard content
+    const quests = [
+      {id:1, desc:"Complete 3 stages"},
+      {id:2, desc:"Collect 5 stars"},
+      {id:3, desc:"Buy Speed Boost from shop"}
+    ];
+
+    questboardBtn.onclick = () => {
+      let questsHTML = '<ul>';
+      quests.forEach(q => {
+        questsHTML += `<li>${q.desc}</li>`;
+      });
+      questsHTML += '</ul>';
+      showPopup('Questboard', questsHTML);
+    };
+
+    // Shop items
+    const shopItems = [
+      {id:1, name: 'Speed Boost (10 WCoins)', cost: 10},
+      {id:2, name: 'Double Jump (15 WCoins)', cost: 15},
+      {id:3, name: 'Extra Life (20 WCoins)', cost: 20}
+    ];
+
+    shopBtn.onclick = () => {
+      let shopHTML = '<ul>';
+      shopItems.forEach(item => {
+        shopHTML += `<li>${item.name} <button onclick="buyItem(${item.id})">Buy</button></li>`;
+      });
+      shopHTML += '</ul>';
+      showPopup('Shop', shopHTML);
+    };
+
+    window.buyItem = function(id) {
+      const item = shopItems.find(i => i.id === id);
+      if (!item) return alert('Item not found.');
+      if (wcoins >= item.cost) {
+        wcoins -= item.cost;
+        wcoinsEl.textContent = wcoins;
+        alert(`You bought: ${item.name}`);
+        if(item.id === 1) { // Speed Boost
+          speedBoostActive = true;
+          speedMultiplier = 2;
+          setTimeout(() => {
+            speedBoostActive = false;
+            speedMultiplier = 1;
+            alert('Speed Boost ended!');
+          }, 15000); // 15 seconds speed boost
+        }
+        if(item.id === 2) { // Double Jump
+          doubleJumpUnlocked = true;
+          alert('Double Jump Unlocked!');
+        }
+        if(item.id === 3) { // Extra Life
+          alert('Extra Life granted! (Not implemented yet)');
+        }
+      } else {
+        alert('Not enough WCoins!');
+      }
+    };
+
+    // Start the game after tutorial and countdown
+    startGameBtn.onclick = () => {
+      tutorial.style.display = 'none';
+      countdownEl.style.display = 'block';
+      let count = 3;
+      countdownEl.textContent = count;
+      bgMusic.volume = 0.3;
+      bgMusic.play();
+      let countdownInterval = setInterval(() => {
+        count--;
+        if (count <= 0) {
+          clearInterval(countdownInterval);
+          countdownEl.style.display = 'none';
+          initGame();
+        } else {
+          countdownEl.textContent = count;
+        }
+      }, 1000);
+    };
+
+    // Init game for first time or after stage completion
+    function initGame() {
+      stage = 1;
+      wcoins = 0;
+      stageEl.textContent = stage;
+      wcoinsEl.textContent = wcoins;
+      timerEl.textContent = '0.00';
+      createPlatformsForStage(stage);
+      player.position.set(0, 1, 0);
+      checkpoint.set(0,1,0);
+      speedMultiplier = 1;
+      speedBoostActive = false;
+      doubleJumpUnlocked = false;
+      startTimer();
+      animate();
+    }
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      updatePlayer();
+      physics();
+      updateCamera();
+      updateTimer();
+
+      // Check if stage completed
+      if (timerRunning && checkStageComplete()) {
+        nextStage();
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    // Window resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Start paused with tutorial
+    // Game will start after tutorial and countdown
+  </script>
+
+</body>
+</html>

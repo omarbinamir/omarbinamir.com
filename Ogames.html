@@ -1,0 +1,171 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ogames Arcade</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@500&display=swap');
+
+  body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at center, #0d0036, #000010);
+    color: #00ffea;
+    font-family: 'Press Start 2P', monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 60px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: absolute;
+    width: 300%;
+    height: 300%;
+    background: radial-gradient(white 1px, transparent 1px),
+                radial-gradient(white 1px, transparent 1px);
+    background-position: 0 0, 50px 50px;
+    background-size: 100px 100px;
+    animation: starfield 60s linear infinite;
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes starfield {
+    from {background-position: 0 0, 50px 50px;}
+    to {background-position: 100px 100px, 150px 150px;}
+  }
+
+  .logo-container {
+    text-align: center;
+    margin-bottom: 30px;
+    z-index: 1;
+  }
+
+  .logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4rem;
+    letter-spacing: 0.2em;
+    color: #00b4d8;
+    text-shadow: 0 0 10px #48cae4, 0 0 30px #00b4d8;
+    animation: glowPulse 3s ease-in-out infinite alternate;
+  }
+
+  .logo span {
+    color: #caf0f8;
+    animation: fadeIn 2s ease forwards;
+    opacity: 0;
+  }
+
+  .logo span:nth-child(1) { animation-delay: 0.5s; }
+  .logo span:nth-child(2) { animation-delay: 0.7s; }
+  .logo span:nth-child(3) { animation-delay: 0.9s; }
+  .logo span:nth-child(4) { animation-delay: 1.1s; }
+  .logo span:nth-child(5) { animation-delay: 1.3s; }
+
+  .tagline {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    color: #90e0ef;
+    text-shadow: 0 0 5px #48cae4;
+    animation: fadeIn 3s ease forwards;
+    animation-delay: 2s;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% {
+      text-shadow: 0 0 10px #00b4d8, 0 0 20px #0077b6, 0 0 30px #0077b6;
+    }
+    50% {
+      text-shadow: 0 0 20px #48cae4, 0 0 40px #00b4d8;
+    }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  .menu-container {
+    background: #110033;
+    border: 4px solid #00ffe7;
+    border-radius: 15px;
+    padding: 40px 60px;
+    box-shadow: 0 0 10px #00ffe7, 0 0 30px #00ffe7, 0 0 50px #00ffe7, inset 0 0 15px #00ccba;
+    max-width: 600px;
+    width: 90vw;
+    text-align: center;
+    z-index: 1;
+  }
+
+  nav.menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  nav.menu ul li {
+    margin: 20px 0;
+  }
+
+  nav.menu ul li a {
+    color: #00ffe7;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: 2px solid #00ffe7;
+    border-radius: 8px;
+    display: inline-block;
+    transition: color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 0 5px #00ffe7, 0 0 10px #00ffe7;
+  }
+
+  nav.menu ul li a:hover,
+  nav.menu ul li a:focus {
+    color: #ff00de;
+    box-shadow: 0 0 20px #ff00de, 0 0 40px #ff00de;
+    transform: scale(1.1);
+  }
+
+  footer {
+    margin-top: 40px;
+    font-size: 0.6rem;
+    color: #00807c;
+    text-align: center;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- OGAMES LOGO + Tagline -->
+<div class="logo-container">
+  <div class="logo">O<span></span>G<span>a</span><span>m</span><span>e</span><span>s</span></div>
+  <div class="tagline">Your Gateway to Gaming</div>
+</div>
+
+<!-- Menu -->
+<div class="menu-container">
+  <nav class="menu" aria-label="Ogames Menu">
+    <ul>
+      <li><a href="game.html">. OGobby .</a></li>
+      <li><a href="#">unavailable</a></li>
+      <li><a href="#">unavailable</a></li>
+      <li><a href="#">unavailable</a></li>
+      <li><a href="#">unavailable</a></li>
+    </ul>
+  </nav>
+</div>
+
+<!-- Footer -->
+<footer>
+  omarbinamir.com &nbsp;&bull;&nbsp; All rights reserved
+</footer>
+
+</body>
+</html>
