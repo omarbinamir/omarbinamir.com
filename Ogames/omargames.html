@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>games</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nosifer&family=Press+Start+2P&display=swap');
+
+  /* Root & background */
+  body {
+    margin: 0;
+    background: #0b0b0b url('https://www.transparenttextures.com/patterns/asfalt-light.png') repeat;
+    color: #f0f0f0;
+    font-family: 'Press Start 2P', cursive;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* Container for menu */
+  .menu-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+  }
+
+  /* The menu */
+  nav.menu {
+    background: rgba(30, 0, 30, 0.9);
+    border: 3px solid #a100ff;
+    border-radius: 20px;
+    padding: 30px 50px;
+    box-shadow: 0 0 20px #a100ff88;
+    max-width: 600px;
+    width: 100%;
+  }
+
+  /* Menu header */
+  nav.menu h1 {
+    font-family: 'Nosifer', cursive;
+    font-size: 3rem;
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff, 0 0 30px #ff00ff;
+    text-align: center;
+    margin-bottom: 40px;
+    letter-spacing: 6px;
+  }
+
+  /* Menu list */
+  nav.menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  nav.menu ul li {
+    margin: 20px 0;
+    font-size: 1.3rem;
+    position: relative;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  /* Cool glitchy link effect on hover */
+  nav.menu ul li a {
+    color: #dd00ff;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    transition: color 0.2s ease;
+  }
+
+  nav.menu ul li a::before,
+  nav.menu ul li a::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    color: #ff66ff;
+    clip-path: polygon(0 45%, 100% 45%, 100% 55%, 0 55%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  nav.menu ul li a::before {
+    top: -2px;
+    animation: glitchTop 2s infinite linear alternate-reverse;
+  }
+  nav.menu ul li a::after {
+    top: 2px;
+    animation: glitchBottom 2s infinite linear alternate;
+  }
+
+  nav.menu ul li a:hover {
+    color: #ff33ff;
+  }
+
+  nav.menu ul li a:hover::before,
+  nav.menu ul li a:hover::after {
+    opacity: 1;
+  }
+
+  /* Glitch animations */
+  @keyframes glitchTop {
+    0% {
+      clip-path: polygon(0 45%, 100% 45%, 100% 55%, 0 55%);
+      transform: translate(-2px, -2px);
+    }
+    50% {
+      clip-path: polygon(0 40%, 100% 40%, 100% 50%, 0 50%);
+      transform: translate(2px, 2px);
+    }
+    100% {
+      clip-path: polygon(0 45%, 100% 45%, 100% 55%, 0 55%);
+      transform: translate(-2px, -2px);
+    }
+  }
+
+  @keyframes glitchBottom {
+    0% {
+      clip-path: polygon(0 65%, 100% 65%, 100% 75%, 0 75%);
+      transform: translate(2px, 2px);
+    }
+    50% {
+      clip-path: polygon(0 70%, 100% 70%, 100% 80%, 0 80%);
+      transform: translate(-2px, -2px);
+    }
+    100% {
+      clip-path: polygon(0 65%, 100% 65%, 100% 75%, 0 75%);
+      transform: translate(2px, 2px);
+    }
+  }
+
+  /* Footer */
+  footer {
+    background: #120012;
+    text-align: center;
+    padding: 15px 0;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.85rem;
+    color: #aa00aa;
+    border-top: 2px solid #a100ff;
+    letter-spacing: 1px;
+    user-select: none;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="menu-container">
+  <nav class="menu" aria-label="Scary Kid Vibes Menu">
+    <h1>KidVibes</h1>
+    <ul>
+      <li><a href="#" data-text="ogames">ogames</a></li>
+      <li><a href="#" data-text="monsters">geodash1</a></li>
+      <li><a href="#" data-text="spookyland">guesswordio</a></li>
+      <li><a href="#" data-text="hauntedhub">pvpme</a></li>
+      <li><a href="#" data-text="ghostzone">ghostzone</a></li>
+    </ul>
+  </nav>
+</div>
+
+<footer>
+  omarbinamir.com &nbsp;&bull;&nbsp; All rights reserved
+</footer>
+
+</body>
+</html>
