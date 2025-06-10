@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>☠️ obalab ☠️</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Creepster', cursive;
+    background: linear-gradient(black, #1a0000, #000);
+    color: #ff0000;
+    overflow-x: hidden;
+    animation: bgPulse 10s infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0% { background-color: #000; }
+    100% { background-color: #1a0000; }
+  }
+
+  header {
+    padding: 1rem 2rem;
+    background: #0a0000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 3px solid crimson;
+    box-shadow: 0 0 20px red;
+  }
+
+  .logo-text {
+    font-size: 2.5rem;
+    color: crimson;
+    text-shadow: 0 0 10px red;
+    animation: glitch 1s infinite;
+  }
+
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(2px, -2px); }
+    60% { transform: translate(-1px, 1px); }
+    80% { transform: translate(1px, -1px); }
+    100% { transform: translate(0); }
+  }
+
+  h4, h2 {
+    animation: flicker 2s infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    45% { opacity: 0.5; }
+    50% { opacity: 0.1; }
+    55% { opacity: 0.5; }
+  }
+
+  #facts-tricks {
+    margin-top: 4rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-left: 5px solid crimson;
+  }
+
+  h4 {
+    font-size: 1.5rem;
+    border-left: 3px solid red;
+    padding-left: 10px;
+    margin-bottom: 1rem;
+    color: #ff4f4f;
+  }
+
+  #signup-section {
+    margin-top: 5rem;
+    padding: 2rem;
+    background: #1a0000;
+    border: 3px solid crimson;
+    border-radius: 10px;
+    box-shadow: 0 0 20px red;
+  }
+
+  #signup-section h2 {
+    font-size: 2.5rem;
+    color: crimson;
+    text-shadow: 0 0 10px darkred;
+  }
+
+  #signup-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: auto;
+  }
+
+  #signup-form label {
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: #ff4f4f;
+  }
+
+  #signup-form input {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    background: #300000;
+    color: white;
+    font-size: 1.1rem;
+    box-shadow: inset 0 0 5px red;
+  }
+
+  #signup-form input::placeholder {
+    color: #900;
+  }
+
+  #signup-form button {
+    background: linear-gradient(45deg, crimson, darkred);
+    color: white;
+    border: none;
+    padding: 0.9rem;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 0 20px crimson;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 10px crimson; }
+    50% { box-shadow: 0 0 30px red; }
+    100% { box-shadow: 0 0 10px crimson; }
+  }
+
+  footer {
+    text-align: center;
+    padding: 1rem;
+    background: #0a0000;
+    font-size: 0.9rem;
+    color: darkred;
+    border-top: 2px solid crimson;
+  }
+
+  .post-video-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+
+  .post-video-container button {
+    background: darkred;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50%;
+    font-size: 2rem;
+    box-shadow: 0 0 20px red;
+    animation: shake 1.5s infinite alternate;
+    cursor: pointer;
+  }
+
+  @keyframes shake {
+    0% { transform: translateX(-1px); }
+    50% { transform: translateX(1px); }
+    100% { transform: translateX(-1px); }
+  }
+
+  #owner-credit {
+    text-align: center;
+    margin-top: 3rem;
+    color: darkred;
+    font-style: italic;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo-text">👁️ obalab</span>
+</header>
+
+<main>
+  <section id="facts-tricks">
+    <h4>☠️ Fact 1: Your data is never safe. We see all. We store all.</h4>
+    <h4>☠️ Fact 2: Every video played feeds the cursed machine deeper.</h4>
+    <h4>☠️ Fact 3: We don't buffer. We bleed bandwidth dry.</h4>
+    <h4>☠️ Fact 4: AI? No. Demons sort your content here.</h4>
+    <h4>☠️ Trick: Hover the button below... if you dare.</h4>
+  </section>
+
+  <section id="signup-section">
+    <h2>Enter the Eternal Viewer Pact</h2>
+    <form id="signup-form">
+      <label for="name">Victim Name</label>
+      <input type="text" id="name" name="name" placeholder="e.g., Damien Black" required />
+
+      <label for="email">Haunted Email</label>
+      <input type="email" id="email" name="email" placeholder="soul@unseenrealm.com" required />
+
+      <label for="password">Blood Key</label>
+      <input type="password" id="password" name="password" placeholder="•••••••••••" required />
+
+      <button type="submit">Bind My Soul</button>
+    </form>
+  </section>
+
+  <div id="owner-credit">
+    Site cursed by Omarbinamir © 2025 — All rights devoured
+  </div>
+</main>
+
+<footer>
+  ☠️ obalab — Once you sign up, there is no going back ☠️
+</footer>
+
+<div class="post-video-container">
+  <button id="postVideoBtn" aria-label="Summon More Secrets">➕</button>
+</div>
+
+<script>
+  document.getElementById('postVideoBtn').addEventListener('click', () => {
+    document.getElementById('facts-tricks').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  document.getElementById('signup-form').addEventListener('submit', e => {
+    e.preventDefault();
+    alert('Your soul is now bound, ' + e.target.name.value + '. Forever.');
+  });
+</script>
+</body>
+</html>

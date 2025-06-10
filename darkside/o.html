@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>☠️ Something is Awakening...</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #ff0000;
+      font-family: 'Courier New', Courier, monospace;
+      background-image: url('https://i.imgur.com/JlgpxMF.jpeg'); /* Dark horror texture */
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      text-shadow: 0 0 5px red;
+    }
+
+    a {
+      color: crimson;
+      text-decoration: none;
+      margin: 20px;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    a:hover {
+      color: #ff6666;
+      text-shadow: 0 0 10px crimson;
+    }
+
+    .container {
+      text-align: center;
+      padding: 60px 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 3px solid crimson;
+      margin: 30px auto;
+      max-width: 700px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px crimson;
+    }
+
+    h1, h2 {
+      font-size: 2em;
+      color: crimson;
+    }
+
+    .countdown {
+      font-size: 1.5em;
+      margin: 20px 0;
+    }
+
+    .timer {
+      font-size: 2em;
+      color: #ff4444;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .notify-btn {
+      background-color: transparent;
+      color: crimson;
+      border: 2px solid crimson;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .notify-btn:hover {
+      background-color: crimson;
+      color: black;
+    }
+
+    .game-container {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      border-top: 2px solid crimson;
+    }
+
+    #game-area {
+      position: relative;
+      width: 90%;
+      height: 300px;
+      margin: 20px auto;
+      background: #111;
+      border: 2px dashed crimson;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      font-size: 2em;
+      line-height: 50px;
+      text-align: center;
+      border-radius: 50%;
+      background: #660000;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 0 10px red;
+      user-select: none;
+      transition: transform 0.1s;
+    }
+
+    .bubble:hover {
+      transform: scale(1.3);
+      background: #880000;
+    }
+
+    #score {
+      color: #ff4444;
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html"><h1>⬅ Return Before It's Too Late...</h1></a>
+  <div class="container">
+    <h1>☠️ Something is Awakening... ☠️</h1>
+    <p>It waits in the shadows. Don’t look away. 🩸</p>
+
+    <div class="countdown">
+      ⏳ Ritual Begins In:
+      <span id="timer" class="timer">Loading...</span>
+    </div>
+
+    <button class="notify-btn">Summon Me When It Begins 🕯️</button>
+  </div>
+
+  <div class="game-container">
+    <h2>🩸 Slay the Screaming Souls! 🩸</h2>
+    <div id="game-area"></div>
+    <p>Score: <span id="score">0</span></p>
+  </div>
+
+  <script>
+    // === COUNTDOWN TIMER ===
+    const timerEl = document.getElementById('timer');
+    const now = new Date();
+    const targetDate = new Date(now.getFullYear(), now.getMonth() + 5, now.getDate(), 0, 0, 0);
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        timerEl.textContent = "💀 The Awakening Has Begun...";
+        clearInterval(timerInterval);
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      timerEl.textContent =
+        `${days.toString().padStart(2,'0')} : ` +
+        `${hours.toString().padStart(2,'0')} : ` +
+        `${minutes.toString().padStart(2,'0')} : ` +
+        `${seconds.toString().padStart(2,'0')}`;
+    }
+
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // === CURSED SOUL GAME ===
+    const gameArea = document.getElementById('game-area');
+    const scoreEl = document.getElementById('score');
+    let score = 0;
+
+    function createBubble() {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+
+      const cursedFaces = ['☠️', '😱', '🩸', '👁️', '🕷️'];
+      bubble.textContent = cursedFaces[Math.floor(Math.random() * cursedFaces.length)];
+
+      const maxX = gameArea.clientWidth - 50;
+      const maxY = gameArea.clientHeight - 50;
+      bubble.style.left = Math.random() * maxX + 'px';
+      bubble.style.top = Math.random() * maxY + 'px';
+
+      bubble.addEventListener('click', () => {
+        score++;
+        scoreEl.textContent = score;
+        bubble.remove();
+        createBubble();
+      });
+
+      gameArea.appendChild(bubble);
+    }
+
+    for(let i=0; i<5; i++) {
+      createBubble();
+    }
+  </script>
+</body>
+</html>
