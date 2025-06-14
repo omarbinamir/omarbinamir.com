@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🔪 OGobby: Flesh Mode</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; background: black; overflow: hidden; }
+    canvas { display: block; background: #0a0a0a; }
+  </style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const keys = {};
+document.addEventListener('keydown', e => keys[e.key] = true);
+document.addEventListener('keyup', e => keys[e.key] = false);
+
+const gravity = 1;
+const jumpStrength = -20;
+let currentLevel = 0;
+
+class Player {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = 100;
+    this.y = 100;
+    this.width = 40;
+    this.height = 40;
+    this.color = "crimson";
+    this.vx = 0;
+    this.vy = 0;
+    this.onGround = false;
+    this.jumps = 0;
+    this.noclip = false;
+    this.usedNoclip = false;
+  }
+  update() {
+    if (keys["ArrowLeft"] || keys["a"]) this.vx = -6;
+    else if (keys["ArrowRight"] || keys["d"]) this.vx = 6;
+    else this.vx = 0;
+
+    if ((keys[" "] || keys["w"] || keys["ArrowUp"]) && this.jumps < 3) {
+      this.vy = jumpStrength;
+      this.jumps++;
+    }
+
+    if (keys["e"] && !this.usedNoclip) {
+      this.noclip = true;
+      this.usedNoclip = true;
+    }
+
+    this.vy += gravity;
+    this.x += this.vx;
+    this.y += this.vy;
+
+    if (!this.noclip) {
+      for (const p of levels[currentLevel].platforms) {
+        if (this.collide(p)) {
+          if (this.vy > 0 && this.y + this.height <= p.y + this.vy) {
+            this.y = p.y - this.height;
+            this.vy = 0;
+            this.onGround = true;
+            this.jumps = 0;
+            this.usedNoclip = false;
+          } else {
+            this.vy = 0;
+          }
+        }
+      }
+    }
+
+    if (this.y > canvas.height) this.reset();
+
+    const goal = levels[currentLevel].goal;
+    if (this.collide(goal)) {
+      currentLevel++;
+      if (currentLevel >= levels.length) currentLevel = 0;
+      this.reset();
+    }
+
+    this.noclip = false;
+  }
+  collide(rect) {
+    return (
+      this.x < rect.x + rect.width &&
+      this.x + this.width > rect.x &&
+      this.y < rect.y + rect.height &&
+      this.y + this.height > rect.y
+    );
+  }
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+
+class Platform {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+  draw() {
+    ctx.fillStyle = "#444";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+
+class Goal {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = 40;
+    this.height = 40;
+  }
+  draw() {
+    ctx.fillStyle = "lime";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+
+const levels = [];
+
+function createLevel(platformData, goalX, goalY) {
+  return {
+    platforms: platformData.map(p => new Platform(...p)),
+    goal: new Goal(goalX, goalY)
+  };
+}
+
+// Level 0 (Tutorial)
+levels.push(createLevel([
+  [0, 550, 800, 50],
+  [300, 450, 100, 20],
+  [450, 350, 100, 20],
+  [600, 250, 100, 20],
+], 700, 200));
+
+// Levels 1-29 (increasingly hard)
+for (let i = 1; i < 30; i++) {
+  let platforms = [[0, 550, 800, 50]];
+  for (let j = 0; j < 10 + i; j++) {
+    const x = 100 + (j * 100 + Math.random() * 50) % (canvas.width - 100);
+    const y = 500 - j * 40;
+    const w = 80 + Math.random() * 20;
+    const h = 10 + Math.random() * 10;
+    platforms.push([x, y, w, h]);
+  }
+  const goalX = platforms[platforms.length - 1][0];
+  const goalY = platforms[platforms.length - 1][1] - 50;
+  levels.push(createLevel(platforms, goalX, goalY));
+}
+
+const player = new Player();
+
+function drawLevel() {
+  for (const p of levels[currentLevel].platforms) p.draw();
+  levels[currentLevel].goal.draw();
+}
+
+function drawTutorial() {
+  if (currentLevel === 0) {
+    ctx.fillStyle = "#aaa";
+    ctx.font = "20px sans-serif";
+    ctx.fillText("←→ to move, SPACE to triple jump, E for noclip jump", 20, 40);
+  }
+}
+
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawLevel();
+  drawTutorial();
+  player.update();
+  player.draw();
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+</script>
+</body>
+</html>
