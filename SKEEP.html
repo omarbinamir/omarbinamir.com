@@ -3,133 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Skeep - Voice & Chat</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f0f4fa;
-      color: #222;
-    }
-    header {
-      background-color: #0078d4;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-      font-size: 1.5rem;
-    }
-    #main {
-      display: flex;
-      height: 100vh;
-    }
-    #sidebar {
-      width: 250px;
-      background: #e8f1fb;
-      padding: 1rem;
-      border-right: 1px solid #ccc;
-    }
-    #chatbox {
-      flex: 1;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-    }
-    #messages {
-      flex: 1;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 1rem;
-      background: white;
-      margin-bottom: 1rem;
-    }
-    #inputArea {
-      display: flex;
-    }
-    #inputArea input {
-      flex: 1;
-      padding: 0.5rem;
-    }
-    #inputArea button {
-      padding: 0.5rem;
-      background-color: #0078d4;
-      color: white;
-      border: none;
-    }
-    #friendsList {
-      margin-top: 1rem;
-    }
-  </style>
+  <title>Skeep – Sign Up</title>
+  <link rel="stylesheet" href="STYLERA.CSS" />
 </head>
-<body>
-  <header>Skeep 🟦</header>
-  <div id="main">
-    <div id="sidebar">
-      <h3>Your ID: <span id="yourId"></span></h3>
-      <input type="text" id="friendIdInput" placeholder="Enter Friend ID" />
-      <button onclick="addFriend()">Add Friend</button>
-      <div id="friendsList"></div>
-    </div>
-    <div id="chatbox">
-      <div id="messages"></div>
-      <div id="inputArea">
-        <input type="text" id="messageInput" placeholder="Type a message" />
-        <button onclick="sendMessage()">Send</button>
-        <button onclick="startCall()">Call</button>
-      </div>
-    </div>
+<body class="signup-screen">
+  <div class="signup-box">
+    <h1>Sign Up for Skeep</h1>
+    <input type="email" placeholder="Email" />
+    <input type="password" placeholder="Password" />
+    
+    <!-- Just a teleport button -->
+    <button onclick="window.location.href='agreements.html'">Go to Agreements</button>
+    
+    <p id="status"></p>
   </div>
-
-  <script>
-    const userId = Math.random().toString(36).substr(2, 8);
-    document.getElementById("yourId").innerText = userId;
-
-    const friends = [];
-
-    function addFriend() {
-      const id = document.getElementById("friendIdInput").value.trim();
-      if (id && !friends.includes(id)) {
-        friends.push(id);
-        const el = document.createElement("div");
-        el.innerText = id;
-        el.onclick = () => setCurrentFriend(id);
-        document.getElementById("friendsList").appendChild(el);
-      }
-    }
-
-    let currentFriend = null;
-
-    function setCurrentFriend(id) {
-      currentFriend = id;
-      document.getElementById("messages").innerHTML = "";
-    }
-
-    function sendMessage() {
-      if (!currentFriend) return alert("Select a friend to chat with.");
-      const msg = document.getElementById("messageInput").value;
-      if (!msg) return;
-      const div = document.createElement("div");
-      div.textContent = `You: ${msg}`;
-      document.getElementById("messages").appendChild(div);
-      document.getElementById("messageInput").value = "";
-      // Simulate friend response
-      setTimeout(() => {
-        const reply = document.createElement("div");
-        reply.textContent = `${currentFriend}: Got your message!`;
-        document.getElementById("messages").appendChild(reply);
-      }, 1000);
-    }
-
-    // WebRTC basic
-    let localStream;
-    async function startCall() {
-      if (!currentFriend) return alert("Select a friend to call.");
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const audio = document.createElement("audio");
-      audio.srcObject = localStream;
-      audio.autoplay = true;
-      document.body.appendChild(audio);
-      alert(`Voice call started with ${currentFriend} (simulated)`);
-    }
-  </script>
 </body>
 </html>
