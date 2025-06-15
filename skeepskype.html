@@ -2,81 +2,132 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Skeep Talk</title>
-  <link rel="stylesheet" href="STYLERA.CSS" />
-</head>
-<body class="chat-ui">
-  <div class="sidebar">
-    <h3>🎧 Skeep Voice Chat</h3>
-    <div>
-      Your ID: <span id="my-id">Loading...</span>
-      <button onclick="copyMyId()">📋 Copy</button>
-    </div>
-    <input id="target-id" placeholder="Enter friend ID to call" />
-    <button onclick="startCall()">📞 Call Friend</button>
-    <div id="recent-list"></div>
-  </div>
+  <title>Skeep Talk – Fixed</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      background: #f0f8ff;
+      font-family: Arial, sans-serif;
+    }
 
-  <div class="main">
+    .left {
+      width: 250px;
+      background: #0078d7;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .right {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    video {
+      width: 100%;
+      max-height: 200px;
+      background: black;
+      border-radius: 10px;
+    }
+
+    #chat-log {
+      flex: 1;
+      background: white;
+      padding: 10px;
+      overflow-y: auto;
+      border-radius: 6px;
+    }
+
+    #chat-input {
+      padding: 10px;
+      width: 100%;
+    }
+
+    button {
+      padding: 10px;
+      background: #00aff0;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="left">
+    <h3>Skeep ID:</h3>
+    <div id="my-id">Loading...</div>
+    <button onclick="copyMyId()">Copy ID</button>
+    <input id="target-id" placeholder="Friend ID" />
+    <button onclick="startCall()">Call</button>
+  </div>
+  <div class="right">
     <video id="my-video" autoplay muted></video>
     <video id="their-video" autoplay></video>
-
-    <div class="chat">
-      <div id="chat-log"></div>
-      <input id="chat-input" placeholder="Type message or emoji..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
+    <div id="chat-log"></div>
+    <input id="chat-input" placeholder="Type here..." />
+    <button onclick="sendMessage()">Send</button>
   </div>
 
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <script>
+    const myIdDisplay = document.getElementById('my-id');
     const myVideo = document.getElementById('my-video');
     const theirVideo = document.getElementById('their-video');
-    const myIdDisplay = document.getElementById('my-id');
     const chatLog = document.getElementById('chat-log');
 
     let peer = new Peer();
     let localStream;
     let conn;
+    let currentCall;
 
-    peer.on('open', id => {
-      myIdDisplay.textContent = id;
-      localStorage.setItem("skeepMyId", id);
-    });
-
+    // Get mic + cam
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
       localStream = stream;
       myVideo.srcObject = stream;
     });
 
+    peer.on('open', id => {
+      myIdDisplay.textContent = id;
+    });
+
     peer.on('call', call => {
+      currentCall = call;
       call.answer(localStream);
       call.on('stream', remoteStream => {
         theirVideo.srcObject = remoteStream;
       });
     });
 
-    peer.on('connection', connection => {
-      conn = connection;
-      conn.on('data', data => {
-        chatLog.innerHTML += `<div>Friend: ${data}</div>`;
+    peer.on('connection', incoming => {
+      conn = incoming;
+      conn.on('data', msg => {
+        addToChat("Friend: " + msg);
       });
     });
 
     function startCall() {
       const targetId = document.getElementById('target-id').value.trim();
-      if (!targetId) return alert("Enter a friend’s ID!");
+      if (!targetId) return alert("Enter ID!");
 
-      saveToRecent(targetId);
-      const call = peer.call(targetId, localStream);
-      call.on('stream', remoteStream => {
+      // Video
+      currentCall = peer.call(targetId, localStream);
+      currentCall.on('stream', remoteStream => {
         theirVideo.srcObject = remoteStream;
       });
 
+      // Chat
       conn = peer.connect(targetId);
       conn.on('open', () => {
-        conn.on('data', data => {
-          chatLog.innerHTML += `<div>Friend: ${data}</div>`;
+        conn.on('data', msg => {
+          addToChat("Friend: " + msg);
         });
       });
     }
@@ -85,48 +136,22 @@
       const input = document.getElementById('chat-input');
       const msg = input.value.trim();
       if (!msg) return;
-      chatLog.innerHTML += `<div><b>You:</b> ${msg}</div>`;
-      conn?.send(msg);
+      addToChat("You: " + msg);
+      if (conn && conn.open) conn.send(msg);
       input.value = '';
+    }
+
+    function addToChat(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      chatLog.appendChild(div);
+      chatLog.scrollTop = chatLog.scrollHeight;
     }
 
     function copyMyId() {
       navigator.clipboard.writeText(myIdDisplay.textContent);
-      alert("Copied your Skeep ID!");
+      alert("Copied!");
     }
-
-    function saveToRecent(id) {
-      let recent = JSON.parse(localStorage.getItem("skeepRecent") || "[]");
-      const found = recent.find(r => r.id === id);
-      if (found) {
-        if (found.clickedOnce) {
-          const newName = prompt("Rename this contact (just for you):", found.name || id);
-          if (newName) found.name = newName;
-        } else {
-          found.clickedOnce = true;
-        }
-      } else {
-        recent.push({ id, name: id, clickedOnce: true });
-      }
-      localStorage.setItem("skeepRecent", JSON.stringify(recent));
-      renderRecent();
-    }
-
-    function renderRecent() {
-      const list = document.getElementById("recent-list");
-      const recent = JSON.parse(localStorage.getItem("skeepRecent") || "[]");
-      list.innerHTML = "<h4>🕓 Recent Contacts</h4>";
-      recent.forEach(r => {
-        list.innerHTML += `<div onclick="callRecent('${r.id}')">👤 ${r.name || r.id}</div>`;
-      });
-    }
-
-    function callRecent(id) {
-      document.getElementById("target-id").value = id;
-      startCall();
-    }
-
-    window.onload = renderRecent;
   </script>
 </body>
 </html>
