@@ -8,20 +8,37 @@
 <body class="agreements-screen">
   <div class="agreements-box">
     <h1>Skeep Agreements</h1>
-    <p>Please agree to Skeep's Terms & Conditions to continue.</p>
+    <p>Please agree to Skeep's <a href="terms">terms</a> & Conditions to continue.</p>
     <label>
       <input type="checkbox" id="agree" />
       I agree to the Skeep Terms
     </label><br>
     <button onclick="goToSkeep()">Continue</button>
   </div>
+  <div class="agreements-box"> <label>
+    <h1>skeep agreements for pro</h1>
+    <p>Please agree to Skeep's <a href="terms">terms</a> & Conditions to continue</p>
+      <input type="checkbox" id="agree" />
+      I agree to the Skeep ultra max
+    </label><br>
+    <button onclick="goToskeepultra()">Continue</button></div>
+     
+  </div>
+
 
   <script>
     function goToSkeep() {
       if (document.getElementById("agree").checked) {
         window.location.href = "skeepskype.html";
       } else {
-        alert("❌ You must agree to continue.");
+        alert("❌ You must agree to both.");
+      }
+    }
+      function goToskeepultra() {
+      if (document.getElementById("agree").checked) {
+        window.location.href = "SKEEP2io.html";
+      } else {
+        alert("❌ You must agree to both.");
       }
     }
   </script>

@@ -2,78 +2,119 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Skeep Talk – Fixed</title>
+  <title>Skeep Talk – Supreme</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       display: flex;
       height: 100vh;
-      background: #f0f8ff;
-      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
     }
 
     .left {
-      width: 250px;
-      background: #0078d7;
-      color: white;
+      width: 280px;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
+      border-right: 2px solid #00c6ff33;
     }
 
     .right {
       flex: 1;
-      padding: 20px;  
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 15px;
     }
 
     video {
       width: 100%;
       max-height: 200px;
-      background: black;
-      border-radius: 10px;
+      background: #000;
+      border-radius: 16px;
+      box-shadow: 0 0 10px #00c6ff80;
     }
 
     #chat-log {
       flex: 1;
-      background: white;
+      background: rgba(255, 255, 255, 0.1);
       padding: 10px;
       overflow-y: auto;
-      border-radius: 6px;
+      border-radius: 12px;
+      border: 1px solid #00c6ff33;
     }
 
-    #chat-input {
+    #chat-input, #target-id {
       padding: 10px;
+      border: none;
+      border-radius: 8px;
       width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      outline: none;
     }
 
     button {
       padding: 10px;
-      background: #00aff0;
+      background: linear-gradient(to right, #00c6ff, #0078d7);
       color: white;
+      font-weight: bold;
       border: none;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 8px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #0078d7, #00c6ff);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #mute-btn, #mute-friend-btn {
+      background: transparent;
+      border: 2px solid #00c6ff;
+      color: #00c6ff;
+      font-size: 16px;
+    }
+
+    #mute-btn:hover, #mute-friend-btn:hover {
+      background: #00c6ff33;
     }
   </style>
 </head>
 <body>
   <div class="left">
-    <h3>Skeep ID:</h3>
+    <h3>Your Skeep ID:</h3>
     <div id="my-id">loading...</div>
-    <button onclick="copyMyId()">Copy ID</button>
-    <input id="target-id" placeholder="Friend ID" />
-    <button onclick="startCall()">Call</button>
+    <button onclick="copyMyId()">📋 Copy ID</button>
+    <input id="target-id" placeholder="Enter Friend's ID" />
+    <button onclick="startCall()">📞 Call</button>
   </div>
+
   <div class="right">
-    <video id="my-video" autoplay muted></video>
+    <div class="controls">
+      <video id="my-video" autoplay muted></video>
+      <button id="mute-btn" onclick="toggleMute()">🎙️ Mute Me</button>
+      <button id="mute-friend-btn" onclick="toggleFriendMute()">🔇 Mute Friend</button>
+    </div>
     <video id="their-video" autoplay></video>
     <div id="chat-log"></div>
-    <input id="chat-input" placeholder="Type here..." />
-    <button onclick="sendMessage()">Send</button>
+    <input id="chat-input" placeholder="Type a message..." />
+    <button onclick="sendMessage()">📨 Send</button>
   </div>
 
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
@@ -82,13 +123,16 @@
     const myVideo = document.getElementById('my-video');
     const theirVideo = document.getElementById('their-video');
     const chatLog = document.getElementById('chat-log');
+    const muteBtn = document.getElementById('mute-btn');
+    const muteFriendBtn = document.getElementById('mute-friend-btn');
 
     let peer = new Peer();
     let localStream;
     let conn;
     let currentCall;
+    let isMuted = false;
+    let isFriendMuted = false;
 
-    // Get mic + cam
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
       localStream = stream;
       myVideo.srcObject = stream;
@@ -103,6 +147,7 @@
       call.answer(localStream);
       call.on('stream', remoteStream => {
         theirVideo.srcObject = remoteStream;
+        theirVideo.muted = isFriendMuted;
       });
     });
 
@@ -115,15 +160,14 @@
 
     function startCall() {
       const targetId = document.getElementById('target-id').value.trim();
-      if (!targetId) return alert("Enter ID!");
+      if (!targetId) return alert("Enter a friend's ID first!");
 
-      // Video
       currentCall = peer.call(targetId, localStream);
       currentCall.on('stream', remoteStream => {
         theirVideo.srcObject = remoteStream;
+        theirVideo.muted = isFriendMuted;
       });
 
-      // Chat
       conn = peer.connect(targetId);
       conn.on('open', () => {
         conn.on('data', msg => {
@@ -150,7 +194,20 @@
 
     function copyMyId() {
       navigator.clipboard.writeText(myIdDisplay.textContent);
-      alert("Copied!");
+      alert("Your ID has been copied!");
+    }
+
+    function toggleMute() {
+      if (!localStream) return;
+      isMuted = !isMuted;
+      localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
+      muteBtn.textContent = isMuted ? '🔊 Unmute Me' : '🎙️ Mute Me';
+    }
+
+    function toggleFriendMute() {
+      isFriendMuted = !isFriendMuted;
+      theirVideo.muted = isFriendMuted;
+      muteFriendBtn.textContent = isFriendMuted ? '🔊 Unmute Friend' : '🔇 Mute Friend';
     }
   </script>
 </body>

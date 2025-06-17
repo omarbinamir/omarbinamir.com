@@ -1,0 +1,65 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  padding: 20px 50px;
+  text-align: center;
+}
+.logo {
+  font-size: 60px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.logo span:nth-child(1) { color: #4285F4; }
+.logo span:nth-child(2) { color: #DB4437; }
+.logo span:nth-child(3) { color: #F4B400; }
+.logo span:nth-child(4) { color: #4285F4; }
+.logo span:nth-child(5) { color: #0F9D58; }
+.logo span:nth-child(6) { color: #DB4437; }
+.logo.small { font-size: 30px; text-align: left; }
+
+input[type="text"] {
+  padding: 10px;
+  width: 300px;
+  font-size: 16px;
+}
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-left: 10px;
+}
+footer {
+  margin-top: 50px;
+}
+.ai-answer, .jigalb {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 30px auto;
+  width: 80%;
+  text-align: left;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.jigalb-post {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.jigalb-post img {
+  width: 200px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+.video-card {
+  display: inline-block;
+  width: 300px;
+  margin: 10px;
+}
+.video-card img {
+  width: 100%;
+  border-radius: 10px;
+}
