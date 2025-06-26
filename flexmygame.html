@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hirey • Post Job Requests</title>
+  <title>FlexMyGame • Game Dev Hiring</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #0f0f0f;
+      background: #111;
       color: #f2f2f2;
       margin: 0;
       padding: 2rem;
@@ -27,11 +27,11 @@
     }
 
     .form-box {
-      background: #1c1c1c;
+      background: #1b1b1b;
       padding: 1.5rem;
       border-radius: 1rem;
       margin-top: 1.5rem;
-      box-shadow: 0 0 10px rgba(0, 255, 208, 0.1);
+      box-shadow: 0 0 12px rgba(0, 255, 208, 0.1);
     }
 
     input, select, textarea {
@@ -47,7 +47,7 @@
     }
 
     button {
-      background-color: #00ffd0;
+      background: #00ffd0;
       color: #000;
       border: none;
       border-radius: 8px;
@@ -60,15 +60,15 @@
     }
 
     button:hover {
+      background: #00e6b0;
       transform: scale(1.03);
-      background-color: #00e6ba;
     }
 
     #buyPass {
       display: none;
       background-color: #ff00cc;
-      color: #fff;
-      border: 2px solid #fff;
+      color: white;
+      border: 2px solid white;
     }
 
     .card {
@@ -76,17 +76,17 @@
       padding: 1rem;
       border-radius: 0.75rem;
       margin-bottom: 1rem;
-      box-shadow: 0 0 6px rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 6px rgba(255,255,255,0.05);
     }
 
     .flex-tag {
       background: gold;
-      color: #000;
-      font-weight: 700;
-      padding: 0.3rem 0.6rem;
+      color: black;
+      font-weight: bold;
+      padding: 4px 8px;
       border-radius: 6px;
       display: inline-block;
-      margin-top: 0.5rem;
+      margin-top: 5px;
     }
 
     #displayArea {
@@ -101,34 +101,41 @@
     ul li {
       margin-bottom: 0.3rem;
     }
-
-    @media (max-width: 600px) {
-      body {
-        padding: 1rem;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-    }
   </style>
 </head>
 <body>
 
-  <h1>💼 Hirey</h1>
-  <p><strong>Free Users:</strong> 10 Post Limit — Buy the <span style="color:#00ffcc; font-weight:600">INFINITE FLEX PASS</span> 💎 ($10 USD)</p>
+  <h1>🎮 FlexMyGame</h1>
+  <p><strong>Free Users:</strong> 10 post limit — Unlock the <span style="color:#00ffcc; font-weight:600">INFINITE FLEX PASS</span> 💎 ($10 USD)</p>
   <p id="dailyPoints">🌟 DailyPoints: 0</p>
-  
+
   <button onclick="claimDailyPoints()">📅 Claim Daily Reward (+50)</button>
   <button onclick="rollFlexProfile()">🎲 Roll FlexProfile (100 DP)</button>
   <div id="rollResult" style="margin-top: 10px; font-weight: bold;"></div>
 
   <div class="form-box">
+    <label>Choose Game:</label>
+    <select id="game">
+      <option value="Roblox">Roblox</option>
+      <option value="Fortnite">Fortnite</option>
+      <option value="Minecraft">Minecraft</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label>Choose Role:</label>
+    <select id="role">
+      <option value="Scripter">Scripter</option>
+      <option value="Builder">Builder</option>
+      <option value="UI Designer">UI Designer</option>
+      <option value="Tester">Tester</option>
+      <option value="GFX Artist">GFX Artist</option>
+    </select>
+
     <label>Your Name or ID:</label>
-    <input type="text" id="username" placeholder="e.g. OmarDev99" />
+    <input type="text" id="username" placeholder="e.g. BuilderX99" />
 
     <label>Your Message:</label>
-    <textarea id="message" rows="3" placeholder="Describe who you're looking for..."></textarea>
+    <textarea id="message" rows="3" placeholder="Tell us what you need..."></textarea>
 
     <label>Select FlexProfile (optional):</label>
     <select id="selectedFlex"></select>
@@ -137,10 +144,10 @@
     <button id="buyPass" onclick="buyFlexPass()">💎 Buy INFINITE FLEX PASS ($10)</button>
   </div>
 
-  <button onclick="revealWall()">👀 Show Job Wall</button>
+  <button onclick="revealWall()">🧱 Show Job Wall</button>
 
   <div id="displayArea">
-    <h2>🧱 Job Wall</h2>
+    <h2>📋 Dev Job Wall</h2>
     <div id="wallContent"></div>
   </div>
 
@@ -148,7 +155,7 @@
   <ul id="inventoryList"></ul>
 
   <script>
-    let submissions = JSON.parse(localStorage.getItem("submissions")) || [];
+    let submissions = JSON.parse(localStorage.getItem("flexJobs")) || [];
     let hasFlexPass = localStorage.getItem("flexPass") === "true";
     let myFlexIDs = JSON.parse(localStorage.getItem("myFlexIDs")) || [];
 
@@ -215,22 +222,24 @@
     }
 
     function submitProfile() {
+      const game = document.getElementById("game").value;
+      const role = document.getElementById("role").value;
       const username = document.getElementById("username").value.trim();
       const message = document.getElementById("message").value.trim();
       const selectedFlex = document.getElementById("selectedFlex").value;
 
-      if (!username) return alert("⚠️ Please enter your name or ID.");
+      if (!username || !message) return alert("⚠️ Please fill in all fields.");
 
       if (!hasFlexPass && myFlexIDs.length >= 10) {
         document.getElementById("buyPass").style.display = "inline-block";
-        return alert("🚫 Free limit reached. Buy Infinite Flex Pass.");
+        return alert("🚫 Free post limit reached.");
       }
 
       const id = Date.now();
-      const profile = { id, username, message, flex: selectedFlex };
+      const profile = { id, game, role, username, message, flex: selectedFlex };
       submissions.push(profile);
       myFlexIDs.push(id);
-      localStorage.setItem("submissions", JSON.stringify(submissions));
+      localStorage.setItem("flexJobs", JSON.stringify(submissions));
       localStorage.setItem("myFlexIDs", JSON.stringify(myFlexIDs));
       localStorage.setItem("activeFlex", selectedFlex);
       revealWall();
@@ -242,12 +251,14 @@
       wall.innerHTML = "";
 
       if (submissions.length === 0) {
-        wall.innerHTML = "<p>No posts yet.</p>";
+        wall.innerHTML = "<p>No job posts yet.</p>";
       } else {
         submissions.forEach(p => {
           const card = document.createElement("div");
           card.className = "card";
           card.innerHTML = `
+            <strong>🎮 ${p.game}</strong><br>
+            <strong>🧑‍💻 Role:</strong> ${p.role}<br>
             <strong>Name:</strong> ${p.username}<br>
             <em>💬 ${p.message}</em><br>
             ${p.flex ? `<span class="flex-tag">${p.flex}</span>` : ""}
@@ -263,10 +274,9 @@
       hasFlexPass = true;
       localStorage.setItem("flexPass", "true");
       document.getElementById("buyPass").style.display = "none";
-      alert("💎 Flex Pass activated! (Pay $10 USD in real life!)");
+      alert("💎 Flex Pass Activated! (Pay $10 USD in real life)");
     }
 
-    // Init
     updatePointsDisplay();
     updateInventory();
   </script>
