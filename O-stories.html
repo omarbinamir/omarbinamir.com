@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>O-Stories</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #a0eaff, #d9faff);
+      color: #333;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    h1 {
+      text-align: center;
+      font-size: 3em;
+      background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 30px;
+    }
+    .story-link {
+      display: block;
+      padding: 15px;
+      margin: 10px 0;
+      background: linear-gradient(90deg, #ffecd2, #fcb69f);
+      border: 2px solid #4fc3f7;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .story-link:hover {
+      background: linear-gradient(90deg, #fcb69f, #ffecd2);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(79, 195, 247, 0.7);
+    }
+    #story-view {
+      background: #fff;
+      padding: 20px;
+      border: 3px solid #4fc3f7;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(79, 195, 247, 0.5);
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #4fc3f7;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #29b6f6;
+    }
+  </style>
+</head>
+<body>
+  <h1> O-Stories </h1>
+  <div id="story-list"></div>
+  <div id="story-view" style="display:none;">
+    <h2 id="story-title"></h2>
+    <p id="story-content"></p>
+    <button onclick="showList()">← Back to stories</button>
+  </div>
+
+  <script>
+    const stories = [
+      {
+        id: 1,
+        title: "The Lost Key and the Hidden Door",
+        content: `Long ago in a village surrounded by thick forests, a boy named Arin found a mysterious key buried under an old oak tree.
+        The villagers spoke of a hidden door deep in the forest that led to another world. One moonlit night, Arin followed a trail 
+        of glowing mushrooms until he reached a giant stone door covered in ancient symbols. With trembling hands, he inserted the key...
+        and the door creaked open, revealing a land of floating islands and talking animals. His adventure had just begun.`
+      },
+      {
+        id: 2,
+        title: "Captain Zara and the Sky Pirates",
+        content: `Captain Zara sailed not the seas, but the skies in her mighty airship, *The Thunderwing*. Her crew of misfits 
+        and outcasts roamed the clouds, stealing treasure from evil lords who ruled the skies. One day, they heard of the 
+        Sky King's vault — filled with gold, jewels, and magical artifacts. Battling storm beasts and rival pirates, Zara 
+        reached the vault only to discover a powerful crystal that could control the winds. With it, she vowed to free 
+        the skies for all.`
+      },
+      {
+        id: 3,
+        title: "The Secret of Shadow Mountain",
+        content: `Shadow Mountain was said to be cursed — no one who climbed it ever returned. But Maya was determined 
+        to find her father who vanished there. Armed with only a map and her courage, she faced dark caves, ancient traps, 
+        and a guardian made of stone. At the summit, Maya discovered a hidden temple glowing with blue light. Inside, 
+        she found her father, trapped in a time spell. Using an ancient amulet, she broke the curse, and together they 
+        returned to the world below.`
+      },
+      {
+        id: 4,
+        title: "Robot Rex and the City of Circuits",
+        content: `In a future where cities were powered by giant computers, Robot Rex was a hero. When the City of Circuits 
+        was attacked by a virus that made machines go wild, Rex and his sidekick Byte had to journey to the Core Tower. 
+        They dodged rogue drones, crossed collapsing bridges, and finally reached the mainframe. With his laser screwdriver, 
+        Rex removed the virus, saving the city and becoming a legend among robots.`
+      },
+      {
+        id: 5,
+        title: "daily storie",
+        content: `Beneath the desert sands lay the Crystal Caverns, filled with gems that glowed like stars. Luna, a brave 
+        explorer, discovered the entrance hidden under an ancient statue. Inside, she encountered rivers of molten gold, 
+        giant scorpions, and walls that sang when touched. At the heart of the caverns was the Star Crystal, said to grant 
+        one wish. Luna wished for knowledge, and the crystals whispered secrets of the universe to her for the rest of her life.`
+      }
+    ];
+
+    function showList() {
+      document.getElementById('story-view').style.display = 'none';
+      document.getElementById('story-list').style.display = 'block';
+    }
+
+    function showStory(id) {
+      const story = stories.find(s => s.id === id);
+      if (story) {
+        document.getElementById('story-title').textContent = story.title;
+        document.getElementById('story-content').textContent = story.content;
+        document.getElementById('story-list').style.display = 'none';
+        document.getElementById('story-view').style.display = 'block';
+      }
+    }
+
+    function loadStories() {
+      const list = document.getElementById('story-list');
+      stories.forEach(story => {
+        const link = document.createElement('div');
+        link.textContent = story.title;
+        link.className = 'story-link';
+        link.onclick = () => showStory(story.id);
+        list.appendChild(link);
+      });
+    }
+
+    loadStories();
+  </script>
+</body>
+</html>

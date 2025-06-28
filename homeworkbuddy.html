@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HomeworkBuddy PRO</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>HomeworkBuddy PRO</h1>
+    <input type="file" id="imageInput" accept="image/*">
+    <textarea id="questionInput" placeholder="Or type your question here"></textarea>
+    <button onclick="submitQuestion()">Get Explanation</button>
+    <div id="result"></div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2/dist/tesseract.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

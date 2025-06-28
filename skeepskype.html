@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Skeep Talk – Fixed</title>
+  <title>Skeep Talk – Conference Mode (Fixed)</title>
   <style>
     body {
       margin: 0;
@@ -30,9 +30,15 @@
       gap: 10px;
     }
 
+    #videos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     video {
-      width: 100%;
-      max-height: 200px;
+      width: 200px;
+      height: 150px;
       background: black;
       border-radius: 10px;
     }
@@ -66,13 +72,14 @@
     <div id="my-id">loading...</div>
     <button onclick="copyMyId()">Copy ID</button>
     <input id="target-id" placeholder="Friend ID" />
-    <button onclick="startCall()">Call</button>
+    <button onclick="addParticipant()">Add Friend</button>
   </div>
   <div class="right">
-    <video id="my-video" autoplay muted></video>
-    <video id="their-video" autoplay></video>
+    <div id="videos">
+      <video id="my-video" autoplay muted></video>
+    </div>
     <div id="chat-log"></div>
-    <input id="chat-input" placeholder="Type here..." />
+    <input id="chat-input" placeholder="Type here..." onkeydown="if(event.key==='Enter') sendMessage()" />
     <button onclick="sendMessage()">Send</button>
   </div>
 
@@ -80,15 +87,14 @@
   <script>
     const myIdDisplay = document.getElementById('my-id');
     const myVideo = document.getElementById('my-video');
-    const theirVideo = document.getElementById('their-video');
+    const videosContainer = document.getElementById('videos');
     const chatLog = document.getElementById('chat-log');
 
     let peer = new Peer();
     let localStream;
-    let conn;
-    let currentCall;
+    let connectedIds = new Set();
+    let connections = [];
 
-    // Get mic + cam
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
       localStream = stream;
       myVideo.srcObject = stream;
@@ -99,32 +105,49 @@
     });
 
     peer.on('call', call => {
-      currentCall = call;
+      if (connectedIds.has(call.peer)) {
+        call.answer(localStream);
+        return;
+      }
+      connectedIds.add(call.peer);
       call.answer(localStream);
-      call.on('stream', remoteStream => {
-        theirVideo.srcObject = remoteStream;
-      });
+      setupCallStream(call);
+      connections.push(call);
     });
 
-    peer.on('connection', incoming => {
-      conn = incoming;
-      conn.on('data', msg => {
-        addToChat("Friend: " + msg);
-      });
+    peer.on('connection', conn => {
+      if (connectedIds.has(conn.peer)) return;
+      connectedIds.add(conn.peer);
+      setupConnection(conn);
+      connections.push(conn);
     });
 
-    function startCall() {
+    function addParticipant() {
       const targetId = document.getElementById('target-id').value.trim();
-      if (!targetId) return alert("Enter ID!");
+      if (!targetId) return alert("Enter a friend ID!");
+      if (connectedIds.has(targetId)) return alert("Already connected to this person!");
 
-      // Video
-      currentCall = peer.call(targetId, localStream);
-      currentCall.on('stream', remoteStream => {
-        theirVideo.srcObject = remoteStream;
+      connectedIds.add(targetId);
+
+      const call = peer.call(targetId, localStream);
+      setupCallStream(call);
+      connections.push(call);
+
+      const conn = peer.connect(targetId);
+      setupConnection(conn);
+      connections.push(conn);
+    }
+
+    function setupCallStream(call) {
+      call.on('stream', remoteStream => {
+        const vid = document.createElement('video');
+        vid.autoplay = true;
+        vid.srcObject = remoteStream;
+        videosContainer.appendChild(vid);
       });
+    }
 
-      // Chat
-      conn = peer.connect(targetId);
+    function setupConnection(conn) {
       conn.on('open', () => {
         conn.on('data', msg => {
           addToChat("Friend: " + msg);
@@ -137,7 +160,9 @@
       const msg = input.value.trim();
       if (!msg) return;
       addToChat("You: " + msg);
-      if (conn && conn.open) conn.send(msg);
+      connections.forEach(c => {
+        if (c.send) c.send(msg);
+      });
       input.value = '';
     }
 
