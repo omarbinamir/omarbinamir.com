@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Hub</title>
+  <style>
+    body { background: #111; color: #fff; font-family: Arial; padding: 20px; }
+    #admin-panel { display: none; }
+    .user { margin: 5px 0; }
+    button { margin-left: 10px; }
+  </style>
+  <!-- Firebase SDK (you'll replace with your Firebase project config) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h1>Admin Hub</h1>
+
+  <div id="login">
+    <input type="password" id="admin-pass" placeholder="Enter admin password">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="admin-panel">
+    <h2>Recent Users</h2>
+    <div id="users"></div>
+  </div>
+
+  <script>
+    const adminPassword = "SuperSecret123"; // Change this!
+
+    function login() {
+      const entered = document.getElementById("admin-pass").value;
+      if (entered === adminPassword) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("admin-panel").style.display = "block";
+        loadUsers();
+      } else {
+        alert("Wrong password");
+      }
+    }
+
+    // Firebase init (REPLACE with your own config)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function loadUsers() {
+      db.ref("users").once("value", snapshot => {
+        const users = snapshot.val();
+        const container = document.getElementById("users");
+        container.innerHTML = "";
+        for (let uid in users) {
+          const user = users[uid];
+          const el = document.createElement("div");
+          el.className = "user";
+          el.innerHTML = `
+            ${user.name || uid}
+            <button onclick="kickUser('${uid}')">Kick</button>
+            <button onclick="banUser('${uid}')">Ban</button>
+          `;
+          container.appendChild(el);
+        }
+      });
+    }
+
+    function kickUser(uid) {
+      db.ref(`users/${uid}/status`).set("kicked");
+      alert(`User ${uid} kicked`);
+    }
+
+    function banUser(uid) {
+      const reason = prompt("Enter ban message:");
+      db.ref(`users/${uid}`).update({
+        status: "banned",
+        banMessage: reason || "No reason provided"
+      });
+      alert(`User ${uid} banned with message: ${reason}`);
+    }
+  </script>
+</body>
+</html>
