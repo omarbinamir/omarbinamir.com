@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NBR.Days - No Break Rush Festival</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #ffefba, #ffffff);
+      overflow-x: hidden;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      color: #ff4081;
+      margin-top: 20px;
+    }
+    #bucks {
+      font-size: 1.2em;
+      background: #000;
+      color: #0f0;
+      padding: 10px 20px;
+      border-radius: 10px;
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+    .game-btn {
+      display: inline-block;
+      padding: 20px;
+      background: #ffa500;
+      margin: 20px;
+      border-radius: 20px;
+      font-size: 1.2em;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    .game-btn:hover {
+      transform: scale(1.05);
+    }
+    #gameModal, #secretModal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 90%;
+    }
+    .close-btn {
+      float: right;
+      cursor: pointer;
+      font-weight: bold;
+      color: #f00;
+    }
+    #secretBtn {
+      background: #673ab7;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 NBR.Days Festival 🎉</h1>
+  <div id="bucks">Octa-Bucks: 0</div>
+
+  <!-- Game Buttons -->
+  <div class="game-btn" onclick="startGame('tap')">🖱️ Turbo Tapper</div>
+  <div class="game-btn" onclick="startGame('catch')">🌟 SkyDrop Catcher</div>
+  <div class="game-btn" id="secretBtn" onclick="openSecret()">🎁 Secret Prize</div>
+
+  <!-- Game Modal -->
+  <div id="gameModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeGame()">✖</span>
+      <div id="gameContent"></div>
+    </div>
+  </div>
+
+  <!-- Secret Modal -->
+  <div id="secretModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="document.getElementById('secretModal').style.display='none'">✖</span>
+      <h2>🎁 Secret Prize</h2>
+      <p>You've earned a secret prize for collecting over 5000 Octa-Bucks!</p>
+      <p>Here's the button!</p>
+      <a href="SECRET-website.html" target="_blank" style="display:inline-block; padding:10px 20px; background:#4caf50; color:white; text-decoration:none; border-radius:8px;">Go to Secret Website</a>
+    </div>
+  </div>
+
+  <script>
+    let bucks = 0;
+    const updateBucks = () => {
+      document.getElementById('bucks').textContent = 'Octa-Bucks: ' + bucks;
+    };
+
+    function startGame(type) {
+      const modal = document.getElementById('gameModal');
+      const content = document.getElementById('gameContent');
+      modal.style.display = 'flex';
+      if (type === 'tap') {
+        content.innerHTML = `
+          <h2>Turbo Tapper</h2>
+          <p>Click as fast as you can in 5 seconds!</p>
+          <button id="tapBtn">TAP!</button>
+          <p id="tapScore">Score: 0</p>`;
+        let score = 0;
+        const btn = () => {
+          score++;
+          document.getElementById('tapScore').textContent = 'Score: ' + score;
+        };
+        setTimeout(() => {
+          document.getElementById('tapBtn').removeEventListener('click', btn);
+          const earned = score * 10;
+          bucks += earned;
+          updateBucks();
+          alert('You earned ' + earned + ' Octa-Bucks!');
+          closeGame();
+        }, 5000);
+        document.getElementById('tapBtn').addEventListener('click', btn);
+      } else if (type === 'catch') {
+        content.innerHTML = `
+          <h2>SkyDrop Catcher</h2>
+          <canvas id="catchGame" width="300" height="300" style="background:#eef"></canvas>`;
+        const canvas = document.getElementById('catchGame');
+        const ctx = canvas.getContext('2d');
+        let playerX = 135, stars = [], score = 0, interval;
+
+        document.onkeydown = e => {
+          if (e.key === "ArrowLeft") playerX -= 15;
+          if (e.key === "ArrowRight") playerX += 15;
+          playerX = Math.max(0, Math.min(playerX, 270));
+        };
+
+        const drop = () => {
+          ctx.clearRect(0, 0, 300, 300);
+          ctx.fillStyle = 'blue';
+          ctx.fillRect(playerX, 280, 30, 10);
+
+          for (let i = 0; i < 2; i++) {
+            if (Math.random() < 0.4) stars.push({ x: Math.random() * 290, y: 0 });
+          }
+
+          stars.forEach(star => {
+            star.y += 6;
+            ctx.fillStyle = 'gold';
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, 5, 0, 2 * Math.PI);
+            ctx.fill();
+
+            if (star.y > 270 && star.x > playerX && star.x < playerX + 30) {
+              score++;
+              star.y = 9999;
+            }
+          });
+
+          stars = stars.filter(s => s.y < 310);
+        };
+
+        interval = setInterval(drop, 60);
+        setTimeout(() => {
+          clearInterval(interval);
+          const earned = score * 10;
+          bucks += earned;
+          updateBucks();
+          alert('You caught ' + score + ' stars and earned ' + earned + ' Octa-Bucks!');
+          closeGame();
+        }, 20000);
+      }
+    }
+
+    function closeGame() {
+      document.getElementById('gameModal').style.display = 'none';
+      document.getElementById('gameContent').innerHTML = '';
+    }
+
+    function openSecret() {
+      if (bucks >= 5000) {
+        document.getElementById('secretModal').style.display = 'flex';
+      } else {
+        alert('You need 5000 Octa-Bucks to unlock the Secret Prize!');
+      }
+    }
+
+    updateBucks();
+  </script>
+</body>
+</html>
