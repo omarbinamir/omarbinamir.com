@@ -1,90 +1,118 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Hub</title>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard 🔧</title>
   <style>
-    body { background: #111; color: #fff; font-family: Arial; padding: 20px; }
-    #admin-panel { display: none; }
-    .user { margin: 5px 0; }
-    button { margin-left: 10px; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+      font-family: 'Orbitron', sans-serif;
+      color: #00ffff;
+      overflow-x: hidden;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    header {
+      padding: 20px;
+      text-align: center;
+      font-size: 32px;
+      background: #111;
+      border-bottom: 3px solid #00ffff;
+      text-shadow: 0 0 8px #00ffff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: rgba(0, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid #00ffff44;
+      box-shadow: 0 0 30px #00ffff55;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .site {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(0, 255, 255, 0.1);
+      border-left: 5px solid #00ffff;
+      transition: 0.3s;
+      animation: slideIn 0.5s ease-in-out;
+    }
+
+    .site:hover {
+      background: rgba(0, 255, 255, 0.2);
+      transform: scale(1.02);
+    }
+
+    .site h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .site p {
+      margin: 5px 0 0;
+      color: #aaa;
+      font-size: 16px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #444;
+      font-size: 14px;
+    }
   </style>
-  <!-- Firebase SDK (you'll replace with your Firebase project config) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
-  <h1>Admin Hub</h1>
 
-  <div id="login">
-    <input type="password" id="admin-pass" placeholder="Enter admin password">
-    <button onclick="login()">Login</button>
+  <header>🛠️ Admin Construction Dashboard</header>
+
+  <div class="container">
+    <div class="site">
+      <h2>modernart</h2>
+      <p>Status: Under Construction — Estimated Launch: August 2025</p>
+    </div>
+
+    <div class="site">
+      <h2>nbrdays</h2>
+      <p>Status: In Progress — Final polish being applied 🌟</p>
+    </div>
+
+    <div class="site">
+      <h2>nbr rushdays upgrade</h2>
+      <p>Status: Waiting for Firebase integration ⚙️</p>
+    </div>
+
+    <div class="site">
+      <h2>obasites</h2>
+      <p>Status: Compiler improvements underway 🧠</p>
+    </div>
+
+    <div class="site">
+      <h2>hirey</h2>
+      <p>hirey needs firebase 
+        <a href="hirey.html"><button style="background-color: #00ffff;">click</button></a>
+      </p>
+    </div>
   </div>
 
-  <div id="admin-panel">
-    <h2>Recent Users</h2>
-    <div id="users"></div>
-  </div>
+  <footer>This is a secure admin page. Only trusted devs can see this.</footer>
 
-  <script>
-    const adminPassword = "SuperSecret123"; // Change this!
-
-    function login() {
-      const entered = document.getElementById("admin-pass").value;
-      if (entered === adminPassword) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("admin-panel").style.display = "block";
-        loadUsers();
-      } else {
-        alert("Wrong password");
-      }
-    }
-
-    // Firebase init (REPLACE with your own config)
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    function loadUsers() {
-      db.ref("users").once("value", snapshot => {
-        const users = snapshot.val();
-        const container = document.getElementById("users");
-        container.innerHTML = "";
-        for (let uid in users) {
-          const user = users[uid];
-          const el = document.createElement("div");
-          el.className = "user";
-          el.innerHTML = `
-            ${user.name || uid}
-            <button onclick="kickUser('${uid}')">Kick</button>
-            <button onclick="banUser('${uid}')">Ban</button>
-          `;
-          container.appendChild(el);
-        }
-      });
-    }
-
-    function kickUser(uid) {
-      db.ref(`users/${uid}/status`).set("kicked");
-      alert(`User ${uid} kicked`);
-    }
-
-    function banUser(uid) {
-      const reason = prompt("Enter ban message:");
-      db.ref(`users/${uid}`).update({
-        status: "banned",
-        banMessage: reason || "No reason provided"
-      });
-      alert(`User ${uid} banned with message: ${reason}`);
-    }
-  </script>
 </body>
 </html>

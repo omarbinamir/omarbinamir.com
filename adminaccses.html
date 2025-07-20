@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Access Panel 🚀</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(ellipse at center, #0f2027, #203a43, #2c5364);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Orbitron', sans-serif;
+      color: #00ffcc;
+      overflow: hidden;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    .panel {
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid #00ffcc;
+      box-shadow: 0 0 25px #00ffcc;
+      padding: 40px;
+      border-radius: 15px;
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    .panel h1 {
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+
+    input[type="password"] {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #000;
+      color: #0f0;
+      border: 2px solid #0f0;
+      outline: none;
+      font-size: 18px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 25px;
+      background: #00ffcc;
+      border: none;
+      border-radius: 5px;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00ffee;
+      transform: scale(1.05);
+    }
+
+    .access-granted {
+      display: none;
+      margin-top: 25px;
+      font-size: 18px;
+    }
+
+    .access-granted a {
+      color: #0ff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 20px #00ffcc; }
+      50% { box-shadow: 0 0 40px #00ffcc; }
+      100% { box-shadow: 0 0 20px #00ffcc; }
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>🔒 Admin Access</h1>
+    <input type="password" id="adminPass" placeholder="Enter Admin Code" />
+    <br />
+    <button onclick="checkPassword()">Unlock</button>
+
+    <div class="access-granted" id="accessGranted">
+      ✅ Access Granted!<br />
+      <a href="ADMIN.html">Go to Admin Panel</a>
+    </div>
+  </div>
+
+  <script>
+    function checkPassword() {
+      const pass = document.getElementById("adminPass").value;
+      if (pass === "1000") {
+        document.getElementById("accessGranted").style.display = "block";
+      } else {
+        alert("Access Denied ");
+      }
+    }
+  </script>
+</body>
+</html>
