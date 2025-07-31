@@ -1,289 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>obalab Videos</title>
-<style>
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #101820, #203040);
-    color: #4fc3f7;
-    overflow-x: hidden;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>obalog</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      color: #ffffff;
+      padding: 30px;
+      text-align: center;
+    }
 
-  header {
-    padding: 1rem 2rem;
-    background: #0b1620;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+    h1 {
+      font-size: 2.8em;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ffd5;
+    }
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+    #log-container {
+      max-width: 600px;
+      margin: 0 auto 50px;
+    }
 
-  .molecule {
-    position: relative;
-    width: 60px;
-    height: 60px;
-  }
+    .log-entry {
+      background: #1e1e2f;
+      margin: 10px 0;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px #00ffd555;
+      transition: transform 0.3s ease, box-shadow 0.3s;
+    }
 
-  .circle {
-    width: 16px;
-    height: 16px;
-    background: #4fc3f7;
-    border-radius: 50%;
-    position: absolute;
-  }
+    .log-entry:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 18px #00ffd5aa;
+    }
 
-  .circle:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
-  .circle:nth-child(2) { bottom: 0; left: 50%; transform: translateX(-50%); }
-  .circle:nth-child(3) { top: 50%; left: 0; transform: translateY(-50%); }
-  .circle:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }
+    .contact-form {
+      background: #141428;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 0 20px #0007;
+    }
 
-  .line {
-    position: absolute;
-    background: #4fc3f7;
-    height: 2px;
-    width: 40px;
-    top: 50%;
-    left: 50%;
-    transform-origin: center;
-  }
+    .contact-form h2 {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: #00ffd5;
+    }
 
-  .line1 { transform: translate(-50%, -50%) rotate(0deg); }
-  .line2 { transform: translate(-50%, -50%) rotate(60deg); }
-  .line3 { transform: translate(-50%, -50%) rotate(-60deg); }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: none;
+      font-size: 1em;
+      outline: none;
+      background: #1e1e2f;
+      color: white;
+    }
 
-  .logo-text {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #4fc3f7;
-    letter-spacing: 1px;
-    user-select: none;
-  }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: 2px solid #00ffd5;
+      background-color: #2b2b44;
+    }
 
-  main {
-    padding: 2rem 3rem;
-    max-width: 900px;
-    margin: 2rem auto;
-  }
+    .send-btn {
+      background-color: #ff4b2b;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
 
-  footer {
-    text-align: center;
-    padding: 1rem;
-    background: #0b1620;
-    font-size: 0.9rem;
-    color: #315f9c;
-  }
+    .send-btn:hover {
+      background-color: #ff3415;
+    }
 
-  .post-video-container {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-  }
-
-  .post-video-container button {
-    background: linear-gradient(135deg, #4fc3f7, #1b8ed9);
-    color: white;
-    border: none;
-    padding: 0.85rem 2.2rem;
-    border-radius: 30px;
-    font-weight: 700;
-    font-size: 1.7rem;
-    cursor: pointer;
-    box-shadow: 0 8px 25px rgba(79, 195, 247, 0.8);
-    letter-spacing: 0.1em;
-    user-select: none;
-    transition: box-shadow 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 70px;
-    height: 70px;
-    animation: slideDown 3s ease-in-out infinite;
-  }
-
-  .post-video-container button:hover {
-    box-shadow: 0 12px 35px rgba(31, 105, 165, 0.9);
-  }
-
-  @keyframes slideDown {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(15px); }
-    100% { transform: translateY(0); }
-  }
-
-  #facts-tricks {
-    margin-top: 4rem;
-  }
-
-  h4 {
-    font-weight: 600;
-    font-size: 1.3rem;
-    line-height: 1.4;
-    white-space: nowrap;
-    overflow: hidden;
-    border-right: 0.15em solid #4fc3f7;
-    animation: typing 4s steps(40, end), blink-caret 0.75s step-end infinite;
-    max-width: 100%;
-    margin-bottom: 1rem;
-  }
-
-  @keyframes typing {
-    from { width: 0 }
-    to { width: 100% }
-  }
-
-  @keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: #4fc3f7 }
-  }
-
-  /* Sign Up Section */
-  #signup-section {
-    margin-top: 5rem;
-    padding: 2rem;
-    background: rgba(79, 195, 247, 0.1);
-    border-radius: 10px;
-  }
-
-  #signup-section h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: #74b9ff;
-  }
-
-  #signup-form {
-    display: flex;
-    flex-direction: column;
-    max-width: 400px;
-  }
-
-  #signup-form label {
-    margin-bottom: 0.4rem;
-    font-weight: 600;
-  }
-
-  #signup-form input {
-    padding: 0.5rem 1rem;
-    margin-bottom: 1.2rem;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-
-  #signup-form button {
-    background: linear-gradient(135deg, #4fc3f7, #1b8ed9);
-    color: white;
-    border: none;
-    padding: 0.75rem;
-    border-radius: 25px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: 0 8px 20px rgba(79, 195, 247, 0.8);
-    transition: box-shadow 0.3s ease;
-  }
-
-  #signup-form button:hover {
-    box-shadow: 0 12px 30px rgba(31, 105, 165, 0.9);
-  }
-
-  /* Owner credit */
-  #owner-credit {
-    margin-top: 3rem;
-    font-style: italic;
-    font-weight: 600;
-    color: #74b9ff;
-    text-align: center;
-  }
-
-</style>
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.2em;
+      }
+      .log-entry,
+      .contact-form {
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <div class="molecule">
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="line line1"></div>
-      <div class="line line2"></div>
-      <div class="line line3"></div>
-    </div>
-    <span class="logo-text">obalab</span>
+  <h1>🔐 Owner Action Log</h1>
+
+  <div id="log-container">
+    <div class="log-entry">🛠️ </div>
+    <div class="log-entry">🔒 </div>
+    <div class="log-entry">🚀 </div>
   </div>
-</header>
 
-<main>
-  <section id="facts-tricks">
-    <h4>Fact 1: obalab runs on a secure, blazing fast cloud platform to ensure zero downtime.</h4>
-    <h4>Fact 2: We optimize video streaming to save your bandwidth and keep it smooth.</h4>
-    <h4>Fact 3: obalab supports multiple video formats with no branding interruptions.</h4>
-    <h4>Fact 4: Search functionality is powered by AI to deliver accurate results instantly.</h4>
-    <h4>Fact 5: Keyboard shortcuts make navigation easy and accessible for all users.</h4>
-    <h4>Fact 6: We use state-of-the-art encryption to protect your data and privacy.</h4>
-    <h4>Fact 7: obalab is designed for mobile-first with responsive layouts across all devices.</h4>
-    <h4>Fact 8: Our video player is customizable and supports fullscreen mode seamlessly.</h4>
-    <h4>Fact 9: We integrate user feedback to constantly improve the platform.</h4>
-    <h4>Fact 10: obalab's team is dedicated to fast feature updates and bug fixes.</h4>
-    <h4>Trick 1: Use the plus button to smoothly jump to this facts & tricks section.</h4>
-    <h4>Trick 2: Try typing keywords in the search bar to instantly filter videos.</h4>
-    <h4>Trick 3: Use Tab and arrow keys to quickly focus and preview videos.</h4>
-    <h4>Trick 4: Hover over video cards for quick info without clicking.</h4>
-    <h4>Trick 5: Sign up below to get updates on new features and announcements!</h4>
-  </section>
-
-  <section id="signup-section">
-    <h2>Sign Up for obalab</h2>
-    <form id="signup-form">
-      <label for="name">Full Name</label>
-      <input type="text" id="name" name="name" placeholder="Your full name" required />
-
-      <label for="email">Email Address</label>
-      <input type="email" id="email" name="email" placeholder="your.email@example.com" required />
-
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="Create a password" required />
-
-      <button type="submit">Create Account</button>
+  <div class="contact-form">
+    <h2>📨 Send a Message</h2>
+    <form action="https://formsubmit.co/oforomarbinamir@gmail.com" method="POST">
+      <input type="text" name="name" placeholder="Your name" required><br>
+      <input type="email" name="email" placeholder="Your email" required><br>
+      <textarea name="message" rows="5" placeholder="Type your message to report here..." required></textarea><br>
+      <button class="send-btn" type="submit">Send to Omar</button>
     </form>
-  </section>
-
-  <div id="owner-credit">
-    Owned and operated by Omarbinamir © 2025
   </div>
-</main>
-
-<footer>
-  &copy; 2025 obalab — All rights reserved.
-</footer>
-
-<div class="post-video-container">
-  <button id="postVideoBtn" aria-label="Go to feedback section">➕</button>
-</div>
-
-<script>
-  document.getElementById('postVideoBtn').addEventListener('click', () => {
-    document.getElementById('facts-tricks').scrollIntoView({ behavior: 'smooth' });
-  });
-
-  // Just prevent actual form submission for demo
-  document.getElementById('signup-form').addEventListener('submit', e => {
-    e.preventDefault();
-    alert('Thanks for signing up, ' + e.target.name.value + '! (Demo only)');
-  });
-</script>
 
 </body>
 </html>
