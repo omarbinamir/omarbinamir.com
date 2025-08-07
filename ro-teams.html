@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ro-Team | Roblox YouTube Squad</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0a0a0a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header {
+      background: linear-gradient(to right, #ff0000, #990000);
+      padding: 25px 10px;
+      border-bottom: 3px solid #ff2222;
+      box-shadow: 0 0 20px #ff000055;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 3.2em;
+      margin: 0;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px #ff4444;
+    }
+
+    p.tagline {
+      font-size: 1.3em;
+      color: #ffbbbb;
+      margin-top: 5px;
+    }
+
+    main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 30px;
+      gap: 20px;
+    }
+
+    .friend-card {
+      background-color: #1a0000;
+      border: 2px solid #ff3333;
+      border-radius: 15px;
+      padding: 20px;
+      width: 260px;
+      transition: transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 0 10px #ff000033;
+    }
+
+    .friend-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #ff0000aa;
+    }
+
+    .friend-card h2 {
+      color: #ff5555;
+      margin-bottom: 10px;
+      font-size: 1.5em;
+    }
+
+    .friend-card p {
+      color: #ffaaaa;
+      font-size: 0.95em;
+      margin-bottom: 15px;
+    }
+
+    .friend-card a {
+      background-color: #ff2222;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+      box-shadow: 0 0 10px #ff000088;
+      transition: background-color 0.2s;
+    }
+
+    .friend-card a:hover {
+      background-color: #cc0000;
+    }
+
+    footer {
+      margin-top: 30px;
+      color: #ff7777;
+      font-size: 0.9em;
+      padding: 15px;
+      border-top: 2px solid #660000;
+      background-color: #110000;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🧱 Ro-Team</h1>
+    <p class="tagline">Support our Roblox squad and their YouTube channels!</p>
+  </header>
+
+  <main id="team-container">
+    <!-- Cards will be added from script -->
+  </main>
+
+  <footer>
+    <p>🔥 Made by Ro-Team | Powered by friendship and epicness 🔥</p>
+  </footer>
+
+  <script>
+    // ✅ YOUR REAL TEAM MEMBERS BELOW
+    const teamMembers = [
+      {
+        name: "mokroblox",
+        youtube: "https://youtube.com/@themokrobloxian-6",  
+        description: "Amazing Roblox videos !"
+      },
+      {
+        name: "epicshiftgames",
+        youtube: "https://youtube.com/@epicshift_plays",
+        description: "Funny memes and epic gameplays!"
+      }
+    ];
+
+    const container = document.getElementById("team-container");
+
+    teamMembers.forEach(member => {
+      const card = document.createElement("div");
+      card.className = "friend-card";
+      card.innerHTML = `
+        <h2>${member.name}</h2>
+        <p>${member.description}</p>
+        <a href="${member.youtube}" target="_blank">🎥 Watch on YouTube</a>
+      `;
+      container.appendChild(card);
+    });
+  </script>
+</body>
+</html>
