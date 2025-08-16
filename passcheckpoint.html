@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CheckPoint - Free Trial</title>
+<style>
+body { font-family: Arial; background: #1a1a1a; color: #fff; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; padding: 20px; }
+.container { background: #2c2c2c; padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 0 20px #000; }
+h1 { color: #00ffcc; margin-bottom: 10px; text-align: center; }
+#timer { text-align: center; font-size: 20px; margin-bottom: 20px; color: #ff6666; }
+#taskInput { width: calc(100% - 100px); padding: 10px; border-radius: 6px; border: none; margin-right: 5px; }
+#addBtn { padding: 10px 15px; border: none; border-radius: 6px; background: #00ffcc; color: #000; cursor: pointer; }
+ul { list-style: none; padding: 0; margin-top: 20px; }
+li { background: #1a1a1a; padding: 10px; margin-bottom: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+.buttons { display: flex; gap: 5px; }
+button.toggleBtn { background: #00ff66; border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-weight: bold; color: #000; }
+button.removeBtn { background: #ff4d4d; border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; color: #fff; }
+#commandPanel { background: #111; padding: 15px; border-radius: 10px; margin-top: 20px; display: none; }
+#commandPanel h2 { color: #ffcc00; margin-bottom: 10px; }
+#commandInput { width: calc(100% - 80px); padding: 5px; border-radius: 6px; border: none; margin-right: 5px; }
+#runCommand { padding: 5px 10px; border: none; border-radius: 6px; background: #ffcc00; color: #000; cursor: pointer; }
+#commandOutput { margin-top: 10px; color: #0f0; font-family: monospace; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>CheckPoint Free Trial</h1>
+<div id="timer">Loading...</div>
+<div>
+<input type="text" id="taskInput" placeholder="Enter a task..." maxlength="100">
+<button id="addBtn">Add</button>
+</div>
+<ul id="taskList"></ul>
+
+<!-- Secret Command Panel -->
+<div id="commandPanel">
+<h2>Secret Commands</h2>
+<input type="text" id="commandInput" placeholder="Enter command">
+<button id="runCommand">Run</button>
+<div id="commandOutput"></div>
+</div>
+</div>
+
+<script>
+// === TRIAL SYSTEM ===
+let trialLength = 14*24*60*60*1000;
+let trialStart = localStorage.getItem('checkpointTrialStart');
+if(!trialStart){localStorage.setItem('checkpointTrialStart',Date.now()); trialStart = Date.now();}
+function updateTimer(){
+  const now = Date.now();
+  const remaining = trialLength - (now-trialStart);
+  if(remaining<=0){window.location.href="https://omarbinamir.com/getbanned.html"; return;}
+  const d = Math.floor(remaining/(1000*60*60*24));
+  const h = Math.floor((remaining%(1000*60*60*24))/(1000*60*60));
+  const m = Math.floor((remaining%(1000*60*60))/(1000*60));
+  const s = Math.floor((remaining%(1000*60))/1000);
+  document.getElementById('timer').textContent = `${d}d ${h}h ${m}m ${s}s remaining`;
+}
+setInterval(updateTimer,1000);
+updateTimer();
+
+// === TASK SYSTEM ===
+const taskListEl = document.getElementById('taskList');
+const taskInput = document.getElementById('taskInput');
+const addBtn = document.getElementById('addBtn');
+let tasks = JSON.parse(localStorage.getItem('checkpointTasks'))||[];
+function renderTasks(){
+  taskListEl.innerHTML='';
+  tasks.forEach((task,index)=>{
+    const li = document.createElement('li');
+    li.textContent = task.text;
+    const buttons = document.createElement('div');
+    buttons.className='buttons';
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.textContent = task.status||'✅';
+    toggleBtn.className='toggleBtn';
+    toggleBtn.addEventListener('click',()=>{task.status=task.status==='✅'?'❌':'✅'; saveTasks(); renderTasks();});
+
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent='🗑️';
+    removeBtn.className='removeBtn';
+    removeBtn.addEventListener('click',()=>{tasks.splice(index,1); saveTasks(); renderTasks();});
+
+    buttons.appendChild(toggleBtn);
+    buttons.appendChild(removeBtn);
+    li.appendChild(buttons);
+    taskListEl.appendChild(li);
+  });
+}
+function saveTasks(){localStorage.setItem('checkpointTasks',JSON.stringify(tasks));}
+addBtn.addEventListener('click',()=>{
+  const text=taskInput.value.trim();
+  if(!text) return;
+  if(tasks.length>=100){alert('Max 100 tasks!'); return;}
+  tasks.push({text,status:'✅'});
+  taskInput.value=''; saveTasks(); renderTasks();
+});
+renderTasks();
+
+// === SECRET COMMANDS SYSTEM ===
+const allowedEmails=['123@gmail.com','muhammadamirbutt@gmail.com'];
+const commandPanel=document.getElementById('commandPanel');
+const commandInput=document.getElementById('commandInput');
+const runCommand=document.getElementById('runCommand');
+const commandOutput=document.getElementById('commandOutput');
+
+let userEmail=prompt("Enter your Gmail for special commands:");
+if(allowedEmails.includes(userEmail)){commandPanel.style.display='block';}
+
+// COMMAND HANDLER
+runCommand.addEventListener('click',()=>{
+  const cmd=commandInput.value.trim().toLowerCase();
+  let output='';
+
+  if(cmd.startsWith('set time to')){
+    const parts=cmd.split(' ');
+    const days=parseInt(parts[3]);
+    if(!isNaN(days)){
+      trialLength = days*24*60*60*1000;
+      localStorage.setItem('checkpointTrialStart',Date.now());
+      output=`Trial time set to ${days} days!`;
+      updateTimer();
+    }else output='Invalid number';
+  }
+  else if(cmd==='reset tasks'){
+    tasks=[];
+    saveTasks();
+    renderTasks();
+    output='All tasks reset!';
+  }
+  else if(cmd==='show tasks'){
+    output=tasks.map(t=>`${t.status} ${t.text}`).join('\n')||'No tasks';
+  }
+  else output='Unknown command';
+
+  commandOutput.textContent=output;
+});
+</script>
+</body>
+</html>

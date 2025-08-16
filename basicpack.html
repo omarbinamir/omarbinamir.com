@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CheckPoint - Basic Pack</title>
+<style>
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #111, #1a1a1a);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.light { background: #f0f0f0; color: #000; }
+
+h1 { color: #00ffcc; text-align: center; margin-bottom: 10px; }
+
+#timer {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #ffcc66;
+  font-style: italic;
+}
+
+.container {
+  background: #2c2c2c;
+  padding: 25px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 0 25px rgba(0,255,204,0.3);
+  margin-bottom: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.light .container { background: #fff; color: #000; }
+
+#taskInput {
+  width: calc(100% - 130px);
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin-right: 5px;
+  font-size: 16px;
+  background: #1a1a1a;
+  color: #fff;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.light #taskInput { background: #ddd; color: #000; }
+
+button {
+  padding: 12px 15px;
+  border: none;
+  border-radius: 8px;
+  background: #00ffcc;
+  color: #000;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s, background 0.2s;
+}
+
+button:hover { transform: scale(1.05); background: #00cc99; }
+
+ul { list-style: none; padding: 0; margin-top: 20px; }
+
+li {
+  background: #1a1a1a;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+body.light li { background: #eee; color: #000; }
+
+li:hover { background: #262626; }
+
+.buttons { display: flex; gap: 8px; }
+
+.toggleBtn { background: #00ff66; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-weight: bold; color: #000; transition: transform 0.2s; }
+.toggleBtn:hover { transform: scale(1.1); }
+
+.removeBtn { background: #ff4d4d; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; color: #fff; transition: transform 0.2s; }
+.removeBtn:hover { transform: scale(1.1); }
+
+/* Dashboard / real tools */
+.extra-tools {
+  width: 100%;
+  max-width: 500px;
+  background: #222;
+  border: 2px solid #00ffcc;
+  border-radius: 16px;
+  padding: 20px;
+  color: #ffcc66;
+  box-shadow: 0 0 20px #00ffcc50;
+  margin-top: 20px;
+}
+
+.extra-tools h2 { color: #00ffcc; margin-top: 0; text-align: center; }
+
+.dashboard-btn {
+  display: block;
+  width: 90%;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 10px;
+  background: #00ffcc;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dashboard-btn:hover { background: #00cc99; transform: scale(1.05); }
+
+.stats { text-align: center; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<h1>CheckPoint Basic Pack</h1>
+<div id="timer">⏳ Loading your 3-year access...</div>
+
+<div class="container">
+  <input type="text" id="taskInput" placeholder="Enter a task..." maxlength="500">
+  <button id="addBtn">Add Task</button>
+  <button id="downloadBtn">Download PDF</button>
+  <ul id="taskList"></ul>
+</div>
+
+<div class="extra-tools">
+  <h2>⚡ Dashboard & Tools</h2>
+
+  <button class="dashboard-btn" id="markAllComplete">Mark All Complete ✅</button>
+  <button class="dashboard-btn" id="clearCompleted">Clear Completed ❌</button>
+  <button class="dashboard-btn" id="toggleDarkMode">Toggle Dark Mode 🌙</button>
+
+  <div class="stats">
+    <p id="taskStats">0 tasks | 0 completed</p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// === 3-Year Timer ===
+const threeYears = 3*365*24*60*60*1000; 
+let startTime = localStorage.getItem('checkpointBasicStart');
+if(!startTime){ localStorage.setItem('checkpointBasicStart', Date.now()); startTime = Date.now(); }
+
+function updateTimer(){
+  const now = Date.now();
+  const remaining = threeYears - (now - startTime);
+  if(remaining <= 0){
+    document.getElementById('timer').textContent = '⏳ Your 3-year access has ended!';
+    return;
+  }
+  const days = Math.floor(remaining / (1000*60*60*24));
+  const hours = Math.floor((remaining % (1000*60*60*24)) / (1000*60*60));
+  const minutes = Math.floor((remaining % (1000*60*60)) / (1000*60));
+  const seconds = Math.floor((remaining % (1000*60)) / 1000);
+  document.getElementById('timer').textContent = `⏳ ${days}d ${hours}h ${minutes}m ${seconds}s left of 3-year access`;
+}
+setInterval(updateTimer, 1000);
+updateTimer();
+
+// === TASK SYSTEM ===
+const taskListEl = document.getElementById('taskList');
+const taskInput = document.getElementById('taskInput');
+const addBtn = document.getElementById('addBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+let tasks = JSON.parse(localStorage.getItem('checkpointBasicTasks')) || [];
+
+function renderTasks(){
+  taskListEl.innerHTML='';
+  tasks.forEach((task,index)=>{
+    const li = document.createElement('li'); li.textContent = task.text;
+    const buttons = document.createElement('div'); buttons.className='buttons';
+    const toggleBtn = document.createElement('button'); toggleBtn.textContent = task.status||'✅';
+    toggleBtn.className='toggleBtn';
+    toggleBtn.addEventListener('click', ()=>{ task.status = task.status==='✅'?'❌':'✅'; saveTasks(); renderTasks(); });
+    const removeBtn = document.createElement('button'); removeBtn.textContent='🗑️';
+    removeBtn.className='removeBtn';
+    removeBtn.addEventListener('click', ()=>{ tasks.splice(index,1); saveTasks(); renderTasks(); });
+    buttons.appendChild(toggleBtn); buttons.appendChild(removeBtn); li.appendChild(buttons);
+    taskListEl.appendChild(li);
+  });
+  updateStats();
+}
+
+function saveTasks(){ localStorage.setItem('checkpointBasicTasks', JSON.stringify(tasks)); updateStats(); }
+
+addBtn.addEventListener('click', ()=>{
+  const text = taskInput.value.trim(); if(!text) return;
+  tasks.push({text,status:'✅'}); taskInput.value=''; saveTasks(); renderTasks();
+});
+
+// PDF Download
+downloadBtn.addEventListener('click', ()=>{
+  if(tasks.length===0){ alert('No tasks to download!'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(16);
+  doc.text('CheckPoint Tasks',10,20);
+  tasks.forEach((t,i)=>{ doc.text(`${i+1}. [${t.status}] ${t.text}`,10,30+i*10); });
+  doc.save('CheckPoint_Tasks.pdf');
+});
+
+// === REAL TOOLS ===
+const markAllCompleteBtn = document.getElementById('markAllComplete');
+markAllCompleteBtn.addEventListener('click', ()=>{
+  tasks.forEach(t=>t.status='✅');
+  saveTasks(); renderTasks();
+});
+
+const clearCompletedBtn = document.getElementById('clearCompleted');
+clearCompletedBtn.addEventListener('click', ()=>{
+  tasks = tasks.filter(t=>t.status!=='✅');
+  saveTasks(); renderTasks();
+});
+
+const toggleDarkModeBtn = document.getElementById('toggleDarkMode');
+toggleDarkModeBtn.addEventListener('click', ()=>{
+  document.body.classList.toggle('light');
+});
+
+// === Task Stats ===
+function updateStats(){
+  const total = tasks.length;
+  const completed = tasks.filter(t=>t.status==='✅').length;
+  document.getElementById('taskStats').textContent = `${total} tasks | ${completed} completed`;
+}
+
+renderTasks();
+</script>
+
+</body>
+</html>
