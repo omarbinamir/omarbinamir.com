@@ -99,7 +99,6 @@ addBtn.addEventListener('click',()=>{
 });
 renderTasks();
 
-// === SECRET COMMANDS SYSTEM ===
 const allowedEmails=['123@gmail.com','muhammadamirbutt@gmail.com'];
 const commandPanel=document.getElementById('commandPanel');
 const commandInput=document.getElementById('commandInput');
@@ -109,12 +108,21 @@ const commandOutput=document.getElementById('commandOutput');
 let userEmail=prompt("Enter your Gmail for special commands:");
 if(allowedEmails.includes(userEmail)){commandPanel.style.display='block';}
 
-// COMMAND HANDLER
 runCommand.addEventListener('click',()=>{
   const cmd=commandInput.value.trim().toLowerCase();
   let output='';
 
-  if(cmd.startsWith('set time to')){
+  if(cmd.startsWith('
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  ')){
     const parts=cmd.split(' ');
     const days=parseInt(parts[3]);
     if(!isNaN(days)){

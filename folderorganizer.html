@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Photo/Video Folder Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .folder {
+      padding: 8px 12px;
+      margin: 6px 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      cursor: pointer;
+      width: fit-content;
+    }
+    .subfolders {
+      margin-left: 20px;
+      display: none;
+    }
+    .menu {
+      position: absolute;
+      background: #fff;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+    }
+    .menu button {
+      border: none;
+      background: none;
+      padding: 8px 12px;
+      text-align: left;
+      cursor: pointer;
+      width: 100%;
+    }
+    .menu button:hover {
+      background: #eee;
+    }
+    input.rename {
+      border: 1px solid #999;
+      padding: 4px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h2>📁 Photo & Video Folder Demo</h2>
+  
+  <div id="folder-container">
+    <div class="folder" data-name="Vacation">Vacation
+      <div class="subfolders">
+        <div class="folder" data-name="Beach">Beach</div>
+        <div class="folder" data-name="Mountains">Mountains</div>
+      </div>
+    </div>
+    <div class="folder" data-name="Family">Family</div>
+    <div class="folder" data-name="Memes">Memes</div>
+  </div>
+
+  <div id="menu" class="menu">
+    <button data-action="rename">✏️ Rename</button>
+    <button data-action="copy">📋 Copy</button>
+    <button data-action="paste">📂 Paste</button>
+    <button data-action="move">📦 Move</button>
+    <button data-action="delete">🗑️ Delete</button>
+  </div>
+
+  <script>
+    const menu = document.getElementById("menu");
+    const container = document.getElementById("folder-container");
+    let selectedFolder = null;
+    let clipboard = null;
+
+    function attachFolderEvents(folder) {
+      // Left click → menu
+      folder.addEventListener("click", (e) => {
+        e.stopPropagation();
+        selectedFolder = folder;
+        menu.style.display = "flex";
+        menu.style.left = e.pageX + "px";
+        menu.style.top = e.pageY + "px";
+      });
+
+      // Double click → toggle subfolders
+      folder.addEventListener("dblclick", (e) => {
+        e.stopPropagation();
+        let subs = folder.querySelector(".subfolders");
+        if (subs) {
+          subs.style.display = subs.style.display === "none" ? "block" : "none";
+        }
+      });
+    }
+
+    document.querySelectorAll(".folder").forEach(folder => {
+      attachFolderEvents(folder);
+    });
+
+    document.body.addEventListener("click", () => {
+      menu.style.display = "none";
+    });
+
+    menu.addEventListener("click", (e) => {
+      if (!selectedFolder) return;
+      const action = e.target.dataset.action;
+
+      if (action === "rename") {
+        let oldName = selectedFolder.childNodes[0].nodeValue.trim();
+        selectedFolder.childNodes[0].nodeValue = "";
+        let input = document.createElement("input");
+        input.className = "rename";
+        input.value = oldName;
+        selectedFolder.prepend(input);
+        input.focus();
+        input.addEventListener("blur", () => {
+          selectedFolder.childNodes[0].nodeValue = input.value + " ";
+          input.remove();
+        });
+      }
+
+      if (action === "delete") {
+        selectedFolder.remove();
+      }
+
+      if (action === "copy") {
+        clipboard = selectedFolder.cloneNode(true);
+        // Re-attach events to copied folder
+        clipboard.querySelectorAll(".folder").forEach(f => attachFolderEvents(f));
+        alert("Copied: " + selectedFolder.dataset.name);
+      }
+
+      if (action === "paste" && clipboard) {
+        let subs = selectedFolder.querySelector(".subfolders");
+        if (!subs) {
+          subs = document.createElement("div");
+          subs.className = "subfolders";
+          selectedFolder.appendChild(subs);
+        }
+        subs.appendChild(clipboard);
+        clipboard = null;
+      }
+
+      if (action === "move") {
+        alert("In full version → select a folder to move into.");
+      }
+
+      menu.style.display = "none";
+    });
+  </script>
+</body>
+</html>
