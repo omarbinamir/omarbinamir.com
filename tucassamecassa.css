@@ -1,0 +1,182 @@
+.obaa{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: rgb(255, 100, 100);
+    background-color:rgb(58, 0, 0) ;
+    border-radius: 6ric;
+    text-decoration: none;
+    padding-right: 2.8cm;
+    padding-left: 2.8cm;
+    text-align: center;
+}
+.omaristhebest{
+    font-size: large;
+    color: rgb(255, 255, 255);
+    background-color: rgb(153, 0, 0);
+    font-style :initial;
+    text-align: center;
+    font-family: fantasy;
+    border-radius: 2ric;
+    text-decoration: none;
+    color: black;
+}
+body {
+    background-color: rgb(117, 0, 0);
+    text-align: center;
+}
+.r{
+    font-size:large; 
+    color: rgb(255, 0, 0);
+    text-align: left; 
+    text-decoration: none;
+   font-family: sans-serif;
+   font-size-adjust: initial ;
+    
+}
+.oba{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: rgb(255, 100, 100);
+    background-color:rgb(58, 0, 0) ;
+    border-radius: 6ric;
+    text-decoration: none;
+    padding-right: 0.8cm;
+    padding-left: 0.8cm;
+    text-align: center;
+}
+
+.suparcool{
+    background-color: black;
+    color: aliceblue;
+    border-radius: 6ric;
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.SIGHNAPP {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  font-family: cursive;
+
+}
+@media (max-width:150px){
+    h1{
+    font-size: 10px;
+    }
+}
+@media (max-width:200px){
+    h1{
+     font-size: 30px;
+    }
+}
+.banner {
+  background: linear-gradient(90deg, #007bff, #00d4ff);
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  font-family: Arial, sans-serif;
+  height: 100px; 
+  text-align: center;
+  padding-left: 10cm;
+}
+
+.logo {
+  background: white;
+  color: #007bff;
+  font-size: 28px;
+  font-weight: 900;
+  padding: 10px 18px;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  flex-shrink: 0;
+}
+
+.scroll-vertical {
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  white-space: nowrap;
+  animation: slide-vertical 10s linear infinite;
+  display: inline-block;
+  text-decoration: none;
+}
+
+
+@keyframes slide-vertical {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #1c1f26, #2c313c);
+    color: white;
+    margin: 0;
+    padding: 20px;
+}
+
+.banner {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.scroll-vertical {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 5px 0;
+}
+
+/* BUTTON STYLE */
+button {
+    padding: 14px 40px;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(135deg, #4a6eff, #6c89ff);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+/* Hover effect for button */
+button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+    filter: brightness(1.2);
+}
+
+
+#result {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+#result a {
+    text-decoration: none;
+    color: #4a6eff;
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: rgba(74, 110, 255, 0.15);
+    transition: all 0.25s ease;
+    display: inline-block;
+}
+
+
+#result a:hover {
+    background: rgba(74, 110, 255, 0.3);
+    transform: translateY(-3px);
+    filter: brightness(1.2);
+}

@@ -1,0 +1,12 @@
+
+body{
+    background-color: #000;
+}
+.neon{
+    color: #39ff14;
+    font-size: 60px;
+    font-weight: bold;
+    text-shadow: 
+    0 0 50px #39ff14
+    ;
+}

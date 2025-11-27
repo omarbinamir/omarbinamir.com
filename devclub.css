@@ -1,0 +1,62 @@
+body{
+    background:#000 ;
+    font-family: bold;
+    color: gold;
+    margin:0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.neon-gold{
+    position: relative;
+    font-size: 60px;
+    font-weight: bold;
+    color: gold;
+    text-shadow:
+    0 0 30px gold
+    ;
+    display: inline-block;
+    overflow: visible;
+}
+
+.particle{
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: gold;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    animation: sparkle 2s infinite;
+}
+.particle:nth-child(1) { top:5%; left: 10%; animation: delay 0s; ;}
+.particle:nth-child(2) { top:15%; left: 25%; animation: delay 0.2s; ;}
+.particle:nth-child(3) { top:30%; left: 5%; animation: delay 0.4s; ;}
+.particle:nth-child(4) { top:40%; left: 50%; animation: delay 0.6s; ;}
+.particle:nth-child(5) { top:20%; left: 70%; animation: delay 0.8s; ;}
+.particle:nth-child(6) { top:60%; left: 20%; animation: delay 1s; ;}
+.particle:nth-child(7) { top:10%; left: 80%; animation: delay 1.2s; ;}
+.particle:nth-child(8) { top:35%; left: 30%; animation: delay 1.4s; ;}
+.particle:nth-child(9) { top:5%; left: 10%; animation: delay 1.6s; ;}
+.particle:nth-child(10) { top:5%; left: 10%; animation: delay 1.8s; ;}
+.particle:nth-child(11) { top:5%; left: 10%; animation: delay 2s; ;}
+.particle:nth-child(12) { top:5%; left: 10%; animation: delay 2.2s; ;}
+.particle:nth-child(13) { top:5%; left: 10%; animation: delay 2.4s; ;}
+.particle:nth-child(14) { top:5%; left: 10%; animation: delay 2.6s; ;}
+.particle:nth-child(15) { top:5%; left: 10%; animation: delay 2.8s; ;}
+.particle:nth-child(16) { top:5%; left: 10%; animation: delay 3s; ;}
+.particle:nth-child(17) { top:5%; left: 10%; animation: delay 3.2s; ;}
+.particle:nth-child(18) { top:5%; left: 10%; animation: delay 3.4s; ;}
+.particle:nth-child(19) { top:5%; left: 10%; animation: delay 3.6s; ;}
+.particle:nth-child(20) { top:5%; left: 10%; animation: delay 3.8s; ;}
+
+
+
+@keyframes sparkle {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.5); opacity: 1; }
+    100% { transform: scale(0); opacity: 0; }
+}
