@@ -1,38 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OBA Auth</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
 <body>
+  <!-- protected page: oba.html -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-  <!-- TOP RIGHT AUTH BAR -->
-  <div class="auth-bar">
-    <button class="auth-btn active" id="loginTab">Login</button>
-    <button class="auth-btn" id="signupTab">Sign up</button>
-  </div>
+const firebaseConfig = {
+  apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
+  authDomain: "obalabs-c56ab.firebaseapp.com",
+  projectId: "obalabs-c56ab",
+  appId: "1:415868024118:web:4ea58785b6a175c4fbef97"
+};
 
-  <!-- CENTER TITLE -->
-  <h2 id="neon-green">Login to OBA</h2>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-  <!-- GOOGLE BUTTON -->
-  <button id="google">
-    <span id="btn-text">
-      Continue with
-      <span class="google-text">
-        <span class="g-blue">G</span>
-        <span class="o-red">o</span>
-        <span class="o-yellow">o</span>
-        <span class="g-blue-2">g</span>
-        <span class="l-green">l</span>
-        <span class="e-red">e</span>
-      </span>
-    </span>
-    <span id="loader" class="loader hidden"></span>
-  </button>
+// check auth state
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    // not logged in → redirect to login page
+    window.location.href = "index.html";
+  }
+});
+</script>
 
-  <script type="module" src="app.js"></script>
 </body>
 </html>
