@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OBAtoons - Video Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #000;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #39ff14;
+      text-shadow: 0 0 10px #39ff14;
+    }
+
+    .search-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .search-bar {
+      width: 100%;
+      padding: 15px;
+      background: #2d2d2d;
+      border: 2px solid #39ff14;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .search-bar:focus {
+      outline: none;
+      box-shadow: 0 0 10px #39ff14;
+    }
+
+    .tabs {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid #39ff14;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      background: transparent;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .tab:hover {
+      background: #2d2d2d;
+    }
+
+    .tab.active {
+      background: #39ff14;
+      color: #000;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+    }
+
+    .shorts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .video-card {
+      background: #2d2d2d;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+
+    .video-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .video-thumbnail {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #1a1a1a;
+      position: relative;
+    }
+
+    .shorts-thumbnail {
+      width: 100%;
+      aspect-ratio: 9/16;
+      background: #1a1a1a;
+      position: relative;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-info {
+      padding: 15px;
+    }
+
+    .video-title {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: #39ff14;
+    }
+
+    .video-description {
+      font-size: 0.9rem;
+      color: #ccc;
+      line-height: 1.4;
+    }
+
+    .video-date {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 10px;
+    }
+
+    .playlist-card {
+      background: #2d2d2d;
+      border-radius: 10px;
+      padding: 20px;
+      transition: transform 0.3s;
+    }
+
+    .playlist-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .playlist-title {
+      font-size: 1.3rem;
+      color: #39ff14;
+      margin-bottom: 10px;
+    }
+
+    .playlist-count {
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+    }
+
+    .playlist-items {
+      list-style: none;
+    }
+
+    .playlist-items li {
+      padding: 8px 0;
+      border-bottom: 1px solid #1a1a1a;
+      color: #ccc;
+    }
+
+    .event-card {
+      background: #2d2d2d;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border-left: 5px solid #39ff14;
+    }
+
+    .event-title {
+      font-size: 1.5rem;
+      color: #39ff14;
+      margin-bottom: 10px;
+    }
+
+    .event-date {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 15px;
+    }
+
+    .event-description {
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .event-link {
+      display: inline-block;
+      background: #39ff14;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: transform 0.2s;
+    }
+
+    .event-link:hover {
+      transform: scale(1.05);
+    }
+
+    .no-content {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+      font-size: 1.2rem;
+    }
+
+    .upload-input {
+      display: none;
+    }
+
+    .review-card {
+      background: #2d2d2d;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 5px solid #39ff14;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .review-author {
+      font-size: 1.2rem;
+      color: #39ff14;
+      font-weight: bold;
+    }
+
+    .review-rating {
+      color: #ffd700;
+      font-size: 1.5rem;
+    }
+
+    .review-text {
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .review-date {
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    .upload-section {
+      background: #2d2d2d;
+      padding: 30px;
+      border-radius: 10px;
+      margin-bottom: 40px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #39ff14;
+      font-weight: bold;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      background: #1a1a1a;
+      border: 2px solid #39ff14;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .form-textarea {
+      width: 100%;
+      padding: 12px;
+      background: #1a1a1a;
+      border: 2px solid #39ff14;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 16px;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .submit-btn {
+      background: #39ff14;
+      color: #000;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .file-upload-btn {
+      background: #39ff14;
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .file-name {
+      color: #39ff14;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>OBAtoons</h1>
+    </div>
+  </header>
+
+  <div class="search-container">
+    <input type="text" class="search-bar" id="searchBar" placeholder="🔍 Search videos..." oninput="searchVideos()">
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showSection('videos')">Videos</button>
+    <button class="tab" onclick="showSection('shorts')">Shorts</button>
+    <button class="tab" onclick="showSection('playlists')">Playlists</button>
+    <button class="tab" onclick="showSection('events')">Live Events</button>
+    <button class="tab" onclick="showSection('reviews')">Reviews</button>
+    <button class="tab" onclick="showSection('community')">Community Videos</button>
+  </div>
+
+  <div class="container">
+    <div id="videos" class="section active">
+      <div class="videos-grid" id="videosGrid">
+        <div class="no-content">No videos yet.</div>
+      </div>
+    </div>
+
+    <div id="shorts" class="section">
+      <div class="shorts-grid" id="shortsGrid">
+        <div class="no-content">No shorts yet.</div>
+      </div>
+    </div>
+
+    <div id="playlists" class="section">
+      <div class="videos-grid" id="playlistsGrid">
+        <div class="no-content">No playlists yet.</div>
+      </div>
+    </div>
+
+    <div id="events" class="section">
+      <div id="eventsGrid">
+        <div class="no-content">No live events scheduled.</div>
+      </div>
+    </div>
+
+    <div id="reviews" class="section">
+      <div id="reviewsGrid">
+        <div class="no-content">No reviews yet.</div>
+      </div>
+    </div>
+
+    <div id="community" class="section">
+      <div class="upload-section">
+        <h2 style="margin-bottom: 20px; color: #39ff14;">Upload Your Video</h2>
+        <form id="communityUploadForm" onsubmit="uploadCommunityVideo(event)">
+          <div class="form-group">
+            <label class="form-label" for="communityTitle">Video Title</label>
+            <input type="text" class="form-input" id="communityTitle" required placeholder="Enter video title">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="communityDescription">Description</label>
+            <textarea class="form-textarea" id="communityDescription" required placeholder="Describe your video about omarbinamir.com"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="communityAuthor">Your Name</label>
+            <input type="text" class="form-input" id="communityAuthor" required placeholder="Enter your name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Select Video File</label>
+            <label for="communityVideoFile" class="file-upload-btn">Choose Video File</label>
+            <input type="file" id="communityVideoFile" class="upload-input" accept="video/*" required onchange="showFileName()">
+            <div id="fileName" class="file-name"></div>
+          </div>
+          <button type="submit" class="submit-btn">Upload Video</button>
+        </form>
+      </div>
+      <div class="videos-grid" id="communityGrid">
+        <div class="no-content">No community videos yet. Be the first to upload!</div>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="videoUpload" class="upload-input" accept="video/*">
+  <input type="file" id="shortUpload" class="upload-input" accept="video/*">
+
+  <script>
+    // Data storage
+    let videos = [];
+    let shorts = [];
+    let playlists = [];
+    let events = [];
+    let reviews = [];
+    let communityVideos = [];
+    let allVideos = []; // For search functionality
+
+    // Tab switching
+    function showSection(sectionName) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      
+      document.getElementById(sectionName).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Add video with file upload
+    function addVideo(title, description, callback) {
+      const input = document.getElementById('videoUpload');
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const url = URL.createObjectURL(file);
+          videos.push({
+            id: Date.now(),
+            title: title,
+            videoUrl: url,
+            description: description,
+            date: new Date().toLocaleDateString()
+          });
+          renderVideos();
+          if (callback) callback();
+        }
+      };
+      input.click();
+    }
+
+    // Add short with file upload
+    function addShort(title, description, callback) {
+      const input = document.getElementById('shortUpload');
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const url = URL.createObjectURL(file);
+          shorts.push({
+            id: Date.now(),
+            title: title,
+            videoUrl: url,
+            description: description,
+            date: new Date().toLocaleDateString()
+          });
+          renderShorts();
+          if (callback) callback();
+        }
+      };
+      input.click();
+    }
+
+    // Add playlist programmatically
+    function addPlaylist(title, description, videoList) {
+      playlists.push({
+        id: Date.now(),
+        title: title,
+        description: description,
+        videos: videoList,
+        count: videoList.length
+      });
+      renderPlaylists();
+    }
+
+    // Add event programmatically
+    function addEvent(title, date, description, link) {
+      events.push({
+        id: Date.now(),
+        title: title,
+        date: date,
+        description: description,
+        link: link
+      });
+      renderEvents();
+    }
+
+    // Add review programmatically
+    function addReview(author, rating, text) {
+      reviews.push({
+        id: Date.now(),
+        author: author,
+        rating: rating,
+        text: text,
+        date: new Date().toLocaleDateString()
+      });
+      renderReviews();
+    }
+
+    // Show file name when selected
+    function showFileName() {
+      const fileInput = document.getElementById('communityVideoFile');
+      const fileName = document.getElementById('fileName');
+      if (fileInput.files.length > 0) {
+        fileName.textContent = `Selected: ${fileInput.files[0].name}`;
+      }
+    }
+
+    // Upload community video
+    async function uploadCommunityVideo(e) {
+      e.preventDefault();
+      
+      const title = document.getElementById('communityTitle').value;
+      const description = document.getElementById('communityDescription').value;
+      const author = document.getElementById('communityAuthor').value;
+      const fileInput = document.getElementById('communityVideoFile');
+      
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        
+        // Read file as base64
+        const reader = new FileReader();
+        reader.onload = async function(event) {
+          const base64Video = event.target.result;
+          
+          const newVideo = {
+            id: Date.now(),
+            title: title,
+            videoUrl: base64Video,
+            description: description,
+            author: author,
+            date: new Date().toLocaleDateString()
+          };
+          
+          communityVideos.push(newVideo);
+          
+          // Save to shared storage so everyone can see it
+          try {
+            await window.storage.set('community-videos', JSON.stringify(communityVideos), true);
+            renderCommunityVideos();
+            document.getElementById('communityUploadForm').reset();
+            document.getElementById('fileName').textContent = '';
+            alert('Video uploaded successfully and shared with everyone!');
+          } catch (error) {
+            console.error('Error saving video:', error);
+            alert('Error uploading video. Please try again.');
+          }
+        };
+        
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Search videos
+    function searchVideos() {
+      const query = document.getElementById('searchBar').value.toLowerCase();
+      allVideos = [...videos, ...shorts, ...communityVideos];
+      
+      if (query === '') {
+        renderVideos();
+        return;
+      }
+      
+      const filtered = allVideos.filter(v => 
+        v.title.toLowerCase().includes(query) || 
+        v.description.toLowerCase().includes(query)
+      );
+      
+      const grid = document.getElementById('videosGrid');
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="no-content">No videos found matching your search.</div>';
+        return;
+      }
+      
+      grid.innerHTML = filtered.map(video => `
+        <div class="video-card">
+          <div class="video-thumbnail">
+            <video controls>
+              <source src="${video.videoUrl}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="video-info">
+            <h3 class="video-title">${video.title}</h3>
+            <p class="video-description">${video.description}</p>
+            <p class="video-date">Posted on ${video.date}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render functions
+    function renderVideos() {
+      const grid = document.getElementById('videosGrid');
+      if (videos.length === 0) {
+        grid.innerHTML = '<div class="no-content">No videos yet.</div>';
+        return;
+      }
+      grid.innerHTML = videos.map(video => `
+        <div class="video-card">
+          <div class="video-thumbnail">
+            <video controls>
+              <source src="${video.videoUrl}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="video-info">
+            <h3 class="video-title">${video.title}</h3>
+            <p class="video-description">${video.description}</p>
+            <p class="video-date">Posted on ${video.date}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderShorts() {
+      const grid = document.getElementById('shortsGrid');
+      if (shorts.length === 0) {
+        grid.innerHTML = '<div class="no-content">No shorts yet.</div>';
+        return;
+      }
+      grid.innerHTML = shorts.map(short => `
+        <div class="video-card">
+          <div class="shorts-thumbnail">
+            <video controls>
+              <source src="${short.videoUrl}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="video-info">
+            <h3 class="video-title">${short.title}</h3>
+            <p class="video-description">${short.description}</p>
+            <p class="video-date">${short.date}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderPlaylists() {
+      const grid = document.getElementById('playlistsGrid');
+      if (playlists.length === 0) {
+        grid.innerHTML = '<div class="no-content">No playlists yet.</div>';
+        return;
+      }
+      grid.innerHTML = playlists.map(playlist => `
+        <div class="playlist-card">
+          <h3 class="playlist-title">${playlist.title}</h3>
+          <p class="playlist-count">${playlist.count} videos</p>
+          <p class="video-description">${playlist.description}</p>
+          <ul class="playlist-items">
+            ${playlist.videos.map(v => `<li>${v}</li>`).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    function renderEvents() {
+      const grid = document.getElementById('eventsGrid');
+      if (events.length === 0) {
+        grid.innerHTML = '<div class="no-content">No live events scheduled.</div>';
+        return;
+      }
+      grid.innerHTML = events.map(evt => `
+        <div class="event-card">
+          <h3 class="event-title">${evt.title}</h3>
+          <p class="event-date">📅 ${evt.date}</p>
+          <p class="event-description">${evt.description}</p>
+          <a href="${evt.link}" class="event-link" target="_blank">Join Event</a>
+        </div>
+      `).join('');
+    }
+
+    function renderReviews() {
+      const grid = document.getElementById('reviewsGrid');
+      if (reviews.length === 0) {
+        grid.innerHTML = '<div class="no-content">No reviews yet.</div>';
+        return;
+      }
+      grid.innerHTML = reviews.map(review => `
+        <div class="review-card">
+          <div class="review-header">
+            <span class="review-author">${review.author}</span>
+            <span class="review-rating">${'⭐'.repeat(review.rating)}</span>
+          </div>
+          <p class="review-text">${review.text}</p>
+          <p class="review-date">${review.date}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderCommunityVideos() {
+      const grid = document.getElementById('communityGrid');
+      if (communityVideos.length === 0) {
+        grid.innerHTML = '<div class="no-content">No community videos yet. Be the first to upload!</div>';
+        return;
+      }
+      grid.innerHTML = communityVideos.map(video => `
+        <div class="video-card">
+          <div class="video-thumbnail">
+            <video controls>
+              <source src="${video.videoUrl}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="video-info">
+            <h3 class="video-title">${video.title}</h3>
+            <p class="video-description">${video.description}</p>
+            <p class="video-date">By ${video.author} • ${video.date}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Add example videos
+    videos = [
+      {
+        id: 1,
+        title: "Welcome to OBAtoons",
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        description: "Introduction to omarbinamir.com and what we're all about!",
+        date: "December 10, 2025"
+      },
+      {
+        id: 2,
+        title: "Tutorial: Getting Started",
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+        description: "Learn the basics of omarbinamir.com in this comprehensive guide.",
+        date: "December 11, 2025"
+      },
+      {
+        id: 3,
+        title: "Behind the Scenes",
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        description: "A look at what goes on behind the scenes at omarbinamir.com",
+        date: "December 12, 2025"
+      },
+      {
+        id: 4,
+        title: "Top 10 Features",
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+        description: "Discover the top 10 features of omarbinamir.com that you need to know!",
+        date: "December 13, 2025"
+      },
+      {
+        id: 5,
+        title: "Community Spotlight",
+        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+        description: "Featuring amazing content from the omarbinamir.com community.",
+        date: "December 14, 2025"
+      }
+    ];
+
+    // Add example reviews
+    reviews = [
+      {
+        id: 1,
+        author: "Sarah Johnson",
+        rating: 5,
+        text: "OBAtoons is absolutely amazing! The content about omarbinamir.com is so well-produced and informative. I've learned so much!",
+        date: "December 10, 2025"
+      },
+      {
+        id: 2,
+        author: "Mike Chen",
+        rating: 5,
+        text: "Best video platform for omarbinamir.com content. The quality is top-notch and the community is super engaged!",
+        date: "December 11, 2025"
+      },
+      {
+        id: 3,
+        author: "Emily Rodriguez",
+        rating: 4,
+        text: "Great platform! Love the variety of content. The shorts section is my favorite. Keep up the awesome work!",
+        date: "December 12, 2025"
+      }
+    ];
+
+    // Load community videos from storage
+    async function loadCommunityVideos() {
+      try {
+        const result = await window.storage.get('community-videos', true);
+        if (result && result.value) {
+          communityVideos = JSON.parse(result.value);
+          renderCommunityVideos();
+        }
+      } catch (error) {
+        console.log('No community videos found yet');
+      }
+    }
+
+    // Initialize
+    renderVideos();
+    renderShorts();
+    renderPlaylists();
+    renderEvents();
+    renderReviews();
+    loadCommunityVideos();
+
+    // Example usage in console:
+    // addVideo("My Video", "Video about omarbinamir.com"); // This will open file picker
+    // addShort("Quick Short", "Short about omarbinamir.com"); // This will open file picker
+    // addPlaylist("Best Videos", "Collection of content", ["Video 1", "Video 2", "Video 3"]);
+    // addEvent("Live Q&A", "December 20, 2025 at 8 PM", "Join me for discussion", "https://youtube.com/live/xyz");
+    // addReview("John Doe", 5, "Amazing content about omarbinamir.com!");
+  </script>
+</body>
+</html>
