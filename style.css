@@ -1,49 +1,79 @@
-.neon-blue{
-    color: #a0f1ff;
-    font-size: 60px;
-    font-weight: bold;
-    text-shadow: 
-    0 0 50px #a0f1ff
-    ;
-}
+* { margin:0; padding:0; box-sizing:border-box; }
+
 body {
-    margin: 0;
-    padding: 0;
-    background: #f2f2f2;
-    font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #030303 0%, #39fff2 100%);
 }
 
-.road-container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 102cm;
+
+.auth-bar {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
 }
 
-.road-sign {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 0 25px rgba(0,0,0,0.15);
-    border: 6px solid #d9534f;
+.auth-btn {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: 0.25s;
 }
 
-.sign-icon {
-    font-size: 80px;
-    margin-bottom: 10px;
+.auth-btn.active {
+  background: #14ffeb;
+  color: black;
+  font-weight: bold;
 }
 
-h1 {
-    margin: 0;
-    font-size: 40px;
-    color: #d9534f;
+
+#neon-green {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #14ffeb;
+  text-shadow: 0 0 10px #14ffff, 0 0 20px #14ffeb;
+  margin-bottom: 40px;
 }
 
-p {
-    font-size: 18px;
-    margin-top: 10px;
-    color: #555;
+
+#google {
+  background: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
+
+.hidden { display: none; }
+
+.loader {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #ddd;
+  border-top: 3px solid #4285F4;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.g-blue { color:#4285F4; }
+.o-red { color:#EA4335; }
+.o-yellow { color:#FBBC05; }
+.g-blue-2 { color:#4285F4; }
+.l-green { color:#34A853; }
+.e-red { color:#EA4335; }
