@@ -20,5 +20,5 @@ function enterObaland() {
 
     welcomeScreen.classList.add('hidden');
     mainScreen.classList.add('show');
-    welcomeMsg.textContent = `Welcome, ${username}`;
+    welcomeMsg.textContent = `WELCOME, ${username}`;
 }
