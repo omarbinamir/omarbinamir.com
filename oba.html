@@ -1,51 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OBALAND</title>
-    <link rel="stylesheet" href="OMAAR.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OBALAND</title>
+  <link rel="stylesheet" href="OMAAR.css" />
 </head>
 <body>
 
-    <div class="floating-orb orb-1"></div>
-    <div class="floating-orb orb-2"></div>
+  <div class="floating-orb orb-1"></div>
+  <div class="floating-orb orb-2"></div>
 
-    <div class="container">
+  <div class="container">
+    <div class="main-screen">
+      <h1>OBALAND</h1>
 
- 
-        <div class="welcome-screen" id="welcomeScreen">
-            <h1>OBALAND</h1>
-            <p class="subtitle">OBALAND OR OBALABS</p>
+      <img id="profilePic" style="width:80px;border-radius:50%;display:none;" />
+      <p class="welcome-message" id="welcomeMsg"></p>
 
-            <div class="input-container">
-                <input
-                    type="text"
-                    id="usernameInput"
-                    placeholder="Enter your username..."
-                    maxlength="20"
-                />
-            </div>
+      <button id="logoutBtn">Logout</button>
 
-            <button id="enterBtn">ENTER</button>
+      <div class="featured-section">
+        <div class="featured-links">
+          <a href="omar" class="featured-link">ideallink</a>
+          <a href="omar" class="featured-link">pizza's inc</a>
+          <a href="omar" class="featured-link">sardard</a>
         </div>
-
-        <!-- Main Screen -->
-        <div class="main-screen" id="mainScreen">
-            <h1>OBALAND</h1>
-            <p class="welcome-message" id="welcomeMsg"></p>
-
-            <div class="featured-section">
-                <div class="featured-links">
-                    <a href="omar" class="featured-link">ideallink</a>
-                    <a href="omar" class="featured-link">pizza's inc</a>
-                    <a href="omar" class="featured-link">sardard</a>
-                </div>
-            </div>
-        </div>
-
+      </div>
     </div>
+  </div>
 
-    <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,112 @@
+/* CENTER EVERYTHING */
+body {
+    background: radial-gradient(circle at top, #0a0a0a, #000);
+    margin: 0;
+    font-family: "Orbitron", Arial, sans-serif;
+    color: #14ffeb;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* UI */
+.game-ui {
+    text-align: center;
+    z-index: 2;
+}
+
+/* FADE IN */
+.fade-in {
+    animation: fadeIn 1.5s ease forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* TITLE */
+.title-box {
+    border: 2px solid #14ffeb;
+    padding: 20px 30px;
+    box-shadow: 0 0 25px #14ffeb;
+    margin-bottom: 40px;
+}
+
+.title-box h1 {
+    margin: 0;
+    font-size: 3rem;
+    text-shadow: 0 0 20px #14ffeb;
+}
+
+/* GLITCH */
+.glitch {
+    animation: glitch 2.5s infinite;
+}
+@keyframes glitch {
+    0%,100% { transform: none; }
+    92% { transform: skewX(2deg); }
+    94% { transform: skewX(-2deg); }
+}
+
+/* MENU */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu button {
+    background: transparent;
+    border: 2px solid #14ffeb;
+    color: #14ffeb;
+    padding: 14px;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 0 0 12px #14ffeb;
+    transition: all 0.2s ease;
+}
+
+.menu button:hover,
+.menu button.active {
+    background: #14ffeb;
+    color: black;
+    box-shadow: 0 0 30px #14ffeb;
+    transform: translateX(12px);
+}
+
+/* STATUS */
+.status {
+    margin-top: 35px;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    opacity: 0.8;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background: #14ffeb;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    box-shadow: 0 0 10px #14ffeb;
+}
+
+/* SCANLINES */
+.scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 2px,
+        transparent 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+}

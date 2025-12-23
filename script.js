@@ -1,24 +1,34 @@
-const usernameInput = document.getElementById('usernameInput');
-const welcomeScreen = document.getElementById('welcomeScreen');
-const mainScreen = document.getElementById('mainScreen');
-const welcomeMsg = document.getElementById('welcomeMsg');
-const enterBtn = document.getElementById('enterBtn');
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-enterBtn.addEventListener('click', enterObaland);
+const firebaseConfig = {
+  // 🔴 PASTE YOUR FIREBASE CONFIG HERE
+};
 
-usernameInput.addEventListener('keypress', e => {
-    if (e.key === 'Enter') enterObaland();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Protect page + show user info
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById("welcomeMsg").innerText =
+      `Welcome, ${user.displayName}`;
+
+    const pic = document.getElementById("profilePic");
+    pic.src = user.photoURL;
+    pic.style.display = "block";
+  } else {
+    window.location.href = "index.html";
+  }
 });
 
-function enterObaland() {
-    const username = usernameInput.value.trim();
-
-    if (!username) {
-        usernameInput.placeholder = 'Please enter a username...';
-        return;
-    }
-
-    welcomeScreen.classList.add('hidden');
-    mainScreen.classList.add('show');
-    welcomeMsg.textContent = `WELCOME, ${username}`;
-}
+// Logout
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  signOut(auth).then(() => {
+    window.location.href = "index.html";
+  });
+});

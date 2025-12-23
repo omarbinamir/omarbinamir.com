@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevMastery | Video Tutorials</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f111a;
+            --bg-card: #1a1c29;
+            --bg-glass: rgba(26, 28, 41, 0.7);
+            --primary: #764ba2;
+            --accent-cyan: #00f2ff;
+            --accent-pink: #ff0055;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 242, 255, 0.05) 0%, transparent 20%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* --- Global Section Styling --- */
+        .section { display: none; animation: slideUp 0.5s ease; }
+        .section.active { display: block; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-header h2 { color: #fff; margin-bottom: 5px; font-size: 1.8em; }
+        .section-header p { color: var(--text-muted); margin-bottom: 30px; }
+
+        /* --- Hero Section (for Home) --- */
+        .home-hero {
+            text-align: center;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden; /* For potential background effects */
+        }
+
+        .home-hero h1 {
+            font-size: 3.8em;
+            font-weight: 800;
+            letter-spacing: -2px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+            line-height: 1.1;
+        }
+
+        .home-hero p {
+            font-size: 1.2em;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-cyan), var(--primary));
+            color: var(--bg-dark);
+            padding: 15px 35px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 242, 255, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 242, 255, 0.5);
+        }
+
+        /* --- Feature Grid --- */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+            padding: 0 40px; /* Add some padding on sides */
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .feature-card .icon {
+            font-size: 3em;
+            color: var(--accent-cyan);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5em;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+
+        /* --- Navigation --- */
+        .nav-wrapper {
+            display: flex;
+            justify-content: center;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            margin-bottom: 50px;
+        }
+
+        .nav-dock {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            border-radius: 12px;
+            display: inline-flex;
+            gap: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .nav-btn.active {
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+        }
+
+        /* --- Video Cards --- */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 30px;
+        }
+
+        .video-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        /* Mac Window Header */
+        .card-header {
+            background: #111;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        .window-dots { display: flex; gap: 6px; margin-right: auto; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+        .file-name { color: var(--text-muted); font-size: 12px; font-family: 'Fira Code'; }
+
+        /* The "Player" Area */
+        .video-thumbnail-wrapper {
+            position: relative;
+            background: #000;
+            padding: 20px;
+            min-height: 220px;
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        /* Overlay that simulates code editor but is actually the video thumb */
+        .code-preview {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            color: #a5b3ce;
+            opacity: 0.6; /* Dimmed to make play button pop */
+            transition: opacity 0.3s;
+        }
+        
+        .video-card:hover .code-preview { opacity: 0.3; }
+
+        /* Syntax Colors */
+        .c-p { color: var(--accent-pink); }
+        .c-c { color: var(--accent-cyan); }
+        .c-y { color: #ffd700; }
+        .c-g { color: #00ebc7; }
+
+        /* Play Button Overlay */
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .play-triangle {
+            width: 0; height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 18px solid #fff;
+            margin-left: 4px;
+        }
+
+        .video-card:hover .play-overlay {
+            background: var(--accent-cyan);
+            transform: translate(-50%, -50%) scale(1.1);
+            border-color: var(--accent-cyan);
+        }
+        
+        .video-card:hover .play-triangle { border-left-color: #000; }
+
+        /* Video Progress Bar Simulation */
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-track {
+            flex-grow: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-cyan);
+            width: 35%; /* Fake progress */
+        }
+        .time-stamp {
+            font-size: 10px;
+            color: #fff;
+            font-family: monospace;
+        }
+
+        /* Card Info Footer */
+        .card-info {
+            padding: 20px;
+        }
+        .card-info h3 { color: #fff; font-size: 1.2em; margin-bottom: 5px; }
+        .card-info p { color: var(--text-muted); font-size: 0.9em; }
+
+        @media (max-width: 768px) {
+            .grid-layout { grid-template-columns: 1fr; }
+            .home-hero h1 { font-size: 2.5em; }
+            .home-hero p { font-size: 1em; }
+            .feature-grid { padding: 0 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="hero">
+        </header>
+
+    <div class="nav-wrapper">
+        <nav class="nav-dock">
+            <button class="nav-btn active" onclick="showSection('home')">home.md</button>
+            <button class="nav-btn" onclick="showSection('html')">index.html</button>
+            <button class="nav-btn" onclick="showSection('css')">style.css</button>
+            <button class="nav-btn" onclick="showSection('js')">script.js</button>
+        </nav>
+    </div>
+
+    <div id="home" class="section active">
+        <div class="home-hero">
+            <h1>Unlock Your <span style="color: var(--accent-cyan);">Coding Potential</span></h1>
+            <p>
+                Dive into hands-on video tutorials, master modern web technologies, and build real-world projects.
+                DevMastery is your launchpad to becoming a professional web developer.
+            </p>
+            <button class="btn-primary" onclick="showSection('js')">Start Learning Now</button>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="icon">💡</div>
+                <h3>Practical Insights</h3>
+                <p>Learn best practices and effective techniques directly applicable to your projects.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🚀</div>
+                <h3>Accelerated Learning</h3>
+                <p>Concise, focused video content to help you grasp complex topics quickly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">💻</div>
+                <h3>Modern Technologies</h3>
+                <p>Stay updated with the latest in HTML, CSS, JavaScript, and beyond.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="js" class="section">
+        <div class="section-header">
+            <h2>JavaScript Tutorials</h2>
+            <p>Modern ES6+, Async/Await, and API Integration</p>
+        </div>
+
+        <div class="grid-layout">
+            
+            <div class="video-card">
+                <div class="card-header">
+                    <div class="window-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+                    <span class="file-name">api-handler.js</span>
+                </div>
+                
+                <div class="video-thumbnail-wrapper">
+                    <div class="code-preview">
+<span class="c-p">const</span> getData = <span class="c-p">async</span> () => {<br>
+&nbsp;&nbsp;<span class="c-p">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-p">const</span> res = <span class="c-p">await</span> fetch(<span class="c-y">'/api'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-p">const</span> data = <span class="c-p">await</span> res.json();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log(data);<br>
+&nbsp;&nbsp;} <span class="c-p">catch</span> (err) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.error(err);<br>
+&nbsp;&nbsp;}<br>
+}
+                    </div>
+                    
+                    <div class="play-overlay">
+                        <div class="play-triangle"></div>
+                    </div>
+
+                    <div class="video-controls">
+                        <div class="progress-track"><div class="progress-fill" style="width: 45%"></div></div>
+                        <span class="time-stamp">04:20 / 10:00</span>
+                    </div>
+                </div>
+
+                <div class="card-info">
+                    <h3>Mastering Fetch API</h3>
+                    <p>Learn the modern way to handle async HTTP requests, parse JSON, and handle errors cleanly.</p>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <div class="card-header">
+                    <div class="window-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+                    <span class="file-name">dom.js</span>
+                </div>
+                <div class="video-thumbnail-wrapper">
+                    <div class="code-preview">
+document.querySelector(<span class="c-y">'.btn'</span>)<br>
+&nbsp;&nbsp;.addEventListener(<span class="c-y">'click'</span>, (e) => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;e.target.classList.toggle(<span class="c-y">'active'</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-p">const</span> id = e.target.dataset.id;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;updateUI(id);<br>
+});
+                    </div>
+                    <div class="play-overlay">
+                        <div class="play-triangle"></div>
+                    </div>
+                    <div class="video-controls">
+                        <div class="progress-track"><div class="progress-fill" style="width: 15%"></div></div>
+                        <span class="time-stamp">01:15 / 05:30</span>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <h3>DOM Event Listeners</h3>
+                    <p>Stop using inline events. Learn how to handle click events professionally.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="html" class="section">
+        <div class="section-header">
+            <h2>HTML5 Structure</h2>
+            <p>Semantic markup for the modern web</p>
+        </div>
+        <div class="grid-layout">
+            <div class="video-card">
+                <div class="card-header">
+                    <div class="window-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+                    <span class="file-name">index.html</span>
+                </div>
+                <div class="video-thumbnail-wrapper">
+                    <div class="code-preview">
+<span class="c-p">&lt;main</span> <span class="c-g">class</span>=<span class="c-y">"container"</span><span class="c-p">&gt;</span><br>
+&nbsp;&nbsp;<span class="c-p">&lt;section</span> <span class="c-g">id</span>=<span class="c-y">"hero"</span><span class="c-p">&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-p">&lt;h1&gt;</span>Web Semantics<span class="c-p">&lt;/h1&gt;</span><br>
+&nbsp;&nbsp;<span class="c-p">&lt;/section&gt;</span><br>
+<span class="c-p">&lt;/main&gt;</span>
+                    </div>
+                    <div class="play-overlay"><div class="play-triangle"></div></div>
+                    <div class="video-controls">
+                        <div class="progress-track"><div class="progress-fill" style="width: 80%"></div></div>
+                        <span class="time-stamp">08:00 / 12:45</span>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <h3>Semantic HTML Deep Dive</h3>
+                    <p>Why using &lt;section&gt; and &lt;main&gt; matters for accessibility.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="css" class="section">
+        <div class="section-header">
+            <h2>CSS Layouts</h2>
+            <p>Grid, Flexbox and Animations</p>
+        </div>
+        <div class="grid-layout">
+            <div class="video-card">
+                <div class="card-header">
+                    <div class="window-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+                    <span class="file-name">layout.css</span>
+                </div>
+                <div class="video-thumbnail-wrapper">
+                    <div class="code-preview">
+<span class="c-p">.grid-parent</span> {<br>
+&nbsp;&nbsp;<span class="c-c">display</span>: grid;<br>
+&nbsp;&nbsp;<span class="c-c">grid-template-columns</span>: repeat(3, 1fr);<br>
+&nbsp;&nbsp;<span class="c-c">gap</span>: 2rem;<br>
+}
+                    </div>
+                    <div class="play-overlay"><div class="play-triangle"></div></div>
+                    <div class="video-controls">
+                        <div class="progress-track"><div class="progress-fill" style="width: 25%"></div></div>
+                        <span class="time-stamp">03:30 / 15:00</span>
+                    </div>
+                </div>
+                <div class="card-info">
+                    <h3>CSS Grid Crash Course</h3>
+                    <p>Build complex 2D layouts in minutes using modern CSS Grid.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById(id).classList.add('active');
+        
+        // Find button with matching onclick text
+        const btns = Array.from(document.querySelectorAll('.nav-btn'));
+        const active = btns.find(b => b.getAttribute('onclick').includes(id));
+        if(active) active.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
