@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Visits Counter</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: #fff;
+    text-align: center;
+    padding-top: 100px;
+  }
+  h1 {
+    font-size: 3em;
+  }
+  #visitsCount {
+    font-size: 5em;
+    margin-top: 20px;
+    display: inline-block;
+    padding: 20px 40px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+  }
+</style>
+<script type="module">
+  // Import Firebase modules
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
+    authDomain: "obalabs-c56ab.firebaseapp.com",
+    databaseURL: "https://obalabs-c56ab-default-rtdb.firebaseio.com",
+    projectId: "obalabs-c56ab",
+    storageBucket: "obalabs-c56ab.firebasestorage.app",
+    messagingSenderId: "415868024118",
+    appId: "1:415868024118:web:4ea58785b6a175c4fbef97"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const visitsRef = ref(db, 'visits');
+
+  // Increase counter on each visit
+  runTransaction(visitsRef, (current) => {
+    return (current || 0) + 1;
+  }).then((result) => {
+    document.getElementById('visitsCount').innerText = result.snapshot.val();
+  }).catch((error) => {
+    console.error("Error updating visits:", error);
+  });
+</script>
+</head>
+<body>
+  <h1>COUNTER if this counter reaches 100 A CRAZZY UPDATE WILL HAPPEN!</h1>
+  <p>Visitor Count:</p>
+  <div id="visitsCount">0</div>
+</body>
+</html>
