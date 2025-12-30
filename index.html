@@ -15,9 +15,7 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-/* ================= FIREBASE CONFIG =================
-   ⚠️ Replace later with your real credentials
-==================================================== */
+/* ================= FIREBASE CONFIG ================= */
 const firebaseConfig = {
   apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
   authDomain: "obalabs-c56ab.firebaseapp.com",
@@ -30,10 +28,33 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-/* ================= LOGIN ================= */
+/* ================= SPECIAL EMAILS ================= */
+const OP_EMAILS = [
+  "muhhammadamirbutt@gmail.com",
+  "mom@gmail.com",
+  "oforomarbinamir@gmail.com",
+  "n4nidas@gmail.com",
+  "relative3@gmail.com",
+  "relative4@gmail.com",
+  "relative5@gmail.com",
+  "relative6@gmail.com",
+  "relative7@gmail.com",
+  "relative8@gmail.com"
+];
+
+/* ================= LOGIN FUNCTION ================= */
 window.loginWithGoogle = async () => {
   try {
-    await signInWithPopup(auth, provider);
+    const result = await signInWithPopup(auth, provider);
+    const email = result.user.email.toLowerCase();
+
+    if (OP_EMAILS.includes(email)) {
+      // 🔥 EXTREME OP PAGE
+      window.location.href = "op.html";
+    } else {
+      // 😴 STAY ON NORMAL PAGE
+      alert(`Hello ${result.user.displayName}, enjoy OBA Labs!`);
+    }
   } catch (err) {
     console.error("Auth error:", err);
     alert("Login failed");
@@ -48,7 +69,15 @@ onAuthStateChanged(auth, (user) => {
   if (!greeting || !button) return;
 
   if (user) {
+    const email = user.email.toLowerCase();
     const name = user.displayName || "Builder";
+
+    // Special OP check on page load
+    if (OP_EMAILS.includes(email)) {
+      window.location.href = "op.html";
+      return;
+    }
+
     greeting.textContent = `Welcome back, ${name}! 🚀`;
     button.style.display = "none";
   } else {
@@ -96,19 +125,12 @@ nav {
 .logo {
   font-size: 2rem;
   font-weight: 700;
-
-  /* Fallback color (IMPORTANT) */
   color: #00d4ff;
-
-  /* Gradient text */
   background: linear-gradient(135deg, #00d4ff, #0077ff);
   background-clip: text;
   -webkit-background-clip: text;
-
-  /* Required for Safari/Chrome */
   -webkit-text-fill-color: transparent;
 }
-
 
 .nav-links {
   display: flex;
@@ -140,26 +162,17 @@ nav {
   transform: rotateX(60deg);
 }
 
-.hero-content {
-  z-index: 2;
-}
+.hero-content { z-index: 2; }
 
 h1 {
   font-size: 4.5rem;
   letter-spacing: 5px;
-
-  /* Fallback color */
   color: #00d4ff;
-
-  /* Gradient text */
   background: linear-gradient(135deg, #00d4ff, #0077ff);
   background-clip: text;
   -webkit-background-clip: text;
-
-  /* Safari fix */
   -webkit-text-fill-color: transparent;
 }
-
 
 .subtitle {
   color: #00d4ff;
@@ -190,7 +203,6 @@ h1 {
 </head>
 
 <body>
-
 <div class="cursor"></div>
 
 <nav>

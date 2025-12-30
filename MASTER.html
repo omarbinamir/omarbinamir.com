@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+  <h1>Login Required</h1>
+  <button id="loginBtn">Login with Google</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // 🔥 YOUR FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
+      authDomain: "obalabs-c56ab.firebaseapp.com",
+      projectId: "obalabs-c56ab",
+      appId: "1:415868024118:web:4ea58785b6a175c4fbef97"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // 🔐 SPECIAL EMAILS (MAX 10)
+    const OP_EMAILS = [
+      "muhhammadamirbutt@gmail.com",
+      "mom@gmail.com",
+      "oforomarbinamir@gmail.com",
+      "n4nidas@gmail.com",
+      "relative3@gmail.com",
+      "relative4@gmail.com",
+      "relative5@gmail.com",
+      "relative6@gmail.com",
+      "relative7@gmail.com",
+      "relative8@gmail.com"
+    ];
+
+    document.getElementById("loginBtn").onclick = async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const email = result.user.email.toLowerCase();
+
+        if (OP_EMAILS.includes(email)) {
+          window.location.href = "op.html"; // 🔥 EXTREME PAGE
+        } else {
+          window.location.href = "index.html"; // 😴 BORING PAGE
+        }
+      } catch (err) {
+        alert("Login failed");
+        console.error(err);
+      }
+    };
+  </script>
+
+</body>
+</html>
