@@ -1,9 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   // 🔴 PASTE YOUR FIREBASE CONFIG HERE
@@ -12,23 +8,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Protect page + show user info
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    document.getElementById("welcomeMsg").innerText =
-      `Welcome, ${user.displayName}`;
-
-    const pic = document.getElementById("profilePic");
-    pic.src = user.photoURL;
-    pic.style.display = "block";
+    document.getElementById("welcomeMsg").innerText = `Welcome, ${user.displayName}`;
   } else {
-    window.location.href = "index.html";
+    document.getElementById("welcomeMsg").innerText = "Not logged in";
   }
-});
-
-// Logout
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  signOut(auth).then(() => {
-    window.location.href = "index.html";
-  });
 });

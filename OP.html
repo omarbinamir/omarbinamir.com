@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBA - Team Sponsors</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(88, 166, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 88, 166, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.1), rgba(255, 88, 166, 0.1));
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-text {
+            font-size: 2.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #58a6ff, #ff58a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.6s ease forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        .card.gold {
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(255, 165, 0, 0.05));
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .card.silver {
+            border: 2px solid rgba(192, 192, 192, 0.3);
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.05), rgba(169, 169, 169, 0.05));
+        }
+
+        .card.bronze {
+            border: 2px solid rgba(205, 127, 50, 0.3);
+            background: linear-gradient(135deg, rgba(205, 127, 50, 0.05), rgba(184, 115, 51, 0.05));
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(30, 30, 30, 0.8);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .card.gold:hover {
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
+        }
+
+        .card.silver:hover {
+            box-shadow: 0 20px 60px rgba(192, 192, 192, 0.2);
+        }
+
+        .card.bronze:hover {
+            box-shadow: 0 20px 60px rgba(205, 127, 50, 0.2);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card.owner { --accent-color: #ffd700; }
+        .card.co-owner { --accent-color: #58a6ff; }
+        .card.supporter { --accent-color: #ff58a6; }
+        .card.chef { --accent-color: #ff6b6b; }
+        .card.second-chef { --accent-color: #4ecdc4; }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon {
+            font-size: 2.5em;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+
+        .role {
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+        }
+
+        .name {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .name.gold-text {
+            background: linear-gradient(135deg, #ffd700, #ffed4e, #ffa500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s infinite;
+            background-size: 200% auto;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+            100% { background-position: 0% center; }
+        }
+
+        .medal-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .medal {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            position: relative;
+            animation: spin 20s linear infinite;
+        }
+
+        .medal.gold {
+            background: linear-gradient(135deg, #ffd700, #ffed4e, #ffa500);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .medal.silver {
+            background: linear-gradient(135deg, #c0c0c0, #e8e8e8, #a9a9a9);
+            box-shadow: 0 0 20px rgba(192, 192, 192, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .medal.bronze {
+            background: linear-gradient(135deg, #cd7f32, #d4a574, #b87333);
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .rank {
+            font-size: 0.9em;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .rank.gold-rank {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .rank.silver-rank {
+            background: rgba(192, 192, 192, 0.2);
+            color: #c0c0c0;
+            border: 1px solid rgba(192, 192, 192, 0.5);
+        }
+
+        .rank.bronze-rank {
+            background: rgba(205, 127, 50, 0.2);
+            color: #cd7f32;
+            border: 1px solid rgba(205, 127, 50, 0.5);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50px;
+            color: #ffd700;
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1em;
+            line-height: 1.6;
+            margin-top: 15px;
+            font-weight: 300;
+        }
+
+        .features {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .feature-tag {
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .feature-tag:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .accent-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover .accent-line {
+            transform: scaleX(1);
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .logo-text { font-size: 1.8em; }
+            .name { font-size: 1.8em; }
+            .card { padding: 25px; }
+            .medal { width: 50px; height: 50px; font-size: 1.5em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <span class="logo-text">OBA</span>
+            </div>
+            <h1>Team Sponsors</h1>
+            <p class="subtitle">Meet the legendary people behind our success</p>
+        </div>
+
+        <div class="grid">
+            <div class="card gold owner">
+                <div class="card-header">
+                    <div class="header-left">
+                        <span class="icon">👑</span>
+                        <div>
+                            <div class="role">Owner</div>
+                            <div class="name gold-text">OMAR</div>
+                        </div>
+                    </div>
+                    <div class="medal-container">
+                        <div class="medal gold">🥇</div>
+                        <span class="rank gold-rank">0ST</span>
+                    </div>
+                </div>
+                <p class="description">Leading the vision and driving innovation forward with unmatched excellence</p>
+                <div class="features">
+                    <span class="feature-tag">🎯 Visionary Leader</span>
+                    <span class="feature-tag">🚀 Innovation Driver</span>
+                    <span class="feature-tag">💡 Strategic Mind</span>
+                </div>
+                <div class="accent-line"></div>
+            </div>
+
+            <div class="card gold co-owner">
+                <div class="card-header">
+                    <div class="header-left">
+                        <span class="icon">⚡</span>
+                        <div>
+                            <div class="role">Co-Owner</div>
+                            <div class="name gold-text">PAPA</div>
+                        </div>
+                    </div>
+                    <div class="medal-container">
+                        <div class="medal gold">🥇</div>
+                        <span class="rank gold-rank">1ST</span>
+                    </div>
+                </div>
+                <p class="description">Strategic partner ensuring excellence in execution and operational mastery</p>
+                <div class="features">
+                    <span class="feature-tag">⚡ Power Player</span>
+                    <span class="feature-tag">📊 Strategy Expert</span>
+                    <span class="feature-tag">🎖️ Elite Performer</span>
+                </div>
+                <div class="accent-line"></div>
+            </div>
+
+            <div class="card gold supporter">
+                <div class="card-header">
+                    <div class="header-left">
+                        <span class="icon">💎</span>
+                        <div>
+                            <div class="role">Supporter</div>
+                            <div class="name gold-text">MAMA</div>
+                        </div>
+                    </div>
+                    <div class="medal-container">
+                        <div class="medal gold">🥇</div>
+                        <span class="rank gold-rank">-1ST</span>
+                    </div>
+                </div>
+                <p class="description">Providing unwavering support and guidance with legendary dedication</p>
+                <div class="features">
+                    <span class="feature-tag">💎 Diamond Support</span>
+                    <span class="feature-tag">🌟 Guiding Light</span>
+                    <span class="feature-tag">🛡️ Foundation Builder</span>
+                </div>
+                <div class="accent-line"></div>
+            </div>
+
+            <div class="card silver chef">
+                <div class="card-header">
+                    <div class="header-left">
+                        <span class="icon">👨‍🍳</span>
+                        <div>
+                            <div class="role">Head Chef</div>
+                            <div class="name">PINKY LALA</div>
+                            <span class="badge">⭐ Best Chef</span>
+                        </div>
+                    </div>
+                    <div class="medal-container">
+                        <div class="medal silver">🥈</div>
+                        <span class="rank silver-rank">2ND</span>
+                    </div>
+                </div>
+                <p class="description">Master of culinary excellence and innovation with unparalleled skill</p>
+                <div class="features">
+                    <span class="feature-tag">👨‍🍳 Master Chef</span>
+                    <span class="feature-tag">🍽️ Culinary Artist</span>
+                    <span class="feature-tag">⭐ Elite Talent</span>
+                </div>
+                <div class="accent-line"></div>
+            </div>
+
+            <div class="card bronze second-chef">
+                <div class="card-header">
+                    <div class="header-left">
+                        <span class="icon">🔥</span>
+                        <div>
+                            <div class="role">Second Chef</div>
+                            <div class="name">DIDI NANO</div>
+                        </div>
+                    </div>
+                    <div class="medal-container">
+                        <div class="medal bronze">🥉</div>
+                        <span class="rank bronze-rank">3RD</span>
+                    </div>
+                </div>
+                <p class="description">Bringing passion and skill to every creation with fiery determination</p>
+                <div class="features">
+                    <span class="feature-tag">🔥 Rising Star</span>
+                    <span class="feature-tag">🎨 Creative Soul</span>
+                    <span class="feature-tag">💪 Determined Pro</span>
+                </div>
+                <div class="accent-line"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Add subtle parallax effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.card');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            cards.forEach((card, index) => {
+                const speed = (index + 1) * 2;
+                const xOffset = (x - 0.5) * speed;
+                const yOffset = (y - 0.5) * speed;
+                card.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+            });
+        });
+
+        // Reset transform on hover
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+    </script>
+</body>
+</html>

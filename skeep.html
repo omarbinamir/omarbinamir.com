@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SKEEP Video Call</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+<div class="p-4 flex gap-2">
+  <button onclick="createCall()" class="bg-green-600 px-4 py-2 rounded">Create Call</button>
+  <button onclick="joinCall()" class="bg-blue-600 px-4 py-2 rounded">Join Call</button>
+  <input id="callIdInput" placeholder="Call ID" class="text-black px-2 rounded">
+</div>
+
+<div class="grid grid-cols-2 gap-2 p-4">
+  <video id="localVideo" autoplay muted playsinline class="bg-black"></video>
+  <video id="remoteVideo" autoplay playsinline class="bg-black"></video>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+ getFirestore, doc, setDoc, getDoc,
+ collection, addDoc, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* 🔴 REPLACE THIS WITH YOUR OWN FIREBASE CONFIG */
+const firebaseConfig = {
+ apiKey: "YOUR_API_KEY",
+ authDomain: "YOUR_PROJECT.firebaseapp.com",
+ projectId: "YOUR_PROJECT_ID",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* ================= WEBRTC ================= */
+let pc;
+const servers = {
+ iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+};
+
+const localVideo = document.getElementById("localVideo");
+const remoteVideo = document.getElementById("remoteVideo");
+
+async function getMedia(){
+ const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+ localVideo.srcObject = stream;
+ return stream;
+}
+
+window.createCall = async () => {
+ pc = new RTCPeerConnection(servers);
+ const stream = await getMedia();
+ stream.getTracks().forEach(t => pc.addTrack(t, stream));
+
+ pc.ontrack = e => remoteVideo.srcObject = e.streams[0];
+
+ const callDoc = doc(collection(db, "calls"));
+ const offerCandidates = collection(callDoc, "offerCandidates");
+ const answerCandidates = collection(callDoc, "answerCandidates");
+
+ pc.onicecandidate = e => e.candidate && addDoc(offerCandidates, e.candidate.toJSON());
+
+ const offer = await pc.createOffer();
+ await pc.setLocalDescription(offer);
+
+ await setDoc(callDoc, { offer });
+
+ alert("CALL ID: " + callDoc.id);
+
+ onSnapshot(callDoc, snap => {
+  const data = snap.data();
+  if (!pc.currentRemoteDescription && data?.answer) {
+   pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+  }
+ });
+
+ onSnapshot(answerCandidates, snap => {
+  snap.docChanges().forEach(c => {
+   if (c.type === "added") {
+    pc.addIceCandidate(new RTCIceCandidate(c.doc.data()));
+   }
+  });
+ });
+};
+
+window.joinCall = async () => {
+ const callId = document.getElementById("callIdInput").value;
+ const callDoc = doc(db, "calls", callId);
+ const offerCandidates = collection(callDoc, "offerCandidates");
+ const answerCandidates = collection(callDoc, "answerCandidates");
+
+ pc = new RTCPeerConnection(servers);
+ const stream = await getMedia();
+ stream.getTracks().forEach(t => pc.addTrack(t, stream));
+
+ pc.ontrack = e => remoteVideo.srcObject = e.streams[0];
+ pc.onicecandidate = e => e.candidate && addDoc(answerCandidates, e.candidate.toJSON());
+
+ const callData = (await getDoc(callDoc)).data();
+ await pc.setRemoteDescription(new RTCSessionDescription(callData.offer));
+
+ const answer = await pc.createAnswer();
+ await pc.setLocalDescription(answer);
+ await setDoc(callDoc, { answer }, { merge:true });
+
+ onSnapshot(offerCandidates, snap => {
+  snap.docChanges().forEach(c => {
+   if (c.type === "added") {
+    pc.addIceCandidate(new RTCIceCandidate(c.doc.data()));
+   }
+  });
+ });
+};
+</script>
+</body>
+</html>

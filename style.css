@@ -9,7 +9,7 @@ body{font-family:Arial,sans-serif;display:flex;flex-direction:column;justify-con
 .loader{width:18px;height:18px;border:3px solid #ddd;border-top:3px solid #4285F4;border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .g-blue{color:#4285F4;}.o-red{color:#EA4335;}.o-yellow{color:#FBBC05;}.g-blue-2{color:#4285F4;}.l-green{color:#34A853;}.e-red{color:#EA4335;}
-form{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:20px;}
-form input{padding:10px;border-radius:5px;border:1px solid #ccc;width:220px;}
-#password-policy{font-size:12px;color:#fff;margin:5px;}
-#emailBtn{padding:10px 20px;border:none;border-radius:5px;background:#14ffeb;color:#000;cursor:pointer;font-weight:bold;}
+.welcome-section{display:flex;flex-direction:column;align-items:center;margin-top:30px;}
+#welcomeMsg{font-size:1.5rem;color:#14ffeb;margin:10px;}
+#profilePic{width:80px;border-radius:50%;margin-bottom:10px;}
+#logoutBtn{padding:10px 20px;border:none;border-radius:5px;background:#14ffeb;color:#000;cursor:pointer;font-weight:bold;}

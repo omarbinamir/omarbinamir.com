@@ -1,33 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DRA-GEN</title>
-    <link rel="stylesheet" href="dragen.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OBA Auth</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="game-ui fade-in">
-    <div class="title-box glitch">
-        <h1>DraGenCity</h1>
-        <p>ENTER THE DIGITAL ZONE</p>
-    </div>
+  <div class="auth-bar">
+    <button class="auth-btn active" id="loginTab">Login</button>
+    <button class="auth-btn" id="signupTab">Sign up</button>
+  </div>
 
-    <div class="menu">
-        <button class="active">▶ START GAME</button>
-        <button>MULTIPLAYER</button>
-        <button>SETTINGS</button>
-        <button>EXIT</button>
-    </div>
+  <h2 id="neon-green">Login to OBA</h2>
 
-    <div class="status">
-        <span class="dot"></span> ONLINE
-    </div>
-</div>
+  <button id="google">
+    <span id="btn-text">
+      Continue with
+      <span class="google-text">
+        <span class="g-blue">G</span>
+        <span class="o-red">o</span>
+        <span class="o-yellow">o</span>
+        <span class="g-blue-2">g</span>
+        <span class="l-green">l</span>
+        <span class="e-red">e</span>
+      </span>
+    </span>
+    <span id="loader" class="loader hidden"></span>
+  </button>
 
-<div class="scanlines"></div>
+  <div class="welcome-section hidden">
+    <img id="profilePic" alt="Profile Picture" />
+    <p id="welcomeMsg"></p>
+    <button id="logoutBtn">Logout</button>
+  </div>
 
-<script src="dragen.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

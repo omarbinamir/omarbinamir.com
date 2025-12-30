@@ -1,51 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  
-  <!-- Page Info -->
-  <title>OBA Auth</title>
-  <meta name="description" content="THE BEST KIDS AND GROWN UPS , PLATFORM USED BY OVER 600 PEOPLE ,made by a 9 year old ">
-  <meta name="author" content="Omarbinamir">
-  <meta name="robots" content="index, follow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBA Labs | omarbinamir.com</title>
 
-  <!-- Open Graph / Social Media -->
-  <meta property="og:title" content="OBA">
-  <meta property="og:description" content="made by a 9 yearold.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://omarbinamir.com/">
+<!-- Firebase (ES Modules) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+/* ================= FIREBASE CONFIG =================
+   ⚠️ Replace later with your real credentials
+==================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
+  authDomain: "obalabs-c56ab.firebaseapp.com",
+  projectId: "obalabs-c56ab",
+  appId: "1:415868024118:web:4ea58785b6a175c4fbef97"
+};
+
+/* ================= INIT ================= */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+/* ================= LOGIN ================= */
+window.loginWithGoogle = async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (err) {
+    console.error("Auth error:", err);
+    alert("Login failed");
+  }
+};
+
+/* ================= AUTH STATE ================= */
+onAuthStateChanged(auth, (user) => {
+  const greeting = document.getElementById("greeting");
+  const button = document.getElementById("loginBtn");
+
+  if (!greeting || !button) return;
+
+  if (user) {
+    const name = user.displayName || "Builder";
+    greeting.textContent = `Welcome back, ${name}! 🚀`;
+    button.style.display = "none";
+  } else {
+    greeting.textContent = "Sign in please.";
+    button.style.display = "inline-block";
+  }
+});
+</script>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: system-ui, sans-serif;
+  background: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* Cursor */
+.cursor {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #00d4ff;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 0 20px #00d4ff;
+}
+
+/* Navbar */
+nav {
+  position: fixed;
+  width: 100%;
+  padding: 1.5rem 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,.6);
+  border-bottom: 1px solid rgba(0,212,255,.2);
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: 700;
+
+  /* Fallback color (IMPORTANT) */
+  color: #00d4ff;
+
+  /* Gradient text */
+  background: linear-gradient(135deg, #00d4ff, #0077ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  /* Required for Safari/Chrome */
+  -webkit-text-fill-color: transparent;
+}
 
 
-  <!-- Favicon -->
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+}
 
-  <link rel="stylesheet" href="style.css">
+/* Hero */
+.hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+}
+
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(0,212,255,.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform: rotateX(60deg);
+}
+
+.hero-content {
+  z-index: 2;
+}
+
+h1 {
+  font-size: 4.5rem;
+  letter-spacing: 5px;
+
+  /* Fallback color */
+  color: #00d4ff;
+
+  /* Gradient text */
+  background: linear-gradient(135deg, #00d4ff, #0077ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  /* Safari fix */
+  -webkit-text-fill-color: transparent;
+}
+
+
+.subtitle {
+  color: #00d4ff;
+  margin-bottom: 2rem;
+}
+
+.cta-button {
+  padding: 1rem 3rem;
+  border: 2px solid #00d4ff;
+  background: transparent;
+  color: #00d4ff;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.cta-button:hover {
+  background: #00d4ff;
+  color: #000;
+  box-shadow: 0 0 30px #00d4ff;
+}
+
+#greeting {
+  margin-top: 1.5rem;
+  font-size: 1.8rem;
+  color: #00d4ff;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="auth-bar">
-    <button class="auth-btn active" id="loginTab">Login</button>
-    <button class="auth-btn" id="signupTab">Sign up</button>
+<div class="cursor"></div>
+
+<nav>
+  <div class="logo">OBA LABS</div>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#">Features</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="home">
+  <div class="grid-bg"></div>
+  <div class="hero-content">
+    <h1>OBA LABS</h1>
+    <p class="subtitle">Innovation Beyond Imagination</p>
+    <button id="loginBtn" class="cta-button" onclick="loginWithGoogle()">
+      Sign in with Google
+    </button>
+    <div id="greeting">Loading…</div>
   </div>
+</section>
 
-  <h2 id="neon-green">Login to OBA</h2>
+<script>
+/* Cursor */
+const cursor = document.querySelector(".cursor");
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX - 10 + "px";
+  cursor.style.top = e.clientY - 10 + "px";
+});
+</script>
 
-  <button id="google">
-    <span id="btn-text">
-      Continue with
-      <span class="google-text">
-        <span class="g-blue">G</span>
-        <span class="o-red">o</span>
-        <span class="o-yellow">o</span>
-        <span class="g-blue-2">g</span>
-        <span class="l-green">l</span>
-        <span class="e-red">e</span>
-      </span>
-    </span>
-    <span id="loader" class="loader hidden"></span>
-  </button>
-
-  <script type="module" src="app.js"></script>
 </body>
 </html>

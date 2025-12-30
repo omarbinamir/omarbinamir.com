@@ -1,35 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OBALAND</title>
-  <link rel="stylesheet" href="OMAAR.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBA Labs | omarbinamir.com</title>
+
+<!-- Firebase SDKs -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// ----- Firebase Config -----
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// ----- Initialize Firebase -----
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// ----- Sign-in Button Function -----
+window.loginWithGoogle = async function() {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    if(result._tokenResponse.isNewUser){
+      document.getElementById('greeting').innerText = `Hello, ${user.displayName}!`;
+    } else {
+      document.getElementById('greeting').innerText = `Welcome back, ${user.displayName}!`;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// ----- Detect returning user -----
+onAuthStateChanged(auth, (user) => {
+  if(user){
+    document.getElementById('greeting').innerText = `Welcome back, ${user.displayName}!`;
+  } else {
+    document.getElementById('greeting').innerText = `Please sign in with Google.`;
+  }
+});
+</script>
+
+<style>
+/* ======== Basic Reset ======== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #000; color: #fff; overflow-x: hidden; }
+
+/* ======== Cursor ======== */
+.cursor { width: 20px; height: 20px; border: 2px solid #015768; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: 0.1s; box-shadow: 0 0 20px #00d4ff; }
+
+/* ======== Navbar ======== */
+nav { position: fixed; width: 100%; padding: 2rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.5); border-bottom: 1px solid rgba(0, 212, 255, 0.2); }
+.logo { font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #00d4ff, #0077ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(0, 212, 255, 0.5); letter-spacing: 3px; }
+.nav-links { display: flex; gap: 3rem; list-style: none; }
+.nav-links a { color: #fff; text-decoration: none; font-size: 1rem; transition: all 0.3s; position: relative; }
+.nav-links a:hover { color: #00d4ff; text-shadow: 0 0 10px #00d4ff; }
+.nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: #00d4ff; transition: width 0.3s; }
+.nav-links a:hover::after { width: 100%; }
+
+/* ======== Hero ======== */
+.hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; }
+.grid-bg { position: absolute; width: 100%; height: 100%; background-image: linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px); background-size: 50px 50px; animation: gridMove 20s linear infinite; perspective: 1000px; transform: rotateX(60deg); }
+@keyframes gridMove { 0% { transform: rotateX(60deg) translateY(0); } 100% { transform: rotateX(60deg) translateY(50px); } }
+.hero-content { z-index: 10; text-align: center; padding: 2rem; }
+h1 { font-size: 5rem; margin-bottom: 1rem; background: linear-gradient(135deg, #00d4ff, #0077ff, #00d4ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: glow 3s ease-in-out infinite; letter-spacing: 5px; }
+@keyframes glow { 0%, 100% { filter: drop-shadow(0 0 20px #00d4ff); } 50% { filter: drop-shadow(0 0 40px #00d4ff); } }
+.subtitle { font-size: 1.5rem; color: #00d4ff; margin-bottom: 2rem; letter-spacing: 2px; animation: fadeIn 2s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== CTA Button ===== */
+.cta-button { padding: 1rem 3rem; font-size: 1.2rem; border: 2px solid #00d4ff; background: transparent; color: #00d4ff; cursor: pointer; position: relative; overflow: hidden; transition: all 0.3s; text-transform: uppercase; letter-spacing: 2px; }
+.cta-button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: #00d4ff; transition: left 0.3s; z-index: -1; }
+.cta-button:hover::before { left: 0; }
+.cta-button:hover { color: #000; box-shadow: 0 0 30px #00d4ff; }
+
+/* ====== Greeting ====== */
+#greeting { margin-top: 20px; font-size: 2rem; color: #00d4ff; text-shadow: 0 0 10px #00d4ff; }
+
+/* ===== All other CSS remains intact ====== */
+/* (Include the rest of your CSS exactly as in your original file) */
+
+</style>
 </head>
 <body>
+<div class="cursor"></div>
+<div class="particles" id="particles"></div>
 
-  <div class="floating-orb orb-1"></div>
-  <div class="floating-orb orb-2"></div>
+<nav>
+    <div class="logo">OBA LABS</div>
+    <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
 
-  <div class="container">
-    <div class="main-screen">
-      <h1>OBALAND</h1>
-
-      <img id="profilePic" style="width:80px;border-radius:50%;display:none;" />
-      <p class="welcome-message" id="welcomeMsg"></p>
-
-      <button id="logoutBtn">Logout</button>
-
-      <div class="featured-section">
-        <div class="featured-links">
-          <a href="omar" class="featured-link">ideallink</a>
-          <a href="omar" class="featured-link">pizza's inc</a>
-          <a href="omar" class="featured-link">sardard</a>
-        </div>
-      </div>
+<section class="hero" id="home">
+    <div class="grid-bg"></div>
+    <div class="hero-content">
+        <h1>OBA LABS</h1>
+        <p class="subtitle">Innovation Beyond Imagination</p>
+        <!-- Google Sign-in -->
+        <button class="cta-button" onclick="loginWithGoogle()">Sign in using Google</button>
+        <h2 id="greeting">Please sign in with Google.</h2>
     </div>
-  </div>
+</section>
 
-  <script type="module" src="script.js"></script>
+<!-- Rest of your HTML sections (features, about, contact, footer) stay exactly the same -->
+
+<script>
+// Custom cursor
+const cursor = document.querySelector('.cursor');
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX - 10 + 'px';
+    cursor.style.top = e.clientY - 10 + 'px';
+});
+
+// Floating particles
+const particlesContainer = document.getElementById('particles');
+for (let i = 0; i < 50; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.top = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 15 + 's';
+    particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+    particlesContainer.appendChild(particle);
+}
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) { target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+});
+
+// Animate cards on scroll
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting){
+            entry.target.style.opacity='1';
+            entry.target.style.transform='translateY(0)';
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.feature-card, .about-box, .stat, .contact-card').forEach((card, i) => {
+    card.style.opacity='0';
+    card.style.transform='translateY(50px)';
+    card.style.transition=`all 0.5s ${i*0.1}s`;
+    observer.observe(card);
+});
+</script>
+
 </body>
 </html>
