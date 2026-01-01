@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnTube Real-Time</title>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--accent:#0b6efd;--muted:#6b7280;--radius:14px;}
+*{box-sizing:border-box}
+body{margin:0;padding:28px;font-family:Inter,sans-serif;background:linear-gradient(180deg,var(--bg),#eef3fb);color:#111827;}
+header{display:flex;gap:20px;align-items:center;margin-bottom:18px;}
+h1{font-size:20px;margin:0;letter-spacing:0.2px;}
+.sub{color:var(--muted);font-size:13px;}
+.container{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start;}
+.panel{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:0 6px 18px rgba(11,102,253,0.06);}
+label{display:block;font-size:13px;margin:8px 0 6px;color:#374151;}
+input[type=text],textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #e6e9ef;font-size:14px;background:#fff;}
+textarea{resize:vertical;min-height:72px;}
+.btn{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--accent);color:white;border:none;cursor:pointer;font-weight:600;margin-top:10px;}
+.btn.secondary{background:#6b7280;}
+.feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 4px 14px rgba(12,14,20,0.04);transform-origin:center;overflow:hidden;opacity:0;transform: translateY(8px) scale(0.995);transition: opacity 360ms ease, transform 360ms ease;}
+.card.visible{opacity:1;transform: translateY(0) scale(1);}
+.card img{width:100%;height:160px;object-fit:cover;border-radius:8px;display:block;margin-bottom:8px;}
+.card h3{margin:6px 0 6px;font-size:16px;}
+.meta{font-size:13px;color:var(--muted);margin-bottom:8px;}
+.equation{background:#fafafa;padding:8px;border-radius:8px;font-family:"Times New Roman",serif;margin-top:8px;white-space:pre-wrap;}
+.controls-row{display:flex;gap:8px;align-items:center;margin-top:10px;}
+.small{font-size:13px;color:var(--muted);}
+.top-controls{display:flex;gap:10px;align-items:center;margin:0 0 12px 0;}
+.search{flex:1;display:flex;gap:8px;align-items:center;}
+.search input{width:100%;}
+.hint{font-size:12px;color:#9ca3af;margin-top:6px;}
+@media(max-width:980px){.container{grid-template-columns:1fr;}}
+</style>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+</head>
+<body>
+<header>
+<div>
+<h1>LearnTube Real-Time</h1>
+<div class="sub">Post lessons in real-time. Everyone connects to the room "omar".</div>
+</div>
+</header>
+
+<main class="container">
+<section class="panel">
+<h2>Post a Lesson</h2>
+<form id="lessonForm">
+<label for="title">Lesson Title</label>
+<input id="title" type="text" placeholder="Quadratic Formula" required>
+<label for="objective">Learning Objective</label>
+<textarea id="objective" placeholder="Write objective..." required></textarea>
+<label for="equation">Equation (LaTeX)</label>
+<input id="equation" type="text" placeholder="x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}">
+<label for="image">Image (optional)</label>
+<input id="image" type="file" accept="image/*">
+<button class="btn" type="submit">Post Lesson</button>
+<button class="btn secondary" type="button" id="clearBtn">Clear</button>
+<div class="hint">Use LaTeX syntax for equations.</div>
+</form>
+<hr>
+<div class="top-controls">
+<div class="search"><input id="searchInput" type="text" placeholder="Search lessons"></div>
+<select id="sortSelect"><option value="new">Newest first</option><option value="old">Oldest first</option></select>
+</div>
+<div style="margin-top:12px;"><div style="font-weight:600">Live preview</div></div>
+<div class="small" id="peerIdLabel"></div>
+</section>
+
+<section>
+<div style="display:flex;justify-content:space-between;margin-bottom:12px">
+<div style="font-weight:700">Lessons Feed</div>
+<div class="small" id="countLabel">0 lessons</div>
+</div>
+<div id="feed" class="feed"></div>
+</section>
+</main>
+
+<script>
+const lessonForm = document.getElementById('lessonForm');
+const titleEl = document.getElementById('title');
+const objectiveEl = document.getElementById('objective');
+const equationEl = document.getElementById('equation');
+const imageEl = document.getElementById('image');
+const feedEl = document.getElementById('feed');
+const searchInput = document.getElementById('searchInput');
+const sortSelect = document.getElementById('sortSelect');
+const clearBtn = document.getElementById('clearBtn');
+const countLabel = document.getElementById('countLabel');
+const peerIdLabel = document.getElementById('peerIdLabel');
+
+let lessons = [];
+let connections = [];
+
+// ---------- Render lesson card ----------
+function renderLessonCard(lesson){
+  const card=document.createElement('div'); card.className='card';
+  if(lesson.image){const img=document.createElement('img'); img.src=lesson.image; card.appendChild(img);}
+  const h3=document.createElement('h3'); h3.textContent=lesson.title; card.appendChild(h3);
+  const meta=document.createElement('div'); meta.className='meta'; meta.textContent=new Date(lesson.created).toLocaleString(); card.appendChild(meta);
+  const p=document.createElement('div'); p.textContent=lesson.objective; card.appendChild(p);
+  if(lesson.equation){const eq=document.createElement('div'); eq.className='equation'; eq.innerHTML='\\('+lesson.equation+'\\)'; card.appendChild(eq);}
+  feedEl.appendChild(card);
+  setTimeout(()=>card.classList.add('visible'),50);
+  if(window.MathJax && MathJax.typesetPromise){MathJax.typesetPromise();}
+}
+
+function renderFeed(){
+  feedEl.innerHTML='';
+  let list = lessons.slice();
+  const q = (searchInput.value||'').toLowerCase();
+  if(q) list = list.filter(l=>l.title.toLowerCase().includes(q)||l.objective.toLowerCase().includes(q));
+  list.sort((a,b)=> sortSelect.value==='new'? b.created-a.created : a.created-b.created );
+  countLabel.textContent=list.length+' lesson'+(list.length===1?'':'s');
+  list.forEach(renderLessonCard);
+}
+
+// ---------- PeerJS Real-time ----------
+const peer = new Peer('omar'); // fixed Peer ID "omar"
+peer.on('open', id => {
+  peerIdLabel.textContent = 'Connected as room: ' + id;
+  console.log('PeerJS Room ID:', id);
+});
+
+peer.on('connection', conn=>{
+  connections.push(conn);
+  conn.on('data', lesson=>{
+    lessons.push(lesson);
+    renderFeed();
+  });
+});
+
+// ---------- Broadcast lesson to all peers ----------
+function broadcastLesson(lesson){
+  connections.forEach(conn=>conn.send(lesson));
+}
+
+// ---------- Form submit ----------
+lessonForm.addEventListener('submit', async(e)=>{
+  e.preventDefault();
+  const title = titleEl.value.trim();
+  const objective = objectiveEl.value.trim();
+  const equation = equationEl.value.trim();
+  if(!title || !objective){alert('Enter title and objective'); return;}
+  
+  let imageData = null;
+  if(imageEl.files && imageEl.files[0]){
+    imageData = await new Promise(res=>{
+      const reader = new FileReader();
+      reader.onload = e => res(e.target.result);
+      reader.readAsDataURL(imageEl.files[0]);
+    });
+  }
+
+  const lesson = {title, objective, equation, image:imageData, created:Date.now()};
+  lessons.push(lesson);
+  renderFeed();
+  broadcastLesson(lesson);
+  lessonForm.reset();
+});
+
+// ---------- Connect to the room ----------
+function connectToRoom(){
+  const conn = peer.connect('omar');
+  conn.on('open', ()=>{
+    connections.push(conn);
+    alert('Connected to room!');
+  });
+  conn.on('data', lesson=>{
+    lessons.push(lesson);
+    renderFeed();
+  });
+}
+
+const connectBtn = document.createElement('button');
+connectBtn.className='btn secondary';
+connectBtn.textContent='Join Room "omar"';
+connectBtn.onclick = connectToRoom;
+document.querySelector('.panel').appendChild(connectBtn);
+
+clearBtn.addEventListener('click',()=>lessonForm.reset());
+searchInput.addEventListener('input',()=>renderFeed());
+sortSelect.addEventListener('change',()=>renderFeed());
+
+renderFeed();
+</script>
+</body>
+</html>

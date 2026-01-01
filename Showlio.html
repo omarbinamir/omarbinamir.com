@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHOWLIO | OBA GLOBAL TERMINAL</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #00f2ff;
+            --accent-rgb: 0, 242, 255;
+            --bg: #000000;
+            --glass: rgba(10, 10, 10, 0.95);
+            --panel: rgba(20, 20, 20, 0.8);
+            --border: rgba(255, 255, 255, 0.1);
+            --font: 'Inter', -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        body { 
+            background: var(--bg); color: white; font-family: var(--font); 
+            height: 100vh; overflow: hidden; transition: 0.5s;
+        }
+
+        /* --- ADVANCED BACKGROUND SYSTEM --- */
+        #portalBg {
+            position: fixed; inset: 0;
+            background: linear-gradient(rgba(0,0,0,0.7), #000), 
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072');
+            background-size: cover; background-position: center;
+            z-index: -2; transition: filter 1s, transform 10s linear;
+        }
+
+        .scanlines {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 3px 100%;
+        }
+
+        /* --- TELEPORT TRANSITION --- */
+        #revealOverlay {
+            position: fixed; inset: 0; background: black; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        /* --- SIDEBAR SYSTEM --- */
+        .sidebar {
+            width: 80px; height: 100vh; background: rgba(5,5,5,0.95);
+            border-right: 1px solid var(--border); position: fixed; left: 0;
+            display: flex; flex-direction: column; align-items: center; padding: 30px 0; gap: 25px; z-index: 500;
+        }
+        
+        .sidebar i {
+            font-size: 1.4rem; color: #444; cursor: pointer; transition: 0.3s;
+            padding: 15px; border-radius: 12px; position: relative;
+        }
+
+        .sidebar i:hover, .sidebar i.active { 
+            color: var(--accent); background: rgba(var(--accent-rgb), 0.1); 
+            box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.1);
+        }
+
+        /* TOOLTIPS */
+        .sidebar i::after {
+            content: attr(data-tooltip); position: absolute; left: 90px; top: 50%;
+            transform: translateY(-50%); background: var(--accent); color: black;
+            padding: 5px 12px; border-radius: 4px; font-size: 0.7rem; font-weight: 900;
+            opacity: 0; pointer-events: none; transition: 0.3s; white-space: nowrap;
+        }
+        .sidebar i:hover::after { opacity: 1; left: 100px; }
+
+        /* --- MAIN INTERFACE --- */
+        .main-scroller {
+            margin-left: 80px; height: 100vh; overflow-y: auto;
+            scroll-behavior: smooth; padding: 0 60px 100px;
+        }
+        .main-scroller::-webkit-scrollbar { width: 4px; }
+        .main-scroller::-webkit-scrollbar-thumb { background: var(--accent); }
+
+        .header-nav {
+            height: 100px; display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px);
+        }
+
+        .search-engine {
+            background: var(--panel); border: 1px solid var(--border);
+            border-radius: 50px; padding: 12px 25px; display: flex; align-items: center; width: 400px;
+            transition: 0.3s;
+        }
+        .search-engine:focus-within { border-color: var(--accent); box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.2); }
+        .search-engine input { background: transparent; border: none; color: white; margin-left: 15px; width: 100%; font-size: 0.9rem; }
+
+        /* --- HERO & LOGIC --- */
+        .hero { padding: 80px 0 40px; }
+        .hero h1 { font-size: 6rem; font-weight: 900; letter-spacing: -4px; line-height: 0.9; }
+        .hero p { color: var(--accent); font-weight: 800; letter-spacing: 5px; margin-bottom: 10px; }
+
+        /* --- CARD SYSTEM --- */
+        .section-wrap { margin-top: 60px; }
+        .section-wrap h3 { 
+            font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 30px; 
+            display: flex; align-items: center; gap: 15px; 
+        }
+        .section-wrap h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .card-grid { display: flex; gap: 25px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none; }
+        .card {
+            min-width: 350px; height: 200px; background: var(--panel);
+            border-radius: 18px; border: 1px solid var(--border); overflow: hidden;
+            position: relative; cursor: pointer; transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .card:hover { transform: translateY(-10px) scale(1.02); border-color: var(--accent); }
+        .card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: 0.5s; }
+        .card:hover img { opacity: 0.9; }
+        .card-meta { position: absolute; bottom: 25px; left: 25px; }
+
+        /* --- SETTINGS TERMINAL --- */
+        #settingsDrawer {
+            position: fixed; right: -400px; top: 0; width: 400px; height: 100vh;
+            background: var(--glass); border-left: 1px solid var(--border);
+            z-index: 1000; padding: 100px 50px; backdrop-filter: blur(30px);
+            transition: 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        #settingsDrawer.active { right: 0; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        
+        .toggle {
+            width: 50px; height: 26px; background: #333; border-radius: 50px;
+            position: relative; cursor: pointer; transition: 0.3s;
+        }
+        .toggle::before {
+            content: ''; position: absolute; width: 18px; height: 18px;
+            background: white; border-radius: 50%; top: 4px; left: 4px; transition: 0.3s;
+        }
+        .toggle.on { background: var(--accent); }
+        .toggle.on::before { left: 28px; }
+
+        /* --- NOTIFICATION SYSTEM --- */
+        #toaster {
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--accent); color: black; padding: 12px 30px; border-radius: 50px;
+            font-weight: 900; font-size: 0.8rem; letter-spacing: 1px; transition: 0.5s; z-index: 2000;
+        }
+        #toaster.visible { transform: translateX(-50%) translateY(0); }
+
+    </style>
+</head>
+<body>
+
+    <div id="revealOverlay"><h2 id="loadStatus" style="color:var(--accent); letter-spacing: 10px;">INITIALIZING...</h2></div>
+    <div id="portalBg"></div>
+    <div class="scanlines"></div>
+    <div id="toaster">SYSTEM SYNCED</div>
+
+    <div id="settingsDrawer">
+        <h1 style="margin-bottom: 50px; letter-spacing: 5px;">SETTINGS</h1>
+        <div class="setting-row">
+            <span>Visual Scanlines</span>
+            <div class="toggle on" onclick="toggleFx(this, 'scan')"></div>
+        </div>
+        <div class="setting-row">
+            <span>Background Blur</span>
+            <div class="toggle on" onclick="toggleFx(this, 'blur')"></div>
+        </div>
+        <div class="setting-row">
+            <span>Neural Overdrive</span>
+            <div class="toggle" onclick="toggleFx(this, 'drive')"></div>
+        </div>
+        <button onclick="closeSettings()" style="width: 100%; padding: 15px; background: transparent; border: 1px solid var(--accent); color: var(--accent); cursor: pointer; margin-top: 50px; font-weight: 900;">BACK TO TERMINAL</button>
+    </div>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <i class="fas fa-terminal" style="color:var(--accent); margin-bottom: 20px;"></i>
+            <i class="fas fa-home active" data-tooltip="CORE HOME [H]" onclick="navTo('home')"></i>
+            <i class="fas fa-play" data-tooltip="OBATOONS [O]" onclick="navTo('obatoons')"></i>
+            <i class="fas fa-flask" data-tooltip="RESEARCH [R]" onclick="navTo('research')"></i>
+            <i class="fas fa-cog" data-tooltip="SETTINGS [S]" onclick="openSettings()"></i>
+            <i class="fas fa-power-off" data-tooltip="DISCONNECT" style="margin-top: auto; color: #ff3333;" onclick="logout()"></i>
+        </aside>
+
+        <main class="main-scroller" id="scroller">
+            <nav class="header-nav">
+                <div style="font-weight: 900; letter-spacing: 5px; font-size: 1.2rem;">OBA<span style="color:var(--accent)">.OS</span></div>
+                <div class="search-engine">
+                    <i class="fas fa-search" style="color: var(--accent)"></i>
+                    <input type="text" id="masterSearch" placeholder="Search decrypted files... [Press /]" onkeyup="globalSearch()">
+                </div>
+                <div id="userBadge" style="font-size: 0.6rem; border: 1px solid var(--border); padding: 8px 15px; border-radius: 4px;"></div>
+            </nav>
+
+            <header class="hero" id="home">
+                <p>STATUS: OPERATOR UPLINK ACTIVE</p>
+                <h1 id="welcomeUser">WELCOME</h1>
+                <p id="subWelcome" style="color: #666; font-size: 1rem; letter-spacing: 1px; margin-top: 20px; max-width: 600px;">Accessing the Showlio Original Database. All research protocols are currently in sync.</p>
+            </header>
+
+            <section class="section-wrap" id="obatoons">
+                <h3>OBATOONS FEED</h3>
+                <div class="card-grid" id="toonGrid"></div>
+            </section>
+
+            <section class="section-wrap" id="research">
+                <h3>RESEARCH ARCHIVES</h3>
+                <div class="card-grid" id="resGrid"></div>
+            </section>
+
+            <section class="section-wrap" style="padding-bottom: 100px;">
+                <h3>HOW OBA WORKS</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div style="background: var(--panel); padding: 40px; border-radius: 20px;">
+                        <h4 style="color: var(--accent); margin-bottom: 15px;">Neural Rendering</h4>
+                        <p style="color: #888; line-height: 1.6;">OBA converts raw binary research data into visual Obatoons, allowing for high-speed pattern recognition without manual analysis.</p>
+                    </div>
+                    <div style="background: var(--panel); padding: 40px; border-radius: 20px;">
+                        <h4 style="color: var(--accent); margin-bottom: 15px;">Teleport Protocol</h4>
+                        <p style="color: #888; line-height: 1.6;">Your portal uses a direct-to-memory teleportation link, ensuring zero latency when accessing the original archives.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const TOON_DATA = ["Genesis", "Void Runner", "Neon Pulse", "Data Ghost", "Project X"];
+        const RES_DATA = ["Bio-Metric", "Wave Pulse", "Grid Logic", "Synapse V4"];
+
+        window.onload = () => {
+            const name = localStorage.getItem('oba_user') || "OPERATOR";
+            document.getElementById('welcomeUser').innerText = "WELCOME, " + name.toUpperCase();
+            document.getElementById('userBadge').innerText = "SECURE_ID: " + name.toUpperCase();
+
+            buildCards('toonGrid', TOON_DATA, 't');
+            buildCards('resGrid', RES_DATA, 'r');
+
+            // Teleport Logic
+            if (sessionStorage.getItem('teleporting') === 'true') {
+                setTimeout(() => {
+                    document.getElementById('revealOverlay').style.opacity = "0";
+                    sessionStorage.removeItem('teleporting');
+                    toast("TELEPORT COMPLETE: SESSION SECURED");
+                }, 800);
+            } else {
+                document.getElementById('revealOverlay').style.display = "none";
+            }
+        };
+
+        function buildCards(id, data, seed) {
+            const container = document.getElementById(id);
+            container.innerHTML = data.map((title, i) => `
+                <div class="card" data-title="${title.toLowerCase()}">
+                    <img src="https://picsum.photos/seed/${seed+i}/600/400">
+                    <div class="card-meta">
+                        <div style="font-weight:900; letter-spacing:1px;">${title.toUpperCase()}</div>
+                        <div style="font-size:0.6rem; color:var(--accent); margin-top:5px;">STREAMING_ACTIVE</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- CORE FUNCTIONS ---
+        function globalSearch() {
+            const query = document.getElementById('masterSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                card.style.display = title.includes(query) ? "block" : "none";
+            });
+        }
+
+        function toggleFx(el, type) {
+            el.classList.toggle('on');
+            if(type === 'scan') document.querySelector('.scanlines').style.display = el.classList.contains('on') ? 'block' : 'none';
+            if(type === 'blur') document.getElementById('portalBg').style.filter = el.classList.contains('on') ? 'brightness(0.5) blur(0px)' : 'brightness(0.2) blur(10px)';
+            if(type === 'drive') toast(el.classList.contains('on') ? "NEURAL OVERDRIVE ACTIVE" : "OVERDRIVE DISABLED");
+        }
+
+        function toast(msg) {
+            const t = document.getElementById('toaster');
+            t.innerText = msg;
+            t.classList.add('visible');
+            setTimeout(() => t.classList.remove('visible'), 3000);
+        }
+
+        function openSettings() { document.getElementById('settingsDrawer').classList.add('active'); }
+        function closeSettings() { document.getElementById('settingsDrawer').classList.remove('active'); }
+        function navTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+        // --- HOTKEYS ---
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '/') { e.preventDefault(); document.getElementById('masterSearch').focus(); }
+            if (e.key.toLowerCase() === 's') openSettings();
+            if (e.key.toLowerCase() === 'h') navTo('home');
+            if (e.key === 'Escape') { closeSettings(); document.activeElement.blur(); }
+        });
+    </script>
+</body>
+</html>
