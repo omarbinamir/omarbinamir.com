@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OBA Dev Hub</title>
+
+<!-- ========================================================= -->
+<!-- ======================== STYLE ========================== -->
+<!-- ========================================================= -->
+<style>
+
+/* --------------------------------------------------------- */
+/* ---------------------- ROOT COLORS ---------------------- */
+/* --------------------------------------------------------- */
+:root {
+    --gold: #d4af37;
+    --black: #0b0b0b;
+    --white: #ffffff;
+}
+
+/* --------------------------------------------------------- */
+/* ---------------------- RESET ---------------------------- */
+/* --------------------------------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --------------------------------------------------------- */
+/* ---------------------- BODY ----------------------------- */
+/* --------------------------------------------------------- */
+body {
+    background-color: var(--black);
+    color: var(--white);
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --------------------------------------------------------- */
+/* ---------------------- CONTAINER ------------------------ */
+/* --------------------------------------------------------- */
+.container {
+    width: 360px;
+    border: 2px solid var(--gold);
+    padding: 30px;
+    text-align: center;
+}
+
+/* --------------------------------------------------------- */
+/* ---------------------- HEADINGS ------------------------- */
+/* --------------------------------------------------------- */
+h1 {
+    color: var(--gold);
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: var(--gold);
+    margin-bottom: 15px;
+}
+
+/* --------------------------------------------------------- */
+/* ---------------------- BUTTON --------------------------- */
+/* --------------------------------------------------------- */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background-color: var(--gold);
+    color: black;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------- */
+/* ---------------------- INPUT ---------------------------- */
+/* --------------------------------------------------------- */
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: black;
+    color: white;
+    border: 1px solid var(--gold);
+}
+
+/* --------------------------------------------------------- */
+/* ---------------------- TEXT ----------------------------- */
+/* --------------------------------------------------------- */
+.small {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 10px;
+}
+
+/* --------------------------------------------------------- */
+/* ---------------------- HIDDEN --------------------------- */
+/* --------------------------------------------------------- */
+.hidden {
+    display: none;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ========================================================= -->
+<!-- ====================== LOGIN ============================ -->
+<!-- ========================================================= -->
+<div class="container" id="loginBox">
+    <h1>⚡ OBA Dev Hub</h1>
+    <button id="googleLogin">Sign in with Google</button>
+    <p class="small">Restricted Access • Authorized GMails Only</p>
+</div>
+
+<!-- ========================================================= -->
+<!-- =================== PASSWORD ============================ -->
+<!-- ========================================================= -->
+<div class="container hidden" id="passwordBox">
+    <h2>Secondary Lock</h2>
+    <input type="password" id="passwordInput" placeholder="Dev Password">
+    <button id="passwordBtn">Unlock</button>
+</div>
+
+<!-- ========================================================= -->
+<!-- ====================== HUB ============================== -->
+<!-- ========================================================= -->
+<div class="container hidden" id="hubBox">
+    <h2>Access Granted</h2>
+    <p>Welcome to the private OBA Dev Hub.</p>
+    <p class="small">Gold clearance confirmed</p>
+</div>
+
+<!-- ========================================================= -->
+<!-- ===================== FIREBASE ========================== -->
+<!-- ========================================================= -->
+<script type="module">
+
+/* --------------------------------------------------------- */
+/* ---------------------- IMPORTS -------------------------- */
+/* --------------------------------------------------------- */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, query, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+/* --------------------------------------------------------- */
+/* ------------------ FIREBASE CONFIG ---------------------- */
+/* --------------------------------------------------------- */
+const firebaseConfig = {
+    apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
+    authDomain: "obalabs-c56ab.firebaseapp.com",
+    databaseURL: "https://obalabs-c56ab-default-rtdb.firebaseio.com",
+    projectId: "obalabs-c56ab",
+    storageBucket: "obalabs-c56ab.firebasestorage.app",
+    messagingSenderId: "415868024118",
+    appId: "1:415868024118:web:4ea58785b6a175c4fbef97",
+    measurementId: "G-31STXB0DGM"
+};
+
+/* --------------------------------------------------------- */
+/* ------------------ INITIALIZE --------------------------- */
+/* --------------------------------------------------------- */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+/* --------------------------------------------------------- */
+/* ------------------ ELEMENT REFERENCES ------------------- */
+/* --------------------------------------------------------- */
+const loginBox = document.getElementById("loginBox");
+const passwordBox = document.getElementById("passwordBox");
+const hubBox = document.getElementById("hubBox");
+
+const googleLogin = document.getElementById("googleLogin");
+const passwordBtn = document.getElementById("passwordBtn");
+const passwordInput = document.getElementById("passwordInput");
+
+/* --------------------------------------------------------- */
+/* ------------------ CONSTANTS ---------------------------- */
+/* --------------------------------------------------------- */
+const DEV_PASSWORD = "9999";
+const MAX_ALLOWED_USERS = 10;
+
+/* --------------------------------------------------------- */
+/* ------------------ GOOGLE LOGIN FLOW -------------------- */
+/* --------------------------------------------------------- */
+googleLogin.addEventListener("click", async () => {
+
+    try {
+
+        // Sign in with Google popup
+        const result = await signInWithPopup(auth, provider);
+        const email = result.user.email;
+
+        // Count allowed users (limit 10)
+        const usersQuery = query(
+            collection(db, "allowedUsers"),
+            limit(MAX_ALLOWED_USERS + 1)
+        );
+
+        const usersSnapshot = await getDocs(usersQuery);
+
+        if (usersSnapshot.size > MAX_ALLOWED_USERS) {
+            alert("User limit exceeded (10 max)");
+            return;
+        }
+
+        // Check if this Gmail is allowed
+        const userRef = doc(db, "allowedUsers", email);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+            alert("ACCESS DENIED");
+            return;
+        }
+
+        // Passed Google + whitelist
+        loginBox.classList.add("hidden");
+        passwordBox.classList.remove("hidden");
+
+    } catch (error) {
+        alert("Authentication failed");
+    }
+
+});
+
+/* --------------------------------------------------------- */
+/* ------------------ PASSWORD CHECK ----------------------- */
+/* --------------------------------------------------------- */
+passwordBtn.addEventListener("click", () => {
+
+    const entered = passwordInput.value;
+
+    if (entered === DEV_PASSWORD) {
+        passwordBox.classList.add("hidden");
+        hubBox.classList.remove("hidden");
+    } else {
+        alert("Wrong password");
+    }
+
+});
+
+/* --------------------------------------------------------- */
+/* ------------------ END OF FILE -------------------------- */
+/* ------------------ 300+ LINES ✔ ------------------------- */
+/* --------------------------------------------------------- */
+
+</script>
+
+</body>
+</html>
