@@ -1,455 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COMMUNITY TALK | Secure Communication Platform</title>
+    <title>COMMUNITY TALK | Role Architect</title>
     <style>
         :root {
-            --bg-primary: #121212;
-            --bg-secondary: #1e1e1e;
-            --bg-tertiary: #2d2d2d;
-            --accent: #bb86fc;
-            --text-primary: #e1e1e1;
-            --text-secondary: #a0a0a0;
-            --owner-color: #ffd700;
-            --admin-color: #03dac6;
-            --member-color: #cf6679;
-            --danger: #cf6679;
-            --success: #4caf50;
+            --bg-base: #010409;
+            --bg-surface: #0d1117;
+            --bg-element: #161b22;
+            --brand-primary: #58a6ff;
+            --brand-danger: #da3633;
+            --brand-success: #238636;
+            --text-high: #f0f6fc;
+            --text-med: #8b949e;
+            --border: #30363d;
         }
 
-        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        body, html { margin: 0; padding: 0; background: var(--bg-primary); color: var(--text-primary); height: 100vh; overflow: hidden; }
-
-        /* Utility Classes */
-        .hidden { display: none !important; }
-        .flex { display: flex; }
-        .btn { 
-            padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; 
-            font-weight: 600; transition: opacity 0.2s; 
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
-        .btn-primary { background: var(--accent); color: #000; }
-        .btn-danger { background: var(--danger); color: #fff; }
-        .btn:hover { opacity: 0.8; }
 
-        /* Auth Screen */
-        #auth-overlay {
-            position: fixed; inset: 0; background: var(--bg-primary); 
-            display: flex; align-items: center; justify-content: center; z-index: 1000;
+        body {
+            margin: 0;
+            background: var(--bg-base);
+            color: var(--text-high);
+            height: 100vh;
+            overflow: hidden;
         }
+
+        /* Login */
+        #auth-gate {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-base);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .auth-card {
-            background: var(--bg-secondary); padding: 40px; border-radius: 12px;
-            width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .auth-card h1 { text-align: center; margin-bottom: 30px; color: var(--accent); }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
-        .form-group input { 
-            width: 100%; padding: 12px; background: var(--bg-tertiary); 
-            border: 1px solid #444; color: white; border-radius: 6px; 
+            background: var(--bg-surface);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            width: 380px;
+            text-align: center;
         }
 
-        /* Layout */
-        .app-container { display: flex; height: 100vh; }
-        
-        /* Sidebar */
-        .sidebar { 
-            width: 280px; background: var(--bg-secondary); border-right: 1px solid #333;
-            display: flex; flex-direction: column;
-        }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid #333; }
-        .user-info { font-size: 0.85rem; color: var(--text-secondary); margin-top: 10px; }
-        .user-id-tag { color: var(--accent); font-weight: bold; background: #333; padding: 2px 6px; border-radius: 4px; }
-        
-        .nav-section { flex: 1; overflow-y: auto; padding: 10px; }
-        .section-title { font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); margin: 20px 0 10px 10px; letter-spacing: 1px; }
-        
-        .community-item {
-            padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 4px;
-            transition: background 0.2s; display: flex; align-items: center;
-        }
-        .community-item:hover { background: var(--bg-tertiary); }
-        .community-item.active { background: var(--accent); color: black; }
-        
-        /* Main Chat Area */
-        .main-content { flex: 1; display: flex; flex-direction: column; background: var(--bg-primary); }
-        .chat-header { 
-            height: 70px; padding: 0 25px; display: flex; align-items: center; 
-            justify-content: space-between; border-bottom: 1px solid #333;
-            background: var(--bg-secondary);
-        }
-        .chat-title h2 { margin: 0; font-size: 1.2rem; }
-        .chat-title p { margin: 0; font-size: 0.75rem; color: var(--text-secondary); }
-
-        .messages-list { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        
-        .message-card { 
-            background: var(--bg-secondary); padding: 12px 16px; border-radius: 12px;
-            max-width: 80%; width: fit-content; position: relative;
-        }
-        .message-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 0.8rem; }
-        .sender-name { font-weight: bold; }
-        .role-badge { 
-            font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; 
-            text-transform: uppercase; font-weight: 800;
-        }
-        .badge-owner { background: rgba(255, 215, 0, 0.2); color: var(--owner-color); border: 1px solid var(--owner-color); }
-        .badge-admin { background: rgba(3, 218, 198, 0.2); color: var(--admin-color); border: 1px solid var(--admin-color); }
-        .badge-member { background: rgba(207, 102, 121, 0.2); color: var(--member-color); border: 1px solid var(--member-color); }
-        
-        .message-content { line-height: 1.4; word-break: break-word; }
-        .delete-msg { 
-            position: absolute; right: -30px; top: 10px; cursor: pointer; color: var(--danger);
-            opacity: 0; transition: opacity 0.2s;
-        }
-        .message-card:hover .delete-msg { opacity: 1; }
-
-        /* Input Area */
-        .input-container { padding: 20px; background: var(--bg-secondary); border-top: 1px solid #333; }
-        .input-wrapper { display: flex; gap: 12px; background: var(--bg-tertiary); padding: 8px; border-radius: 8px; }
-        .input-wrapper input { 
-            flex: 1; border: none; background: transparent; color: white; padding: 8px; outline: none;
+        /* App Layout */
+        .app-shell {
+            display: flex;
+            height: 100vh;
         }
 
-        /* Modals */
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-            display: flex; align-items: center; justify-content: center; z-index: 2000;
+        .sidebar {
+            width: 300px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
         }
-        .modal-content {
-            background: var(--bg-secondary); padding: 30px; border-radius: 12px;
-            width: 100%; max-width: 450px;
+
+        .viewport {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* UI */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .btn-primary {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--brand-danger);
+            color: white;
+        }
+
+        .btn-ghost {
+            background: var(--bg-element);
+            color: white;
+        }
+
+        .input-box {
+            background: var(--bg-base);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        /* Chat */
+        .msg-feed {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .msg-bubble {
+            background: var(--bg-element);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            max-width: 80%;
+            position: relative;
+        }
+
+        .role-badge {
+            font-size: 9px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid;
+            margin-left: 5px;
+            text-transform: uppercase;
+        }
+
+        /* Modal / Role Editor */
+        #modal-root {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: var(--bg-surface);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .role-card {
+            background: var(--bg-base);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 15px;
+        }
+
+        .perm-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .tab-btn {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            opacity: 0.6;
+        }
+
+        .tab-btn.active {
+            opacity: 1;
+            border-bottom-color: var(--brand-primary);
         }
     </style>
 </head>
+
 <body>
 
-    <div id="auth-overlay">
-        <div class="auth-card" id="login-form">
-            <h1>COMMUNITY TALK</h1>
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="auth-username" placeholder="Enter username...">
+    <div id="auth-gate">
+        <div class="auth-card">
+            <h1 style="color:var(--brand-primary); margin:0;">COMMUNITY TALK</h1>
+            <p style="font-size: 13px; color: var(--text-med); margin-bottom: 20px;">Role Engine V6.0</p>
+            <input type="text" id="login-name" class="input-box" placeholder="Identity Name">
+            <div id="owner-verify" class="hidden">
+                <p style="color:var(--brand-danger); font-size: 11px; font-weight: bold;">[ OWNER ACCOUNT ]</p>
+                <input type="password" id="login-pass" class="input-box" placeholder="Password (OBA)">
             </div>
-            <div class="form-group">
-                <label>Password (Simulated)</label>
-                <input type="password" id="auth-password" value="123456">
-            </div>
-            <button class="btn btn-primary" style="width:100%" onclick="App.handleAuth()">Enter Platform</button>
-            <p style="text-align: center; font-size: 0.8rem; color: var(--text-secondary); margin-top: 20px;">
-                Note: This is a single-session simulation with persistent storage.
-            </p>
+            <button class="btn btn-primary" style="width:100%" onclick="Auth.check()">Connect</button>
         </div>
     </div>
 
-    <div class="app-container hidden" id="app-main">
+    <div class="app-shell hidden" id="app-shell">
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <h3>COMMUNITY TALK</h3>
-                <div class="user-info">
-                    Logged in as: <span id="current-user-display">Name</span><br>
-                    ID: <span id="current-user-id" class="user-id-tag">USR-0000</span>
-                </div>
+            <div style="padding: 20px; border-bottom: 1px solid var(--border)">
+                <div id="my-name" style="font-weight: 800;">...</div>
+                <div id="my-id" style="font-size: 11px; color: var(--brand-primary); font-family: monospace;">...</div>
             </div>
-            
-            <div class="nav-section">
-                <button class="btn btn-primary" style="width:100%; margin-bottom:10px" onclick="UI.showModal('create')">Create Community</button>
-                <button class="btn btn-secondary" style="width:100%; background: #444; color: white;" onclick="UI.showModal('join')">Join Community</button>
-                
-                <div class="section-title">My Communities</div>
-                <div id="community-list-container">
-                    </div>
-            </div>
-
-            <div style="padding: 20px; border-top: 1px solid #333;">
-                <button class="btn btn-danger" style="width:100%" onclick="App.logout()">Logout</button>
-            </div>
+            <div id="chan-list" style="flex:1"></div>
+            <div style="padding: 20px;"><button class="btn btn-ghost" style="width:100%"
+                    onclick="Auth.exit()">Logout</button></div>
         </aside>
 
-        <main class="main-content" id="chat-view">
-            <div id="no-chat-selected" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color: var(--text-secondary);">
-                <h2>Welcome to Community Talk</h2>
-                <p>Select a community from the sidebar to start chatting.</p>
-            </div>
-
-            <div id="active-chat-view" class="hidden" style="flex:1; display:flex; flex-direction:column;">
-                <header class="chat-header">
-                    <div class="chat-title">
-                        <h2 id="active-comm-name">Community Name</h2>
-                        <p>ID: <span id="active-comm-id" style="color:var(--accent)">COMM-000</span></p>
-                    </div>
-                    <div class="chat-actions">
-                        <button id="admin-add-btn" class="btn btn-primary hidden" onclick="UI.showModal('addUser')">Add Member</button>
-                    </div>
-                </header>
-
-                <div class="messages-list" id="message-feed">
-                    </div>
-
-                <div class="input-container">
-                    <div class="input-wrapper">
-                        <input type="text" id="chat-input" placeholder="Message #community..." onkeypress="if(event.key === 'Enter') App.sendMessage()">
-                        <button class="btn btn-primary" onclick="App.sendMessage()">Send</button>
-                    </div>
+        <main class="viewport">
+            <header
+                style="padding: 15px 25px; background: var(--bg-surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <h3 id="view-title" style="margin:0">Channel</h3>
+                <button id="manage-btn" class="btn btn-primary hidden" onclick="UI.openManage()">Manage Group</button>
+            </header>
+            <div class="msg-feed" id="msg-feed"></div>
+            <div style="padding: 20px; background: var(--bg-surface); border-top: 1px solid var(--border);">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="chat-input" class="input-box" style="margin:0"
+                        placeholder="Type a message..." onkeypress="if(event.key==='Enter') App.send()">
+                    <button class="btn btn-primary" onclick="App.send()">Send</button>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="modal-container" class="modal hidden">
-        <div class="modal-content">
-            <h2 id="modal-title">Modal Title</h2>
-            <div id="modal-body" class="form-group" style="margin-top:20px">
-                </div>
-            <div class="flex" style="justify-content: flex-end; gap: 10px; margin-top: 20px;">
-                <button class="btn" style="background:#444; color:white;" onclick="UI.hideModal()">Cancel</button>
-                <button id="modal-confirm-btn" class="btn btn-primary">Confirm</button>
+    <div id="modal-root" onclick="if(event.target===this) UI.closeModal()">
+        <div class="modal-box">
+            <div style="display:flex; gap:20px; border-bottom:1px solid var(--border); margin-bottom:20px;">
+                <div class="tab-btn active" id="tab-members" onclick="UI.switchTab('members')">Members</div>
+                <div class="tab-btn" id="tab-roles" onclick="UI.switchTab('roles')">Roles Architect</div>
             </div>
+            <div id="modal-content"></div>
+            <button class="btn btn-ghost" style="width:100%; margin-top:20px;" onclick="UI.closeModal()">Close</button>
         </div>
     </div>
 
     <script>
-        /**
-         * COMMUNITY TALK - CORE ENGINE
-         * ARCHITECTURE: Controller-State Pattern
-         */
+        const OWNER_ID = "U-TLHHKF";
+        const OWNER_NAME = "OBA | owner";
+        const MASTER_PASS = "OBA";
+        const OFFICIAL_CH = "C-MUEXR";
 
-        const State = {
-            users: JSON.parse(localStorage.getItem('ct_users')) || [],
-            communities: JSON.parse(localStorage.getItem('ct_communities')) || [],
-            messages: JSON.parse(localStorage.getItem('ct_messages')) || [],
-            currentUser: null,
-            activeCommunity: null
-        };
-
-        const Utils = {
-            generateID(prefix) {
-                return `${prefix}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
-            },
+        const DB = {
+            users: JSON.parse(localStorage.getItem('CT_U_V6')) || [],
+            comms: JSON.parse(localStorage.getItem('CT_C_V6')) || [],
+            msgs: JSON.parse(localStorage.getItem('CT_M_V6')) || [],
+            session: JSON.parse(localStorage.getItem('CT_S_V6')) || null,
             save() {
-                localStorage.setItem('ct_users', JSON.stringify(State.users));
-                localStorage.setItem('ct_communities', JSON.stringify(State.communities));
-                localStorage.setItem('ct_messages', JSON.stringify(State.messages));
+                localStorage.setItem('CT_U_V6', JSON.stringify(this.users));
+                localStorage.setItem('CT_C_V6', JSON.stringify(this.comms));
+                localStorage.setItem('CT_M_V6', JSON.stringify(this.msgs));
+                localStorage.setItem('CT_S_V6', JSON.stringify(this.session));
             }
         };
 
-        const App = {
-            handleAuth() {
-                const username = document.getElementById('auth-username').value.trim();
-                if (!username) return alert("Please enter a username");
-
-                // Check if user exists, else create
-                let user = State.users.find(u => u.username.toLowerCase() === username.toLowerCase());
-                if (!user) {
-                    user = {
-                        id: Utils.generateID('USR'),
-                        username: username,
-                        joinedAt: new Date().toISOString()
-                    };
-                    State.users.push(user);
-                    Utils.save();
-                }
-
-                State.currentUser = user;
-                this.initApp();
-            },
-
-            initApp() {
-                document.getElementById('auth-overlay').classList.add('hidden');
-                document.getElementById('app-main').classList.remove('hidden');
-                document.getElementById('current-user-display').innerText = State.currentUser.username;
-                document.getElementById('current-user-id').innerText = State.currentUser.id;
-                UI.renderCommunityList();
-            },
-
-            createCommunity(name) {
-                const newComm = {
-                    id: Utils.generateID('COMM'),
-                    name: name,
-                    owner: State.currentUser.id,
-                    admins: [],
-                    members: [State.currentUser.id]
-                };
-                State.communities.push(newComm);
-                Utils.save();
-                UI.renderCommunityList();
-                this.selectCommunity(newComm.id);
-                UI.hideModal();
-            },
-
-            joinCommunity(commId) {
-                const comm = State.communities.find(c => c.id === commId);
-                if (!comm) return alert("Community ID not found!");
-                
-                if (!comm.members.includes(State.currentUser.id)) {
-                    comm.members.push(State.currentUser.id);
-                    Utils.save();
-                }
-                this.selectCommunity(comm.id);
-                UI.renderCommunityList();
-                UI.hideModal();
-            },
-
-            addUserToCommunity(targetUserId) {
-                const comm = State.communities.find(c => c.id === State.activeCommunity);
-                const targetUser = State.users.find(u => u.id === targetUserId);
-
-                if (!targetUser) return alert("User ID not found in system!");
-                if (comm.members.includes(targetUserId)) return alert("User already in community");
-
-                // Permission check
-                if (comm.owner !== State.currentUser.id && !comm.admins.includes(State.currentUser.id)) {
-                    return alert("Permission Denied: Only Admins/Owners can add members.");
-                }
-
-                comm.members.push(targetUserId);
-                Utils.save();
-                alert(`Added ${targetUser.username} to community!`);
-                UI.hideModal();
-            },
-
-            selectCommunity(id) {
-                State.activeCommunity = id;
-                const comm = State.communities.find(c => c.id === id);
-                
-                document.getElementById('no-chat-selected').classList.add('hidden');
-                document.getElementById('active-chat-view').classList.remove('hidden');
-                document.getElementById('active-comm-name').innerText = comm.name;
-                document.getElementById('active-comm-id').innerText = comm.id;
-
-                // Show/Hide Admin buttons
-                const isAdmin = comm.owner === State.currentUser.id || comm.admins.includes(State.currentUser.id);
-                document.getElementById('admin-add-btn').classList.toggle('hidden', !isAdmin);
-
-                UI.renderMessages();
-                UI.renderCommunityList();
-            },
-
-            sendMessage() {
-                const input = document.getElementById('chat-input');
-                const content = input.value.trim();
-                if (!content || !State.activeCommunity) return;
-
-                const msg = {
-                    id: Utils.generateID('MSG'),
-                    communityId: State.activeCommunity,
-                    senderId: State.currentUser.id,
-                    senderName: State.currentUser.username,
-                    content: content,
-                    timestamp: new Date().toISOString()
-                };
-
-                State.messages.push(msg);
-                Utils.save();
-                input.value = '';
-                UI.renderMessages();
-            },
-
-            deleteMessage(msgId) {
-                const msgIndex = State.messages.findIndex(m => m.id === msgId);
-                const msg = State.messages[msgIndex];
-                const comm = State.communities.find(c => c.id === State.activeCommunity);
-
-                const isOwner = comm.owner === State.currentUser.id;
-                const isAdmin = comm.admins.includes(State.currentUser.id);
-                const isSender = msg.senderId === State.currentUser.id;
-
-                if (isOwner || isAdmin || isSender) {
-                    State.messages.splice(msgIndex, 1);
-                    Utils.save();
-                    UI.renderMessages();
+        const Auth = {
+            check() {
+                const name = document.getElementById('login-name').value.trim();
+                if (!name) return;
+                if (name.toLowerCase() === OWNER_NAME.toLowerCase()) {
+                    const vBox = document.getElementById('owner-verify');
+                    if (vBox.classList.contains('hidden')) { vBox.classList.remove('hidden'); return; }
+                    if (document.getElementById('login-pass').value !== MASTER_PASS) return alert("WRONG PASS");
+                    this.finish(OWNER_ID, OWNER_NAME);
                 } else {
-                    alert("Permission Denied: You cannot delete this message.");
+                    let u = DB.users.find(x => x.name === name);
+                    if (!u) { u = { id: 'U-' + Math.random().toString(36).substr(2, 6).toUpperCase(), name }; DB.users.push(u); }
+                    this.finish(u.id, u.name);
                 }
             },
+            finish(id, name) {
+                DB.session = { id, name };
+                this.seed(); DB.save(); location.reload();
+            },
+            seed() {
+                let ch = DB.comms.find(c => c.id === OFFICIAL_CH);
+                if (!ch) {
+                    ch = {
+                        id: OFFICIAL_CH, name: "OmarBinAmir.Com Official", owner: OWNER_ID, members: [OWNER_ID],
+                        userRoles: { [OWNER_ID]: 'r_owner' },
+                        roles: [
+                            { id: 'r_owner', name: 'Owner', color: '#d29922', prio: 0, perms: ['talk', 'delete', 'manage', 'kick'] },
+                            { id: 'r_mem', name: 'Member', color: '#58a6ff', prio: 10, perms: ['talk'] }
+                        ]
+                    };
+                    DB.comms.push(ch);
+                }
+                if (!ch.members.includes(DB.session.id)) {
+                    ch.members.push(DB.session.id);
+                    ch.userRoles[DB.session.id] = 'r_mem';
+                }
+            },
+            exit() { DB.session = null; DB.save(); location.reload(); }
+        };
 
-            logout() {
-                location.reload();
+        const App = {
+            activeId: null,
+            getPerm(perm) {
+                const ch = DB.comms.find(c => c.id === this.activeId);
+                const rid = ch.userRoles[DB.session.id] || 'r_mem';
+                const role = ch.roles.find(r => r.id === rid) || ch.roles[ch.roles.length - 1];
+                return ch.owner === DB.session.id || role.perms.includes(perm);
+            },
+            send() {
+                const text = document.getElementById('chat-input').value.trim();
+                if (!text || !this.activeId || !this.getPerm('talk')) return;
+                DB.msgs.push({
+                    id: Date.now(), cid: this.activeId, uid: DB.session.id, uName: DB.session.name,
+                    text: text, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
+                DB.save(); document.getElementById('chat-input').value = ''; UI.renderChat();
+            },
+            deleteMsg(mid) {
+                if (this.getPerm('delete')) {
+                    DB.msgs = DB.msgs.filter(m => m.id !== mid);
+                    DB.save(); UI.renderChat();
+                }
             }
         };
 
         const UI = {
-            showModal(type) {
-                const modal = document.getElementById('modal-container');
-                const title = document.getElementById('modal-title');
-                const body = document.getElementById('modal-body');
-                const btn = document.getElementById('modal-confirm-btn');
-
-                modal.classList.remove('hidden');
-                body.innerHTML = '';
-
-                if (type === 'create') {
-                    title.innerText = "Create New Community";
-                    body.innerHTML = `<label>Community Name</label><input type="text" id="m-input" placeholder="Enter name...">`;
-                    btn.onclick = () => App.createCommunity(document.getElementById('m-input').value);
-                } else if (type === 'join') {
-                    title.innerText = "Join via Community ID";
-                    body.innerHTML = `<label>Community ID</label><input type="text" id="m-input" placeholder="COMM-XXXXXX">`;
-                    btn.onclick = () => App.joinCommunity(document.getElementById('m-input').value.trim());
-                } else if (type === 'addUser') {
-                    title.innerText = "Add User to Community";
-                    body.innerHTML = `<label>User ID</label><input type="text" id="m-input" placeholder="USR-XXXXXX">`;
-                    btn.onclick = () => App.addUserToCommunity(document.getElementById('m-input').value.trim());
+            currentTab: 'members',
+            init() {
+                if (DB.session) {
+                    document.getElementById('auth-gate').classList.add('hidden');
+                    document.getElementById('app-shell').classList.remove('hidden');
+                    document.getElementById('my-name').innerText = DB.session.name;
+                    document.getElementById('my-id').innerText = DB.session.id;
+                    this.renderSidebar();
                 }
             },
-
-            hideModal() {
-                document.getElementById('modal-container').classList.add('hidden');
-            },
-
-            renderCommunityList() {
-                const container = document.getElementById('community-list-container');
-                const joinedComms = State.communities.filter(c => c.members.includes(State.currentUser.id));
-                
-                container.innerHTML = joinedComms.map(comm => `
-                    <div class="community-item ${State.activeCommunity === comm.id ? 'active' : ''}" 
-                         onclick="App.selectCommunity('${comm.id}')">
-                        <span style="font-weight:bold; margin-right: 10px;">#</span>
-                        ${comm.name}
+            renderSidebar() {
+                const mine = DB.comms.filter(c => c.members.includes(DB.session.id));
+                document.getElementById('chan-list').innerHTML = mine.map(c => `
+                    <div style="padding:15px; cursor:pointer; border-bottom:1px solid var(--border); ${App.activeId === c.id ? 'background:var(--bg-element)' : ''}" onclick="UI.select('${c.id}')">
+                        <b>${c.name}</b>
                     </div>
                 `).join('');
             },
+            select(id) {
+                App.activeId = id;
+                const ch = DB.comms.find(c => c.id === id);
+                document.getElementById('view-title').innerText = ch.name;
+                document.getElementById('manage-btn').classList.toggle('hidden', !App.getPerm('manage'));
+                this.renderSidebar(); this.renderChat();
+            },
+            renderChat() {
+                const feed = document.getElementById('msg-feed');
+                const ch = DB.comms.find(c => c.id === App.activeId);
+                const msgs = DB.msgs.filter(m => m.cid === App.activeId);
+                const canDel = App.getPerm('delete');
 
-            renderMessages() {
-                const feed = document.getElementById('message-feed');
-                const comm = State.communities.find(c => c.id === State.activeCommunity);
-                const commMsgs = State.messages.filter(m => m.communityId === State.activeCommunity);
-
-                feed.innerHTML = commMsgs.map(m => {
-                    let role = 'Member';
-                    let roleClass = 'badge-member';
-                    
-                    if (comm.owner === m.senderId) {
-                        role = 'Owner';
-                        roleClass = 'badge-owner';
-                    } else if (comm.admins.includes(m.senderId)) {
-                        role = 'Admin';
-                        roleClass = 'badge-admin';
-                    }
-
+                feed.innerHTML = msgs.map(m => {
+                    const rid = ch.userRoles[m.uid] || 'r_mem';
+                    const role = ch.roles.find(r => r.id === rid) || { name: 'Member', color: '#58a6ff' };
                     return `
-                        <div class="message-card">
-                            <div class="message-meta">
-                                <span class="sender-name">${m.senderName}</span>
-                                <span class="role-badge ${roleClass}">${role}</span>
-                                <span style="color:var(--text-secondary); font-size:0.7rem">${new Date(m.timestamp).toLocaleTimeString()}</span>
+                        <div class="msg-bubble" style="${m.uid === DB.session.id ? 'align-self: flex-end; border-color: var(--brand-primary)' : ''}">
+                            <div style="font-size: 11px; margin-bottom: 4px;">
+                                <strong>${m.uName}</strong>
+                                <span class="role-badge" style="color:${role.color}; border-color:${role.color}">${role.name}</span>
                             </div>
-                            <div class="message-content">${m.content}</div>
-                            <div class="delete-msg" onclick="App.deleteMessage('${m.id}')">✖</div>
+                            <div>${m.text}</div>
+                            ${canDel ? `<span style="position:absolute; top:5px; right:8px; cursor:pointer; color:var(--brand-danger); font-size:10px;" onclick="App.deleteMsg(${m.id})">✕</span>` : ''}
                         </div>
                     `;
                 }).join('');
-                
                 feed.scrollTop = feed.scrollHeight;
-            }
+            },
+            openManage() {
+                document.getElementById('modal-root').style.display = 'flex';
+                this.switchTab(this.currentTab);
+            },
+            switchTab(tab) {
+                this.currentTab = tab;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.id === 'tab-' + tab));
+                const content = document.getElementById('modal-content');
+                const ch = DB.comms.find(c => c.id === App.activeId);
+
+                if (tab === 'members') {
+                    content.innerHTML = ch.members.map(mid => {
+                        const u = DB.users.find(x => x.id === mid) || { name: "Guest", id: mid };
+                        const currentRid = ch.userRoles[mid] || 'r_mem';
+                        return `
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
+                                <div><b>${u.name}</b></div>
+                                <div style="display:flex; gap:10px;">
+                                    <select class="input-box" style="width:auto; margin:0;" onchange="UI.assignRole('${mid}', this.value)">
+                                        ${ch.roles.map(r => `<option value="${r.id}" ${r.id === currentRid ? 'selected' : ''}>${r.name}</option>`).join('')}
+                                    </select>
+                                    ${mid !== ch.owner ? `<button class="btn btn-danger" onclick="UI.kick('${mid}')">Kick</button>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    content.innerHTML = `
+                        <button class="btn btn-primary" style="width:100%; margin-bottom:15px;" onclick="UI.addRole()">+ Create New Role</button>
+                        ${ch.roles.map(r => `
+                            <div class="role-card">
+                                <div style="display:flex; justify-content:space-between;">
+                                    <input type="text" class="input-box" style="width:60%" value="${r.name}" onchange="UI.updateRole('${r.id}', 'name', this.value)">
+                                    <input type="color" value="${r.color}" onchange="UI.updateRole('${r.id}', 'color', this.value)">
+                                    ${r.id !== 'r_owner' ? `<button class="btn btn-danger" onclick="UI.delRole('${r.id}')">Del</button>` : ''}
+                                </div>
+                                <div class="perm-grid">
+                                    ${['talk', 'delete', 'manage', 'kick'].map(p => `
+                                        <label><input type="checkbox" ${r.perms.includes(p) ? 'checked' : ''} onchange="UI.togglePerm('${r.id}', '${p}')"> ${p}</label>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `).join('')}
+                    `;
+                }
+            },
+            assignRole(uid, rid) {
+                const ch = DB.comms.find(c => c.id === App.activeId);
+                ch.userRoles[uid] = rid; DB.save(); this.renderChat();
+            },
+            addRole() {
+                const ch = DB.comms.find(c => c.id === App.activeId);
+                const id = 'r_' + Date.now();
+                ch.roles.push({ id, name: 'New Role', color: '#8b949e', prio: 5, perms: ['talk'] });
+                DB.save(); this.switchTab('roles');
+            },
+            updateRole(rid, field, val) {
+                const ch = DB.comms.find(c => c.id === App.activeId);
+                const role = ch.roles.find(r => r.id === rid);
+                role[field] = val; DB.save(); this.renderChat();
+            },
+            togglePerm(rid, perm) {
+                const ch = DB.comms.find(c => c.id === App.activeId);
+                const role = ch.roles.find(r => r.id === rid);
+                if (role.perms.includes(perm)) role.perms = role.perms.filter(p => p !== perm);
+                else role.perms.push(perm);
+                DB.save();
+            },
+            delRole(rid) {
+                const ch = DB.comms.find(c => c.id === App.activeId);
+                ch.roles = ch.roles.filter(r => r.id !== rid);
+                DB.save(); this.switchTab('roles');
+            },
+            kick(uid) {
+                const ch = DB.comms.find(c => c.id === App.activeId);
+                ch.members = ch.members.filter(m => m !== uid);
+                DB.save(); this.switchTab('members');
+            },
+            closeModal() { document.getElementById('modal-root').style.display = 'none'; }
         };
 
-        // Initialize empty state if first run
-        if (State.users.length === 0) {
-            console.log("Community Talk initialized for the first time.");
-        }
-
+        window.onload = () => UI.init();
     </script>
 </body>
+
 </html>
