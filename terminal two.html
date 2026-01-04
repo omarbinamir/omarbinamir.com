@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBAX | OmarBinAmir Physics Engine</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-cyan: #00f2ff;
+            --bg-deep: #050505;
+            --card-bg: rgba(15, 15, 15, 0.95);
+            --border: rgba(0, 242, 255, 0.2);
+        }
+
+        /* --- THE ANTI-COPY SHIELD --- */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            cursor: default;
+            user-select: none; 
+            -webkit-user-select: none; 
+            -ms-user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* --- PHYSICS ELEMENTS --- */
+        #mark-layer { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+        
+        .impact-mark {
+            position: absolute; background: #000; border-radius: 50%;
+            filter: blur(4px); width: 25px; height: 10px; opacity: 0.8;
+            transform-origin: center;
+        }
+
+        .float-money {
+            position: absolute; color: var(--primary-cyan); font-family: 'JetBrains Mono';
+            font-weight: 800; pointer-events: none; animation: floatUp 0.8s ease-out forwards;
+            z-index: 1001; font-size: 1.2rem;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-80px) scale(1.5); opacity: 0; }
+        }
+
+        #ball {
+            position: fixed; width: 60px; height: 60px;
+            background: radial-gradient(circle at 35% 35%, #fff, var(--primary-cyan) 40%, #008891);
+            border-radius: 50%; z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(0, 242, 255, 0.3);
+            cursor: grab; border: 1px solid rgba(255,255,255,0.4);
+            touch-action: none; will-change: transform;
+        }
+
+        /* --- EXECUTIVE INTERFACE --- */
+        nav {
+            width: 320px; height: 100%; border-right: 1px solid #222;
+            padding: 40px 25px; background: #000; z-index: 100;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+
+        .glass-card {
+            background: var(--card-bg); border: 1px solid #222;
+            border-radius: 4px; padding: 20px;
+        }
+
+        .label { font-size: 0.65rem; color: #555; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
+        .value { font-family: 'JetBrains Mono'; font-size: 1.6rem; color: #fff; }
+
+        .btn {
+            background: #fff; color: #000; border: none;
+            padding: 14px; font-weight: 800; width: 100%;
+            cursor: pointer; text-transform: uppercase; font-size: 0.8rem;
+            transition: 0.2s; font-family: 'JetBrains Mono';
+        }
+        .btn:hover { background: var(--primary-cyan); }
+
+        .shop-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid #111;
+        }
+
+        input[type="range"] { 
+            width: 100%; accent-color: #fff; height: 4px; margin-top: 10px;
+        }
+
+        #terminal {
+            margin-top: auto; font-family: 'JetBrains Mono'; font-size: 0.7rem; color: #333;
+            line-height: 1.5; border-top: 1px solid #111; padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mark-layer"></div>
+    <div id="ball"></div>
+
+    <nav>
+        <h1 style="font-weight: 900; letter-spacing: -1px; margin-bottom: 20px;">OMARBINAMIR</h1>
+        
+        <div class="glass-card">
+            <p class="label">Ball Points</p>
+            <p class="value" id="pts">0</p>
+        </div>
+
+        <div class="glass-card">
+            <p class="label">OBAX Balance</p>
+            <p class="value" id="obax">0</p>
+        </div>
+
+        <button class="btn" onclick="showReward()">Daily Reward</button>
+
+        <div class="glass-card">
+            <p class="label">Core Settings</p>
+            <div style="margin-top:10px">
+                <p class="label">Gravity</p>
+                <input type="range" min="0" max="100" value="50" oninput="phys.gravity = this.value/100">
+                <p class="label" style="margin-top:10px">Bounciness</p>
+                <input type="range" min="0" max="100" value="70" oninput="phys.bounce = this.value/100">
+                <p class="label" style="margin-top:10px">Size</p>
+                <input type="range" min="40" max="120" value="60" oninput="updateSize(this.value)">
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <p class="label">Enterprise Marketplace</p>
+            <div class="shop-item">
+                <span style="font-size:0.8rem">Pizzasinc</span>
+                <button class="btn" style="width:70px; padding:5px; font-size:0.6rem" onclick="buy('Pizzasinc', 500)">500</button>
+            </div>
+            <div class="shop-item">
+                <span style="font-size:0.8rem">Ideallink</span>
+                <button class="btn" style="width:70px; padding:5px; font-size:0.6rem" onclick="buy('Ideallink', 1200)">1.2K</button>
+            </div>
+            <div class="shop-item">
+                <span style="font-size:0.8rem">JS EXP</span>
+                <button class="btn" style="width:70px; padding:5px; font-size:0.6rem" onclick="buy('JS EXP', 5000)">5K</button>
+            </div>
+        </div>
+
+        <div id="terminal">
+            > System active...<br>
+            > Assets loaded...
+        </div>
+    </nav>
+
+    <script>
+        const ballEl = document.getElementById('ball');
+        const markLayer = document.getElementById('mark-layer');
+        let points = 0, obaxVal = 0;
+        let isDragging = false;
+        let lastX, lastY, rotation = 0, angularVel = 0;
+
+        const phys = {
+            x: 500, y: 300, vx: 10, vy: 0, 
+            w: 60, h: 60,
+            gravity: 0.5, bounce: 0.7, friction: 0.985,
+            wallFriction: 0.95
+        };
+
+        function updateSize(v) {
+            phys.w = phys.h = parseInt(v);
+            ballEl.style.width = ballEl.style.height = v + 'px';
+        }
+
+        ballEl.addEventListener('mousedown', (e) => { 
+            isDragging = true; lastX = e.clientX; lastY = e.clientY;
+            ballEl.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            ballEl.style.cursor = 'grab';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                phys.vx = (e.clientX - lastX) * 1.2;
+                phys.vy = (e.clientY - lastY) * 1.2;
+                phys.x = e.clientX - phys.w/2;
+                phys.y = e.clientY - phys.h/2;
+                angularVel = phys.vx * 0.5; // Spin it based on throw
+                lastX = e.clientX; lastY = e.clientY;
+            }
+        });
+
+        function doHit(x, y, vertical) {
+            points++;
+            document.getElementById('pts').innerText = points;
+
+            // Mark
+            const m = document.createElement('div');
+            m.className = 'impact-mark';
+            m.style.left = x + 'px'; m.style.top = y + 'px';
+            if(vertical) m.style.transform = 'rotate(90deg)';
+            markLayer.appendChild(m);
+
+            // Money
+            const mon = document.createElement('div');
+            mon.className = 'float-money';
+            mon.innerText = '$1';
+            mon.style.left = x + 'px'; mon.style.top = y + 'px';
+            document.body.appendChild(mon);
+            setTimeout(() => mon.remove(), 800);
+
+            // Audio-less feedback (Screen Shake)
+            const power = Math.min(Math.abs(vertical ? phys.vx : phys.vy), 20);
+            document.body.style.transform = `translate(${Math.random()*power-power/2}px, ${Math.random()*power-power/2}px)`;
+            setTimeout(() => document.body.style.transform = 'none', 40);
+        }
+
+        function step() {
+            if (!isDragging) {
+                phys.vy += phys.gravity;
+                phys.vx *= phys.friction;
+                phys.vy *= phys.friction;
+                
+                phys.x += phys.vx;
+                phys.y += phys.vy;
+
+                // Wall Friction & Rotation transfer
+                if (phys.x <= 0 || phys.x + phys.w >= window.innerWidth) {
+                    doHit(phys.x <= 0 ? 0 : window.innerWidth-10, phys.y + phys.h/2, true);
+                    phys.vx *= -phys.bounce;
+                    phys.vy *= phys.wallFriction;
+                    phys.x = phys.x <= 0 ? 0 : window.innerWidth - phys.w;
+                    angularVel = phys.vy * 0.5; // Wall hit adds spin
+                }
+                if (phys.y <= 0 || phys.y + phys.h >= window.innerHeight) {
+                    doHit(phys.x + phys.w/2, phys.y <= 0 ? 0 : window.innerHeight-10, false);
+                    phys.vy *= -phys.bounce;
+                    phys.vx *= phys.wallFriction;
+                    phys.y = phys.y <= 0 ? 0 : window.innerHeight - phys.h;
+                    angularVel = phys.vx * 0.5; // Floor hit adds spin
+                }
+
+                rotation += angularVel;
+                angularVel *= 0.99; // Air resistance for spin
+            }
+
+            // Real Ball Deformation (Squash/Stretch)
+            const speed = Math.sqrt(phys.vx**2 + phys.vy**2);
+            const str = 1 + (speed / 150);
+            const sq = 1 / str;
+            const angle = Math.atan2(phys.vy, phys.vx) * 180 / Math.PI;
+            
+            ballEl.style.transform = `translate3d(${phys.x}px, ${phys.y}px, 0) rotate(${angle}deg) scale(${str}, ${sq}) rotate(${rotation}deg)`;
+            
+            requestAnimationFrame(step);
+        }
+
+        function buy(item, cost) {
+            if (points >= cost) {
+                points -= cost;
+                document.getElementById('pts').innerText = points;
+                document.getElementById('terminal').innerHTML += `<br>> ACQUIRED: ${item}`;
+            }
+        }
+
+        function showReward() {
+            obaxVal += 50;
+            document.getElementById('obax').innerText = obaxVal;
+            document.getElementById('terminal').innerHTML += `<br>> SYNCED: +50 OBAX`;
+        }
+
+        step();
+    </script>
+</body>
+</html>

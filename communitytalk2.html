@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMMUNITY TALK | Secure Communication Platform</title>
+    <style>
+        :root {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2d2d2d;
+            --accent: #bb86fc;
+            --text-primary: #e1e1e1;
+            --text-secondary: #a0a0a0;
+            --owner-color: #ffd700;
+            --admin-color: #03dac6;
+            --member-color: #cf6679;
+            --danger: #cf6679;
+            --success: #4caf50;
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body, html { margin: 0; padding: 0; background: var(--bg-primary); color: var(--text-primary); height: 100vh; overflow: hidden; }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .flex { display: flex; }
+        .btn { 
+            padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; 
+            font-weight: 600; transition: opacity 0.2s; 
+        }
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn:hover { opacity: 0.8; }
+
+        /* Auth Screen */
+        #auth-overlay {
+            position: fixed; inset: 0; background: var(--bg-primary); 
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .auth-card {
+            background: var(--bg-secondary); padding: 40px; border-radius: 12px;
+            width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .auth-card h1 { text-align: center; margin-bottom: 30px; color: var(--accent); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
+        .form-group input { 
+            width: 100%; padding: 12px; background: var(--bg-tertiary); 
+            border: 1px solid #444; color: white; border-radius: 6px; 
+        }
+
+        /* Layout */
+        .app-container { display: flex; height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { 
+            width: 280px; background: var(--bg-secondary); border-right: 1px solid #333;
+            display: flex; flex-direction: column;
+        }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #333; }
+        .user-info { font-size: 0.85rem; color: var(--text-secondary); margin-top: 10px; }
+        .user-id-tag { color: var(--accent); font-weight: bold; background: #333; padding: 2px 6px; border-radius: 4px; }
+        
+        .nav-section { flex: 1; overflow-y: auto; padding: 10px; }
+        .section-title { font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); margin: 20px 0 10px 10px; letter-spacing: 1px; }
+        
+        .community-item {
+            padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 4px;
+            transition: background 0.2s; display: flex; align-items: center;
+        }
+        .community-item:hover { background: var(--bg-tertiary); }
+        .community-item.active { background: var(--accent); color: black; }
+        
+        /* Main Chat Area */
+        .main-content { flex: 1; display: flex; flex-direction: column; background: var(--bg-primary); }
+        .chat-header { 
+            height: 70px; padding: 0 25px; display: flex; align-items: center; 
+            justify-content: space-between; border-bottom: 1px solid #333;
+            background: var(--bg-secondary);
+        }
+        .chat-title h2 { margin: 0; font-size: 1.2rem; }
+        .chat-title p { margin: 0; font-size: 0.75rem; color: var(--text-secondary); }
+
+        .messages-list { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .message-card { 
+            background: var(--bg-secondary); padding: 12px 16px; border-radius: 12px;
+            max-width: 80%; width: fit-content; position: relative;
+        }
+        .message-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 0.8rem; }
+        .sender-name { font-weight: bold; }
+        .role-badge { 
+            font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; 
+            text-transform: uppercase; font-weight: 800;
+        }
+        .badge-owner { background: rgba(255, 215, 0, 0.2); color: var(--owner-color); border: 1px solid var(--owner-color); }
+        .badge-admin { background: rgba(3, 218, 198, 0.2); color: var(--admin-color); border: 1px solid var(--admin-color); }
+        .badge-member { background: rgba(207, 102, 121, 0.2); color: var(--member-color); border: 1px solid var(--member-color); }
+        
+        .message-content { line-height: 1.4; word-break: break-word; }
+        .delete-msg { 
+            position: absolute; right: -30px; top: 10px; cursor: pointer; color: var(--danger);
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .message-card:hover .delete-msg { opacity: 1; }
+
+        /* Input Area */
+        .input-container { padding: 20px; background: var(--bg-secondary); border-top: 1px solid #333; }
+        .input-wrapper { display: flex; gap: 12px; background: var(--bg-tertiary); padding: 8px; border-radius: 8px; }
+        .input-wrapper input { 
+            flex: 1; border: none; background: transparent; color: white; padding: 8px; outline: none;
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            display: flex; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .modal-content {
+            background: var(--bg-secondary); padding: 30px; border-radius: 12px;
+            width: 100%; max-width: 450px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="auth-overlay">
+        <div class="auth-card" id="login-form">
+            <h1>COMMUNITY TALK</h1>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="auth-username" placeholder="Enter username...">
+            </div>
+            <div class="form-group">
+                <label>Password (Simulated)</label>
+                <input type="password" id="auth-password" value="123456">
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="App.handleAuth()">Enter Platform</button>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--text-secondary); margin-top: 20px;">
+                Note: This is a single-session simulation with persistent storage.
+            </p>
+        </div>
+    </div>
+
+    <div class="app-container hidden" id="app-main">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>COMMUNITY TALK</h3>
+                <div class="user-info">
+                    Logged in as: <span id="current-user-display">Name</span><br>
+                    ID: <span id="current-user-id" class="user-id-tag">USR-0000</span>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <button class="btn btn-primary" style="width:100%; margin-bottom:10px" onclick="UI.showModal('create')">Create Community</button>
+                <button class="btn btn-secondary" style="width:100%; background: #444; color: white;" onclick="UI.showModal('join')">Join Community</button>
+                
+                <div class="section-title">My Communities</div>
+                <div id="community-list-container">
+                    </div>
+            </div>
+
+            <div style="padding: 20px; border-top: 1px solid #333;">
+                <button class="btn btn-danger" style="width:100%" onclick="App.logout()">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content" id="chat-view">
+            <div id="no-chat-selected" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color: var(--text-secondary);">
+                <h2>Welcome to Community Talk</h2>
+                <p>Select a community from the sidebar to start chatting.</p>
+            </div>
+
+            <div id="active-chat-view" class="hidden" style="flex:1; display:flex; flex-direction:column;">
+                <header class="chat-header">
+                    <div class="chat-title">
+                        <h2 id="active-comm-name">Community Name</h2>
+                        <p>ID: <span id="active-comm-id" style="color:var(--accent)">COMM-000</span></p>
+                    </div>
+                    <div class="chat-actions">
+                        <button id="admin-add-btn" class="btn btn-primary hidden" onclick="UI.showModal('addUser')">Add Member</button>
+                    </div>
+                </header>
+
+                <div class="messages-list" id="message-feed">
+                    </div>
+
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <input type="text" id="chat-input" placeholder="Message #community..." onkeypress="if(event.key === 'Enter') App.sendMessage()">
+                        <button class="btn btn-primary" onclick="App.sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modal-container" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="modal-title">Modal Title</h2>
+            <div id="modal-body" class="form-group" style="margin-top:20px">
+                </div>
+            <div class="flex" style="justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button class="btn" style="background:#444; color:white;" onclick="UI.hideModal()">Cancel</button>
+                <button id="modal-confirm-btn" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * COMMUNITY TALK - CORE ENGINE
+         * ARCHITECTURE: Controller-State Pattern
+         */
+
+        const State = {
+            users: JSON.parse(localStorage.getItem('ct_users')) || [],
+            communities: JSON.parse(localStorage.getItem('ct_communities')) || [],
+            messages: JSON.parse(localStorage.getItem('ct_messages')) || [],
+            currentUser: null,
+            activeCommunity: null
+        };
+
+        const Utils = {
+            generateID(prefix) {
+                return `${prefix}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+            },
+            save() {
+                localStorage.setItem('ct_users', JSON.stringify(State.users));
+                localStorage.setItem('ct_communities', JSON.stringify(State.communities));
+                localStorage.setItem('ct_messages', JSON.stringify(State.messages));
+            }
+        };
+
+        const App = {
+            handleAuth() {
+                const username = document.getElementById('auth-username').value.trim();
+                if (!username) return alert("Please enter a username");
+
+                // Check if user exists, else create
+                let user = State.users.find(u => u.username.toLowerCase() === username.toLowerCase());
+                if (!user) {
+                    user = {
+                        id: Utils.generateID('USR'),
+                        username: username,
+                        joinedAt: new Date().toISOString()
+                    };
+                    State.users.push(user);
+                    Utils.save();
+                }
+
+                State.currentUser = user;
+                this.initApp();
+            },
+
+            initApp() {
+                document.getElementById('auth-overlay').classList.add('hidden');
+                document.getElementById('app-main').classList.remove('hidden');
+                document.getElementById('current-user-display').innerText = State.currentUser.username;
+                document.getElementById('current-user-id').innerText = State.currentUser.id;
+                UI.renderCommunityList();
+            },
+
+            createCommunity(name) {
+                const newComm = {
+                    id: Utils.generateID('COMM'),
+                    name: name,
+                    owner: State.currentUser.id,
+                    admins: [],
+                    members: [State.currentUser.id]
+                };
+                State.communities.push(newComm);
+                Utils.save();
+                UI.renderCommunityList();
+                this.selectCommunity(newComm.id);
+                UI.hideModal();
+            },
+
+            joinCommunity(commId) {
+                const comm = State.communities.find(c => c.id === commId);
+                if (!comm) return alert("Community ID not found!");
+                
+                if (!comm.members.includes(State.currentUser.id)) {
+                    comm.members.push(State.currentUser.id);
+                    Utils.save();
+                }
+                this.selectCommunity(comm.id);
+                UI.renderCommunityList();
+                UI.hideModal();
+            },
+
+            addUserToCommunity(targetUserId) {
+                const comm = State.communities.find(c => c.id === State.activeCommunity);
+                const targetUser = State.users.find(u => u.id === targetUserId);
+
+                if (!targetUser) return alert("User ID not found in system!");
+                if (comm.members.includes(targetUserId)) return alert("User already in community");
+
+                // Permission check
+                if (comm.owner !== State.currentUser.id && !comm.admins.includes(State.currentUser.id)) {
+                    return alert("Permission Denied: Only Admins/Owners can add members.");
+                }
+
+                comm.members.push(targetUserId);
+                Utils.save();
+                alert(`Added ${targetUser.username} to community!`);
+                UI.hideModal();
+            },
+
+            selectCommunity(id) {
+                State.activeCommunity = id;
+                const comm = State.communities.find(c => c.id === id);
+                
+                document.getElementById('no-chat-selected').classList.add('hidden');
+                document.getElementById('active-chat-view').classList.remove('hidden');
+                document.getElementById('active-comm-name').innerText = comm.name;
+                document.getElementById('active-comm-id').innerText = comm.id;
+
+                // Show/Hide Admin buttons
+                const isAdmin = comm.owner === State.currentUser.id || comm.admins.includes(State.currentUser.id);
+                document.getElementById('admin-add-btn').classList.toggle('hidden', !isAdmin);
+
+                UI.renderMessages();
+                UI.renderCommunityList();
+            },
+
+            sendMessage() {
+                const input = document.getElementById('chat-input');
+                const content = input.value.trim();
+                if (!content || !State.activeCommunity) return;
+
+                const msg = {
+                    id: Utils.generateID('MSG'),
+                    communityId: State.activeCommunity,
+                    senderId: State.currentUser.id,
+                    senderName: State.currentUser.username,
+                    content: content,
+                    timestamp: new Date().toISOString()
+                };
+
+                State.messages.push(msg);
+                Utils.save();
+                input.value = '';
+                UI.renderMessages();
+            },
+
+            deleteMessage(msgId) {
+                const msgIndex = State.messages.findIndex(m => m.id === msgId);
+                const msg = State.messages[msgIndex];
+                const comm = State.communities.find(c => c.id === State.activeCommunity);
+
+                const isOwner = comm.owner === State.currentUser.id;
+                const isAdmin = comm.admins.includes(State.currentUser.id);
+                const isSender = msg.senderId === State.currentUser.id;
+
+                if (isOwner || isAdmin || isSender) {
+                    State.messages.splice(msgIndex, 1);
+                    Utils.save();
+                    UI.renderMessages();
+                } else {
+                    alert("Permission Denied: You cannot delete this message.");
+                }
+            },
+
+            logout() {
+                location.reload();
+            }
+        };
+
+        const UI = {
+            showModal(type) {
+                const modal = document.getElementById('modal-container');
+                const title = document.getElementById('modal-title');
+                const body = document.getElementById('modal-body');
+                const btn = document.getElementById('modal-confirm-btn');
+
+                modal.classList.remove('hidden');
+                body.innerHTML = '';
+
+                if (type === 'create') {
+                    title.innerText = "Create New Community";
+                    body.innerHTML = `<label>Community Name</label><input type="text" id="m-input" placeholder="Enter name...">`;
+                    btn.onclick = () => App.createCommunity(document.getElementById('m-input').value);
+                } else if (type === 'join') {
+                    title.innerText = "Join via Community ID";
+                    body.innerHTML = `<label>Community ID</label><input type="text" id="m-input" placeholder="COMM-XXXXXX">`;
+                    btn.onclick = () => App.joinCommunity(document.getElementById('m-input').value.trim());
+                } else if (type === 'addUser') {
+                    title.innerText = "Add User to Community";
+                    body.innerHTML = `<label>User ID</label><input type="text" id="m-input" placeholder="USR-XXXXXX">`;
+                    btn.onclick = () => App.addUserToCommunity(document.getElementById('m-input').value.trim());
+                }
+            },
+
+            hideModal() {
+                document.getElementById('modal-container').classList.add('hidden');
+            },
+
+            renderCommunityList() {
+                const container = document.getElementById('community-list-container');
+                const joinedComms = State.communities.filter(c => c.members.includes(State.currentUser.id));
+                
+                container.innerHTML = joinedComms.map(comm => `
+                    <div class="community-item ${State.activeCommunity === comm.id ? 'active' : ''}" 
+                         onclick="App.selectCommunity('${comm.id}')">
+                        <span style="font-weight:bold; margin-right: 10px;">#</span>
+                        ${comm.name}
+                    </div>
+                `).join('');
+            },
+
+            renderMessages() {
+                const feed = document.getElementById('message-feed');
+                const comm = State.communities.find(c => c.id === State.activeCommunity);
+                const commMsgs = State.messages.filter(m => m.communityId === State.activeCommunity);
+
+                feed.innerHTML = commMsgs.map(m => {
+                    let role = 'Member';
+                    let roleClass = 'badge-member';
+                    
+                    if (comm.owner === m.senderId) {
+                        role = 'Owner';
+                        roleClass = 'badge-owner';
+                    } else if (comm.admins.includes(m.senderId)) {
+                        role = 'Admin';
+                        roleClass = 'badge-admin';
+                    }
+
+                    return `
+                        <div class="message-card">
+                            <div class="message-meta">
+                                <span class="sender-name">${m.senderName}</span>
+                                <span class="role-badge ${roleClass}">${role}</span>
+                                <span style="color:var(--text-secondary); font-size:0.7rem">${new Date(m.timestamp).toLocaleTimeString()}</span>
+                            </div>
+                            <div class="message-content">${m.content}</div>
+                            <div class="delete-msg" onclick="App.deleteMessage('${m.id}')">✖</div>
+                        </div>
+                    `;
+                }).join('');
+                
+                feed.scrollTop = feed.scrollHeight;
+            }
+        };
+
+        // Initialize empty state if first run
+        if (State.users.length === 0) {
+            console.log("Community Talk initialized for the first time.");
+        }
+
+    </script>
+</body>
+</html>

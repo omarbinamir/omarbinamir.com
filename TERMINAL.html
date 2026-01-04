@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Omar Bin Amir | Executive Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0066ff;
+            --secondary: #00d4ff;
+            --accent: #ff3366;
+            --bg-dark: #0a0e17;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --text: #ffffff;
+            --text-dim: #8b92a7;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0a0e17 0%, #151923 50%, #0a0e17 100%);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 51, 102, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* BALL & PHYSICS */
+        #trail-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 2; }
+
+        .letter {
+            position: fixed; font-size: 8rem; font-weight: 900; 
+            color: var(--text); cursor: grab; user-select: none;
+            z-index: 1000; transition: color 0.3s;
+            text-shadow: 0 0 20px rgba(0, 102, 255, 0.5);
+        }
+        .letter:active { 
+            color: var(--primary); 
+            cursor: grabbing;
+            text-shadow: 0 0 30px var(--primary);
+        }
+
+        #ball {
+            position: fixed; width: 75px; height: 75px;
+            background: radial-gradient(circle at 30% 30%, #fff, #bbb);
+            border-radius: 50%; z-index: 9999;
+            box-shadow: 0 0 50px var(--primary), 0 0 100px rgba(0, 102, 255, 0.3);
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--text);
+            cursor: grab;
+        }
+        #ball:active { cursor: grabbing; }
+
+        .ball-analytics {
+            position: fixed; top: 20px; right: 20px; text-align: right;
+            font-family: 'JetBrains Mono'; font-size: 11px; color: var(--primary); 
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        /* SETTINGS */
+        #settings-trigger {
+            position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
+            background: var(--primary); border: none; border-radius: 50%; 
+            color: white; cursor: pointer; z-index: 10001; font-size: 1.5rem;
+            box-shadow: 0 0 30px rgba(0, 119, 255, 0.5);
+            transition: all 0.3s;
+        }
+        #settings-trigger:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 0 50px rgba(0, 119, 255, 0.8);
+        }
+
+        .modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            z-index: 20000; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        .modal.open { display: flex; }
+        .terminal {
+            width: 450px; background: rgba(0, 0, 0, 0.95); 
+            border: 1px solid var(--primary); padding: 40px;
+            box-shadow: 0 0 100px rgba(0, 119, 255, 0.3);
+            border-radius: 10px;
+        }
+        .terminal h2 {
+            color: var(--primary);
+            font-family: 'JetBrains Mono';
+            margin-bottom: 20px;
+        }
+
+        .input-group { margin: 25px 0; }
+        label { 
+            display: block; font-size: 10px; font-family: 'JetBrains Mono'; 
+            margin-bottom: 10px; color: var(--primary); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        input[type=range] { width: 100%; accent-color: var(--primary); cursor: pointer; }
+
+        .apply-btn {
+            width: 100%; padding: 15px; background: var(--primary); 
+            color: white; border: none; font-weight: 800; cursor: pointer;
+            border-radius: 5px; font-family: 'Inter';
+            transition: all 0.3s;
+        }
+        .apply-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.02);
+        }
+
+        /* VIBRATION FX */
+        .impact-vibration { animation: vibrate 0.15s linear; }
+        @keyframes vibrate {
+            0% { transform: translate(0,0); }
+            25% { transform: translate(-5px, 5px); }
+            50% { transform: translate(5px, -5px); }
+            100% { transform: translate(0,0); }
+        }
+
+        /* DASHBOARD */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono';
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #00ff88;
+            font-family: 'JetBrains Mono';
+        }
+
+        .status-badge i {
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.02));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.2);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .icon-blue { background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(0, 212, 255, 0.2)); color: var(--secondary); }
+        .icon-red { background: linear-gradient(135deg, rgba(255, 51, 102, 0.2), rgba(255, 102, 0, 0.2)); color: var(--accent); }
+        .icon-green { background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 187, 0.2)); color: #00ff88; }
+        .icon-purple { background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(75, 0, 130, 0.2)); color: #a855f7; }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--text), var(--text-dim));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+        }
+
+        .metric-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .metric-change.positive {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+        }
+
+        .project-card {
+            padding: 2rem;
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        .project-info h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .project-info p {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+        }
+
+        .project-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'Inter';
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-meta {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .letter {
+                font-size: 5rem;
+            }
+        }
+    </style>
+</head>
+<body id="stage">
+
+    <!-- BALL PHYSICS CANVAS -->
+    <canvas id="trail-canvas"></canvas>
+
+    <!-- DRAGGABLE LETTERS -->
+    <div id="L-O" class="letter" style="left: 10%; top: 20%;">O</div>
+    <div id="L-B" class="letter" style="left: 20%; top: 20%;">B</div>
+    <div id="L-A" class="letter" style="left: 30%; top: 20%;">A</div>
+
+    <!-- BALL ANALYTICS -->
+    <div class="ball-analytics">
+        <div>CORE_INTEGRITY: 100% [STABLE]</div>
+        <div>REAL_VELOCITY: <span id="v-val">0.0</span> MPH</div>
+        <div>TIME_DILATION: <span id="t-val">1.0</span>x</div>
+    </div>
+
+    <!-- THE BALL -->
+    <div id="ball">
+        <span style="color:#000; font-weight:900; font-size:12px;">CORE</span>
+    </div>
+
+    <!-- SETTINGS BUTTON -->
+    <button id="settings-trigger" onclick="toggleSettings()"><i class="fas fa-sliders-h"></i></button>
+
+    <!-- SETTINGS MODAL -->
+    <div class="modal" id="modal">
+        <div class="terminal">
+            <h2>SYSTEM_PARAMETERS</h2>
+            <div class="input-group">
+                <label>VELOCITY_CAP (MAX 300 MPH)</label>
+                <input type="range" id="speed-range" min="50" max="300" value="150" oninput="ball.limit = this.value">
+            </div>
+            <div class="input-group">
+                <label>TIME_SCALE (MIN: 1 MIN/HOUR | MAX: REALTIME)</label>
+                <input type="range" id="time-range" min="0.01" max="1" step="0.01" value="1" oninput="updateTimeScale(this.value)">
+            </div>
+            <button class="apply-btn" onclick="toggleSettings()">APPLY_CHANGES</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <div class="logo-icon">OBA</div>
+                <div class="logo-text">
+                    <h1>Omar Bin Amir</h1>
+                    <p>EXECUTIVE DASHBOARD v20.0</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="status-badge">
+                    <i class="fas fa-circle"></i>
+                    ALL SYSTEMS OPERATIONAL
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Metrics -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Total Revenue</div>
+                    <div class="card-icon icon-blue">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="metric-value">$847K</div>
+                <div class="metric-label">Combined Portfolio Value</div>
+                <div class="metric-change positive">
+                    <i class="fas fa-arrow-up"></i> +23.4% this month
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Active Projects</div>
+                    <div class="card-icon icon-purple">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                </div>
+                <div class="metric-value">8</div>
+                <div class="metric-label">Live Ventures</div>
+                <div class="metric-change positive">
+                    <i class="fas fa-arrow-up"></i> 2 new this quarter
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Network Reach</div>
+                    <div class="card-icon icon-green">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="metric-value">47.2K</div>
+                <div class="metric-label">Total Users Served</div>
+                <div class="metric-change positive">
+                    <i class="fas fa-arrow-up"></i> +15.8% growth
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">System Status</div>
+                    <div class="card-icon icon-blue">
+                        <i class="fas fa-server"></i>
+                    </div>
+                </div>
+                <div class="metric-value">99.9%</div>
+                <div class="metric-label">Uptime Performance</div>
+                <div class="metric-change positive">
+                    <i class="fas fa-check"></i> Excellent
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Cards -->
+        <div class="dashboard-grid">
+            <!-- PizzasInc -->
+            <div class="card project-card">
+                <div class="project-header">
+                    <div class="project-logo" style="background: linear-gradient(135deg, #ff6b35, #f7931e);">
+                        🍕
+                    </div>
+                    <div class="project-info">
+                        <h3>PizzasInc</h3>
+                        <p>Food Tech Revolution</p>
+                    </div>
+                </div>
+                <div class="project-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #ff6b35;">12.4K</div>
+                        <div class="stat-label">Orders/Month</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #ff6b35;">4.8★</div>
+                        <div class="stat-label">Avg Rating</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #ff6b35;">$284K</div>
+                        <div class="stat-label">Monthly Rev</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #ff6b35;">8</div>
+                        <div class="stat-label">Locations</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IdealLink -->
+            <div class="card project-card">
+                <div class="project-header">
+                    <div class="project-logo" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                        🔗
+                    </div>
+                    <div class="project-info">
+                        <h3>IdealLink</h3>
+                        <p>Connection Platform</p>
+                    </div>
+                </div>
+                <div class="project-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #667eea;">34.8K</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #667eea;">156</div>
+                        <div class="stat-label">Daily Connects</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #667eea;">$563K</div>
+                        <div class="stat-label">ARR</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: #667eea;">92%</div>
+                        <div class="stat-label">Retention</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Quick Actions</div>
+            </div>
+            <div class="quick-actions">
+                <button class="action-btn">
+                    <i class="fas fa-chart-line"></i>
+                    View Analytics
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-file-alt"></i>
+                    Generate Report
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-download"></i>
+                    Export Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Recent Activity</div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon icon-green">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">PizzasInc Q4 Goals Achieved</div>
+                    <div class="activity-meta">2 hours ago • Revenue Target</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon icon-blue">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">IdealLink User Milestone</div>
+                    <div class="activity-meta">5 hours ago • 30K+ Active Users</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon icon-purple">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">New Feature Deployment</div>
+                    <div class="activity-meta">Yesterday • IdealLink Premium Tier</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon icon-red">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Monthly Performance Review</div>
+                    <div class="activity-meta">2 days ago • All Projects</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== BALL PHYSICS ENGINE =====
+        const canvas = document.getElementById('trail-canvas');
+        const ctx = canvas.getContext('2d');
+        const stage = document.getElementById('stage');
+        
+        const ball = {
+            el: document.getElementById('ball'),
+            x: window.innerWidth / 2, y: window.innerHeight / 2,
+            vx: 15, vy: 10, w: 75, h: 75,
+            isHeld: false, limit: 150, timeScale: 1.0, trail: []
+        };
+
+        const letterEls = document.querySelectorAll('.letter');
+        const letters = Array.from(letterEls).map(el => ({
+            el: el, x: el.offsetLeft, y: el.offsetTop, w: 110, h: 140, isHeld: false
+        }));
+
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.onresize = resize; resize();
+
+        function updateTimeScale(val) {
+            ball.timeScale = parseFloat(val);
+            document.getElementById('t-val').innerText = val == 0.01 ? "1m/hr" : val + "x";
+        }
+
+        let lastFrameTime = performance.now();
+
+        function physics(now) {
+            const dt = (now - lastFrameTime) * ball.timeScale;
+            lastFrameTime = now;
+
+            if (!ball.isHeld) {
+                ball.vy += 0.5 * (dt / 16); 
+                ball.x += ball.vx * (dt / 16);
+                ball.y += ball.vy * (dt / 16);
+
+                const speed = Math.sqrt(ball.vx**2 + ball.vy**2);
+                document.getElementById('v-val').innerText = speed.toFixed(1);
+
+                // Wall Collisions
+                if (ball.x <= 0 || ball.x + ball.w >= window.innerWidth) {
+                    ball.vx *= -0.85;
+                    ball.x = ball.x <= 0 ? 0 : window.innerWidth - ball.w;
+                    if(speed > 20) impact();
+                }
+                if (ball.y <= 0 || ball.y + ball.h >= window.innerHeight) {
+                    ball.vy *= -0.85;
+                    ball.y = ball.y <= 0 ? 0 : window.innerHeight - ball.h;
+                    if(speed > 20) impact();
+                }
+
+                // Barrier Collisions (Letters)
+                letters.forEach(l => {
+                    if (ball.x < l.x + l.w && ball.x + ball.w > l.x && ball.y < l.y + l.h && ball.y + ball.h > l.y) {
+                        ball.vx *= -0.9; ball.vy *= -0.9;
+                        ball.x += ball.vx; ball.y += ball.vy;
+                        impact();
+                    }
+                });
+            }
+
+            ball.el.style.transform = `translate3d(${ball.x}px, ${ball.y}px, 0)`;
+            
+            // Trail logic
+            ball.trail.push({x: ball.x + 37, y: ball.y + 37});
+            if (ball.trail.length > 30) ball.trail.shift();
+            drawTrail();
+
+            requestAnimationFrame(physics);
+        }
+
+        function impact() {
+            stage.classList.add('impact-vibration');
+            setTimeout(() => stage.classList.remove('impact-vibration'), 150);
+        }
+
+        function drawTrail() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (ball.trail.length < 2) return;
+            ctx.beginPath();
+            ctx.strokeStyle = '#0077ff';
+            ctx.lineWidth = 15;
+            ctx.lineCap = 'round';
+            for(let i = 0; i < ball.trail.length; i++) {
+                ctx.globalAlpha = (i / ball.trail.length) * ball.timeScale;
+                const p = ball.trail[i];
+                if (i === 0) ctx.moveTo(p.x, p.y);
+                else ctx.lineTo(p.x, p.y);
+            }
+            ctx.stroke();
+        }
+
+        function bindDrag(obj, isBall) {
+            let lx, ly;
+            obj.el.onpointerdown = (e) => {
+                obj.isHeld = true; obj.el.setPointerCapture(e.pointerId);
+                lx = e.clientX; ly = e.clientY;
+            };
+            obj.el.onpointermove = (e) => {
+                if (!obj.isHeld) return;
+                let dx = e.clientX - lx;
+                let dy = e.clientY - ly;
+                if (isBall) {
+                    ball.vx = dx * 3; ball.vy = dy * 3;
+                    const s = Math.sqrt(ball.vx**2 + ball.vy**2);
+                    if(s > ball.limit) { ball.vx *= (ball.limit/s); ball.vy *= (ball.limit/s); }
+                }
+                obj.x += dx; obj.y += dy;
+                obj.el.style.transform = `translate3d(${obj.x}px, ${obj.y}px, 0)`;
+                if(!isBall) { obj.el.style.left = '0'; obj.el.style.top = '0'; }
+                lx = e.clientX; ly = e.clientY;
+            };
+            obj.el.onpointerup = () => obj.isHeld = false;
+        }
+
+        function toggleSettings() { document.getElementById('modal').classList.toggle('open'); }
+
+        bindDrag(ball, true);
+        letters.forEach(l => bindDrag(l, false));
+        requestAnimationFrame(physics);
+
+        // ===== DASHBOARD INTERACTIONS =====
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
