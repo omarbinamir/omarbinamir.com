@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebPulse Ultimate | Professional Website Auditor</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --hs-orange: #ff7a59;
+            --hs-orange-hover: #ff8f73;
+            --hs-navy: #2d3e50;
+            --hs-navy-dark: #1a2734;
+            --hs-grey-bg: #f5f8fa;
+            --hs-border: #cbd6e2;
+            --text-main: #33475b;
+            --text-light: #516e89;
+            --success: #00a08e;
+            --warning: #f59e0b;
+            --danger: #f2545b;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(45, 62, 80, 0.08);
+            --shadow-lg: 0 12px 30px rgba(45, 62, 80, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--hs-grey-bg);
+            color: var(--text-main);
+            font-family: 'Lexend', sans-serif;
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        /* --- HEADER & HERO --- */
+        nav {
+            background: var(--white);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--hs-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--hs-navy);
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--hs-orange);
+        }
+
+        .hero {
+            background-color: var(--hs-navy);
+            color: white;
+            padding: 80px 20px 140px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.85;
+            margin-bottom: 35px;
+            max-width: 600px;
+            margin-inline: auto;
+        }
+
+        .input-group {
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .input-group input {
+            flex: 1;
+            border: none;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            outline: none;
+            color: var(--hs-navy);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-grade {
+            background: var(--hs-orange);
+            color: white;
+            border: none;
+            padding: 0 35px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-grade:hover {
+            background: var(--hs-orange-hover);
+        }
+
+        /* --- LOADER --- */
+        #loader {
+            display: none;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #eaf0f6;
+            border-top-color: var(--hs-orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* --- MAIN REPORT AREA --- */
+        #report {
+            display: none;
+            max-width: 1100px;
+            margin: -80px auto 0;
+            padding: 0 20px;
+        }
+
+        /* TOTAL SCORE CARD */
+        .main-score-card {
+            background: white;
+            border-radius: 12px;
+            padding: 50px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            margin-bottom: 40px;
+            border-bottom: 5px solid var(--hs-orange);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            flex-shrink: 0;
+        }
+
+        .circular-chart {
+            display: block;
+            margin: 10px auto;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: #eee;
+            stroke-width: 3.8;
+        }
+
+        .circle {
+            fill: none;
+            stroke-width: 3.8;
+            stroke-linecap: round;
+            stroke: var(--hs-orange);
+            transition: stroke-dasharray 1.5s ease;
+        }
+
+        .percentage {
+            font-family: 'Lexend', sans-serif;
+            fill: var(--hs-navy);
+            font-size: 0.6em;
+            text-anchor: middle;
+            font-weight: 800;
+        }
+
+        .verdict-info h2 {
+            font-size: 2.2rem;
+            color: var(--hs-navy);
+            margin-bottom: 10px;
+        }
+
+        .verdict-info p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* GRID LAYOUT */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--hs-border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .card-header h3 {
+            font-size: 1.4rem;
+            color: var(--hs-navy);
+        }
+
+        .card-score {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--hs-orange);
+        }
+
+        .progress-bar {
+            background: #eaf0f6;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--hs-orange);
+            width: 0;
+            transition: width 1.5s ease;
+        }
+
+        /* AUDIT LISTS */
+        .audit-item {
+            display: flex;
+            gap: 15px;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f4f7;
+        }
+
+        .audit-item:last-child {
+            border: none;
+        }
+
+        .status-pill {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            margin-top: 3px;
+        }
+
+        .pass {
+            background: var(--success);
+        }
+
+        .fail {
+            background: var(--danger);
+        }
+
+        .audit-text b {
+            display: block;
+            color: var(--hs-navy);
+            font-size: 0.95rem;
+        }
+
+        .audit-text span {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* RECOMMENDATIONS */
+        .action-plan {
+            background: #fff9f7;
+            border: 2px solid #ffe8e1;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .action-plan h4 {
+            color: #bf4d28;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .rec-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .rec-list li {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border-left: 4px solid var(--hs-orange);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .main-score-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .rec-list {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">WEBPULSE <span>ULTIMATE</span></div>
+        <div style="font-size: 0.85rem; color: var(--text-light); font-weight: 600;">ENTERPRISE AUDIT V2.0</div>
+    </nav>
+
+    <section class="hero">
+        <h1>Is your website working for you?</h1>
+        <p>In seconds, we'll audit your page speed, SEO tags, mobile responsiveness, and security protocols.</p>
+
+        <div class="input-group">
+            <input type="url" id="siteUrl" placeholder="https://www.example.com" autocomplete="off">
+            <button class="btn-grade" onclick="performAudit()">Grade Website</button>
+        </div>
+    </section>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="font-weight: 600; color: var(--hs-navy);">Crawling site architecture and analyzing DOM...</p>
+    </div>
+
+    <main id="report">
+        <div class="main-score-card">
+            <div class="chart-container">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path id="scorePath" class="circle" stroke-dasharray="0, 100"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <text x="18" y="20.35" class="percentage" id="scoreText">0</text>
+                </svg>
+            </div>
+            <div class="verdict-info">
+                <h2 id="verdictHeadline">Analysis Complete</h2>
+                <p id="verdictSubline">We've generated your personalized marketing and technical report.</p>
+            </div>
+        </div>
+
+        <div class="category-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Performance</h3>
+                    <div class="card-score" id="perf_pts">0/30</div>
+                </div>
+                <div class="progress-bar">
+                    <div id="perf_bar" class="progress-fill"></div>
+                </div>
+                <div id="perf_list"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>SEO</h3>
+                    <div class="card-score" id="seo_pts">0/30</div>
+                </div>
+                <div class="progress-bar">
+                    <div id="seo_bar" class="progress-fill"></div>
+                </div>
+                <div id="seo_list"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Mobile</h3>
+                    <div class="card-score" id="mob_pts">0/20</div>
+                </div>
+                <div class="progress-bar">
+                    <div id="mob_bar" class="progress-fill"></div>
+                </div>
+                <div id="mob_list"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Security</h3>
+                    <div class="card-score" id="sec_pts">0/20</div>
+                </div>
+                <div class="progress-bar">
+                    <div id="sec_bar" class="progress-fill"></div>
+                </div>
+                <div id="sec_list"></div>
+            </div>
+        </div>
+
+        <div class="action-plan">
+            <h4>⚡ Immediate Action Items</h4>
+            <ul class="rec-list" id="recList"></ul>
+        </div>
+    </main>
+
+    <script>
+        async function performAudit() {
+            let url = document.getElementById('siteUrl').value.trim();
+            if (!url) return alert("Please enter a URL.");
+            if (!url.startsWith('http')) url = 'https://' + url;
+
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('report').style.display = 'none';
+            window.scrollTo({ top: 400, behavior: 'smooth' });
+
+            try {
+                const start = performance.now();
+                // Use a fallback-protected proxy
+                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                const data = await res.json();
+                const time = (performance.now() - start) / 1000;
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.contents, 'text/html');
+
+                processData(doc, url, time);
+            } catch (e) {
+                alert("This site is blocking external audits. Please try a different URL.");
+                document.getElementById('loader').style.display = 'none';
+            }
+        }
+
+        function processData(doc, url, loadTime) {
+            const audit = {
+                perf: { s: 0, m: 30, items: [] },
+                seo: { s: 0, m: 30, items: [] },
+                mob: { s: 0, m: 20, items: [] },
+                sec: { s: 0, m: 20, items: [] }
+            };
+
+            // 1. PERFORMANCE
+            if (loadTime < 1.8) {
+                audit.perf.s = 30;
+                audit.perf.items.push({ p: 1, h: 'Page Speed', d: `Load time: ${loadTime.toFixed(2)}s. Fast.` });
+            } else {
+                audit.perf.s = 15;
+                audit.perf.items.push({ p: 0, h: 'Page Speed', d: `Load time: ${loadTime.toFixed(2)}s. Consider optimizing assets.` });
+            }
+            const scripts = doc.querySelectorAll('script').length;
+            audit.perf.items.push({ p: scripts < 20 ? 1 : 0, h: 'Request Count', d: `${scripts} JavaScript files detected.` });
+
+            // 2. SEO
+            const title = doc.querySelector('title');
+            const desc = doc.querySelector('meta[name="description"]');
+            const h1 = doc.querySelector('h1');
+
+            if (title) { audit.seo.s += 10; audit.seo.items.push({ p: 1, h: 'Title Tag', d: 'Found title tag.' }); }
+            else { audit.seo.items.push({ p: 0, h: 'Title Tag', d: 'Missing <title> element.' }); }
+
+            if (desc) { audit.seo.s += 10; audit.seo.items.push({ p: 1, h: 'Meta Description', d: 'Found meta description.' }); }
+            else { audit.seo.items.push({ p: 0, h: 'Meta Description', d: 'Missing meta description.' }); }
+
+            if (h1) { audit.seo.s += 10; audit.seo.items.push({ p: 1, h: 'H1 Header', d: 'Heading structure is clear.' }); }
+            else { audit.seo.items.push({ p: 0, h: 'H1 Header', d: 'No H1 found. Bad for ranking.' }); }
+
+            // 3. MOBILE
+            const viewport = doc.querySelector('meta[name="viewport"]');
+            if (viewport) { audit.mob.s = 20; audit.mob.items.push({ p: 1, h: 'Responsive Design', d: 'Mobile viewport configured.' }); }
+            else { audit.mob.items.push({ p: 0, h: 'Responsive Design', d: 'No mobile viewport found.' }); }
+
+            // 4. SECURITY
+            const isSSL = url.startsWith('https');
+            if (isSSL) { audit.sec.s = 20; audit.sec.items.push({ p: 1, h: 'SSL Certificate', d: 'Site is secure (HTTPS).' }); }
+            else { audit.sec.items.push({ p: 0, h: 'SSL Certificate', d: 'Site is insecure (HTTP).' }); }
+
+            renderReport(audit);
+        }
+
+        function renderReport(data) {
+            const total = data.perf.s + data.seo.s + data.mob.s + data.sec.s;
+
+            // Animate Circle
+            document.getElementById('scorePath').setAttribute('stroke-dasharray', `${total}, 100`);
+            animateValue('scoreText', 0, total, 1500);
+
+            // Update Verdict
+            const head = document.getElementById('verdictHeadline');
+            if (total > 85) head.innerText = "Excellent Work!";
+            else if (total > 60) head.innerText = "Needs Improvement";
+            else head.innerText = "Critical Help Needed";
+
+            // Render Categories
+            const update = (id, obj) => {
+                document.getElementById(`${id}_pts`).innerText = `${obj.s}/${obj.m}`;
+                document.getElementById(`${id}_bar`).style.width = (obj.s / obj.m * 100) + '%';
+                document.getElementById(`${id}_list`).innerHTML = obj.items.map(i => `
+                <div class="audit-item">
+                    <div class="status-pill ${i.p ? 'pass' : 'fail'}">${i.p ? '✓' : '✕'}</div>
+                    <div class="audit-text"><b>${i.h}</b><span>${i.d}</span></div>
+                </div>
+            `).join('');
+            };
+
+            update('perf', data.perf);
+            update('seo', data.seo);
+            update('mob', data.mob);
+            update('sec', data.sec);
+
+            // Build Recommendations
+            const recs = [];
+            [data.perf, data.seo, data.mob, data.sec].forEach(cat => {
+                cat.items.forEach(i => { if (i.p === 0) recs.push(i.h); });
+            });
+
+            const recList = document.getElementById('recList');
+            recList.innerHTML = recs.length > 0 ?
+                recs.slice(0, 4).map(r => `<li>Fix missing or poor: ${r}</li>`).join('') :
+                "<li>No critical fixes! Your site is technically sound.</li>";
+
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('report').style.display = 'block';
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+
+</body>
+
+</html>

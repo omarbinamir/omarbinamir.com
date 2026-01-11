@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architect Pro | Final Ultra Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #6366f1; --accent: #f43f5e; --bg: #0f172a; 
+            --radius: 12px; --padding: 40px; --text-border-color: #000000;
+            --text-border-width: 0px;
+        }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+        body { 
+            margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); 
+            color: #fff; height: 100vh; display: flex; overflow: hidden; 
+        }
+
+        /* --- SIDEBARS --- */
+        .sidebar { 
+            width: 320px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow-y: auto;
+            z-index: 1000;
+        }
+        .sidebar-header { padding: 25px; font-weight: 900; color: var(--primary); font-size: 1.2rem; border-bottom: 1px solid #334155; }
+
+        /* --- CANVAS --- */
+        .canvas { flex: 1; overflow-y: auto; padding: 60px 20px; background: #e2e8f0; position: relative; }
+        .page { 
+            width: 100%; max-width: 1000px; margin: 0 auto; min-height: 100vh; 
+            background: white; color: #1e293b; border-radius: var(--radius);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); padding: var(--padding);
+        }
+
+        /* --- ELEMENTS --- */
+        .section { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; margin-bottom: 30px; position: relative; }
+        .comp { 
+            grid-column: span 12; position: relative; border-radius: var(--radius); 
+            cursor: pointer; padding: 10px;
+        }
+        .comp.active { outline: 3px solid var(--primary); background: rgba(99, 102, 241, 0.05); }
+
+        /* --- TEXT SETTINGS --- */
+        .text-target {
+            -webkit-text-stroke: var(--text-border-width) var(--text-border-color);
+        }
+
+        /* --- UI COMPONENTS --- */
+        .group { padding: 20px; border-bottom: 1px solid #334155; }
+        .group h4 { margin: 0 0 15px 0; font-size: 11px; text-transform: uppercase; color: #94a3b8; }
+        label { display: block; font-size: 11px; margin-bottom: 6px; }
+        input, select, .action-btn { 
+            width: 100%; padding: 10px; background: #1e293b; border: 1px solid #334155; 
+            color: white; border-radius: 6px; margin-bottom: 12px; font-size: 13px;
+        }
+        .action-btn { background: var(--primary); cursor: pointer; border: none; font-weight: 600; }
+        .action-btn:hover { filter: brightness(1.2); }
+
+        /* --- FLOATING DOCK --- */
+        .dock {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #1e293b; padding: 8px; border-radius: 50px;
+            display: flex; gap: 8px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.4);
+        }
+        .dock-btn { background: transparent; color: white; border: none; padding: 10px 18px; border-radius: 30px; cursor: pointer; font-size: 13px; }
+        .dock-btn:hover { background: var(--primary); }
+
+        /* VIEW MODE */
+        body.viewer-mode .ui-element { display: none !important; }
+        body.viewer-mode .canvas { padding: 0; background: white; }
+        body.viewer-mode .page { box-shadow: none; border-radius: 0; max-width: 1000px; padding: 40px; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar ui-element">
+        <div class="sidebar-header">ULTRA ARCHITECT</div>
+        
+        <div id="text-settings" class="group">
+            <h4>TEXT STYLE & BORDER</h4>
+            <label>Text Border Width (px)</label>
+            <input type="range" min="0" max="5" value="0" oninput="updateTextBorder(this.value)">
+            
+            <label>Text Border Color</label>
+            <input type="color" value="#000000" onchange="updateTextColor(this.value)">
+            
+            <label>Letter Spacing (px)</label>
+            <input type="range" min="-2" max="20" value="0" oninput="updateLetterSpacing(this.value)">
+        </div>
+
+        <div class="group">
+            <h4>GLOBAL STYLES</h4>
+            <label>Global Accent</label>
+            <input type="color" value="#6366f1" onchange="updateTheme(this.value)">
+            <label>Section Rounding</label>
+            <input type="range" min="0" max="100" value="12" oninput="updateRadius(this.value)">
+        </div>
+
+        <div class="group">
+            <button class="action-btn" onclick="publish()">🔗 COPY SHARE LINK</button>
+            <button class="action-btn" style="background:#334155; margin-top:5px;" onclick="add('btn')">➕ ADD BUTTON</button>
+        </div>
+    </aside>
+
+    <main class="canvas">
+        <div class="page" id="page-content">
+            <div class="section">
+                <div class="comp active" onclick="selectComp(this)">
+                    <h1 class="text-target" contenteditable="true" style="font-weight: 900; font-size: 4rem; margin:0;">STRIKING TEXT</h1>
+                    <p contenteditable="true">Use the sidebar to add a border/outline to this text!</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="dock ui-element">
+        <button class="dock-btn" onclick="add('text')">Text</button>
+        <button class="dock-btn" onclick="add('img')">Image</button>
+        <button class="dock-btn" onclick="add('video')">Video</button>
+        <button class="dock-btn" onclick="toggleViewer()">👁️ Preview</button>
+    </div>
+
+    <input type="file" id="file-in" style="display:none">
+
+    <script>
+        let currentEl = null;
+
+        function selectComp(el) {
+            if(currentEl) currentEl.classList.remove('active');
+            currentEl = el;
+            currentEl.classList.add('active');
+            
+            // Load current text styles into sidebar
+            const target = el.querySelector('.text-target') || el;
+            // (In a real app, you'd parse the CSS here, for now we just allow overriding)
+        }
+
+        function updateTextBorder(val) {
+            if(!currentEl) return;
+            const target = currentEl.querySelector('h1, p, div') || currentEl;
+            target.style.webkitTextStrokeWidth = val + 'px';
+        }
+
+        function updateTextColor(val) {
+            if(!currentEl) return;
+            const target = currentEl.querySelector('h1, p, div') || currentEl;
+            target.style.webkitTextStrokeColor = val;
+        }
+
+        function updateLetterSpacing(val) {
+            if(!currentEl) return;
+            const target = currentEl.querySelector('h1, p, div') || currentEl;
+            target.style.letterSpacing = val + 'px';
+        }
+
+        function updateTheme(val) { document.documentElement.style.setProperty('--primary', val); }
+        function updateRadius(val) { document.documentElement.style.setProperty('--radius', val + 'px'); }
+
+        function add(type) {
+            const sec = document.createElement('div');
+            sec.className = 'section';
+            const comp = document.createElement('div');
+            comp.className = 'comp';
+            comp.onclick = (e) => { e.stopPropagation(); selectComp(comp); };
+
+            if(type === 'text') comp.innerHTML = `<h2 class="text-target" contenteditable="true">Heading</h2><p contenteditable="true">Subtext...</p>`;
+            if(type === 'btn') comp.innerHTML = `<div style="text-align:center;"><a href="#" class="action-btn" style="text-decoration:none; display:inline-block;" contenteditable="true">Click Here</a></div>`;
+            if(type === 'video') {
+                const url = prompt("YouTube Embed URL:");
+                if(url) comp.innerHTML = `<iframe width="100%" height="400" src="${url}" frameborder="0"></iframe>`;
+            }
+            if(type === 'img') {
+                const up = document.getElementById('file-in');
+                up.click();
+                up.onchange = (e) => {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        comp.innerHTML = `<img src="${ev.target.result}" style="width:100%; border-radius:inherit;">`;
+                        sec.appendChild(comp);
+                        document.getElementById('page-content').appendChild(sec);
+                    }
+                    reader.readAsDataURL(e.target.files[0]);
+                };
+                return;
+            }
+
+            sec.appendChild(comp);
+            document.getElementById('page-content').appendChild(sec);
+        }
+
+        function publish() {
+            const data = {
+                html: document.getElementById('page-content').innerHTML,
+                radius: getComputedStyle(document.documentElement).getPropertyValue('--radius'),
+                primary: getComputedStyle(document.documentElement).getPropertyValue('--primary')
+            };
+            const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+            const url = window.location.origin + window.location.pathname + "?site=" + encoded;
+            navigator.clipboard.writeText(url);
+            alert("Site Published! Send the link in your clipboard to others.");
+        }
+
+        function toggleViewer() {
+            document.body.classList.toggle('viewer-mode');
+            if(document.body.classList.contains('viewer-mode')) {
+                alert("Preview Mode Active. Press ESC or Refresh to go back to Editor.");
+            }
+        }
+
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            const site = params.get('site');
+            if(site) {
+                const data = JSON.parse(decodeURIComponent(atob(site)));
+                document.body.classList.add('viewer-mode');
+                document.getElementById('page-content').innerHTML = data.html;
+                document.documentElement.style.setProperty('--radius', data.radius);
+                document.documentElement.style.setProperty('--primary', data.primary);
+                document.querySelectorAll('[contenteditable]').forEach(e => e.contentEditable = false);
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pix Verse AI Video Generator</title>
+    <style>
+        /* ==========================
+   CSS for Pix Verse AI Video
+   ========================== */
+
+        /* Colors & variables */
+        :root {
+            --bg: #0f1724;
+            --card: #0b1220;
+            --accent: #00e5ff;
+            --accent-hover: #00bcd4;
+            --muted: #9aa4b2;
+            --glass: rgba(255, 255, 255, 0.03);
+            --radius: 12px;
+            --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        /* Reset & body */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: var(--font);
+            background: var(--bg);
+            color: #e6eef6;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: var(--accent-hover);
+        }
+
+        /* App container */
+        .app {
+            max-width: 1100px;
+            margin: 28px auto;
+            padding: 20px;
+            width: calc(100% - 40px);
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+        }
+
+        header .muted {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* Card sections */
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), var(--card));
+            padding: 18px;
+            border-radius: var(--radius);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            margin-bottom: 20px;
+        }
+
+        /* Form inputs */
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            background: var(--glass);
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        /* Buttons */
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
+
+        button.clear-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--muted);
+        }
+
+        /* Row helper */
+        .row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        /* Small / muted text */
+        .small {
+            font-size: 13px;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        /* Status section */
+        #status-area {
+            position: relative;
+        }
+
+        #status-text {
+            margin-bottom: 10px;
+        }
+
+        #progress-bar-container {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 10px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #00e5ff, #00bcd4);
+            transition: width 300ms ease;
+        }
+
+        /* Spinner */
+        #spinner svg {
+            animation: spin 1s linear infinite;
+            display: block;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Video gallery */
+        #gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .video-card {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            background: var(--glass);
+        }
+
+        .video-card video {
+            width: 360px;
+            max-width: 100%;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        /* Video card buttons */
+        .video-card .copy-link-btn,
+        .video-card .remove-btn,
+        .video-card .download-link {
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .video-card .download-link {
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: transparent;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .video-card .remove-btn {
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: transparent;
+        }
+
+        .video-card .copy-link-btn {
+            background: var(--accent);
+            color: var(--bg);
+            margin-left: 0;
+        }
+
+        .video-card .copy-link-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        /* Preset buttons */
+        .preset-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            background: var(--accent);
+            color: var(--bg);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .preset-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
+
+        /* Points / history */
+        #points {
+            font-weight: bold;
+        }
+
+        #history-list {
+            max-height: 90px;
+            overflow: auto;
+            padding-top: 6px;
+        }
+
+        /* Responsive tweaks */
+        @media(max-width:768px) {
+            .row {
+                flex-direction: column;
+            }
+
+            .video-card {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .video-card video {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="app">
+
+        <header>
+            <h1>Pix Verse AI Video Generator</h1>
+            <div class="muted small">Enter prompts, choose options, and generate videos.</div>
+        </header>
+
+        <section class="card">
+            <h2>Generate a Video</h2>
+            <form id="generate-form" autocomplete="off">
+                <label for="prompt" class="small muted">Prompt</label>
+                <textarea id="prompt" rows="4"
+                    placeholder="Describe the scene, style, mood, camera movement..."></textarea>
+
+                <div class="row">
+                    <div style="flex:1;">
+                        <label class="small muted">Duration (seconds)</label>
+                        <input type="number" id="duration" min="3" max="120" value="10">
+                    </div>
+                    <div style="flex:1;">
+                        <label class="small muted">Resolution</label>
+                        <select id="resolution">
+                            <option value="480p">480p</option>
+                            <option value="720p" selected>720p</option>
+                            <option value="1080p">1080p</option>
+                            <option value="1440p">2K</option>
+                        </select>
+                    </div>
+                    <div style="flex:1;">
+                        <label class="small muted">Style</label>
+                        <select id="style">
+                            <option value="cinematic">Cinematic</option>
+                            <option value="cartoon">Cartoon</option>
+                            <option value="photoreal">Photoreal</option>
+                            <option value="anime">Anime</option>
+                            <option value="documentary">Documentary</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <label class="small muted">Optional Image</label>
+                    <input type="file" id="image-file" accept="image/*">
+                </div>
+
+                <div class="row">
+                    <button type="submit">Generate Video</button>
+                    <button type="button" class="clear-btn" id="clear-btn">Clear</button>
+                    <button type="button" class="preset-btn" data-preset="sunset">Sunset Scene</button>
+                    <button type="button" class="preset-btn" data-preset="city">City Montage</button>
+                </div>
+
+                <div id="form-message" class="small muted" style="margin-top:10px;"></div>
+            </form>
+        </section>
+
+        <section class="card">
+            <h3>Status</h3>
+            <div id="status-area">
+                <div id="status-text">Idle — enter a prompt and click Generate.</div>
+                <div id="progress-bar-container">
+                    <div id="progress-bar"></div>
+                </div>
+                <div id="spinner" style="display:none;">
+                    <svg width="30" height="30" viewBox="0 0 50 50">
+                        <circle cx="25" cy="25" r="20" stroke="rgba(255,255,255,0.08)" stroke-width="6" fill="none">
+                        </circle>
+                        <path d="M45 25a20 20 0 0 1-20 20" stroke="#00e5ff" stroke-width="6" stroke-linecap="round"
+                            fill="none"></path>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h3>Gallery / Output</h3>
+            <div id="gallery">
+                <div id="empty-gallery" class="muted small">No videos yet. Generated videos will appear here.</div>
+            </div>
+        </section>
+
+        <section class="card" style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <strong>Session History:</strong>
+                <div id="history-list" class="muted small">No history.</div>
+            </div>
+            <div style="text-align:right;">
+                <div class="small muted">Tokens / Points</div>
+                <div id="points">Tokens: <span id="points-count">100</span></div>
+                <div class="muted small">(Earn points over time or through actions.)</div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="muted small">Frontend only • Keep API key on server. Separate JS handles backend requests.</div>
+        </footer>
+
+        <!-- Video card template -->
+        <template id="video-card-template">
+            <article class="video-card">
+                <video controls playsinline></video>
+                <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;">
+                        <div class="prompt-title" style="font-weight:600;">Prompt summary</div>
+                        <div class="meta small muted">Duration: <span class="meta-duration">10s</span></div>
+                    </div>
+                    <div class="prompt-text muted small" style="white-space:pre-wrap;max-height:86px;overflow:auto;">
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <a class="download-link" href="#" download>Download</a>
+                        <button class="copy-link-btn">Copy Link</button>
+                        <button class="remove-btn">Remove</button>
+                    </div>
+                </div>
+            </article>
+        </template>
+
+        <!-- Include API.js -->
+        <script src="API.js"></script>
+
+    </main>
+</body>
+
+</html>

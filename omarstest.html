@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Face + Voice to Text</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #121212;
+    color: #fff;
+    margin: 0;
+    padding: 20px;
+  }
+  video {
+    border: 2px solid #00ffcc;
+    border-radius: 10px;
+    width: 480px;
+    height: 360px;
+    background: black;
+  }
+  #output {
+    margin-top: 20px;
+    width: 480px;
+    min-height: 100px;
+    border: 2px solid #00ffcc;
+    border-radius: 10px;
+    padding: 10px;
+    background: #1e1e1e;
+    overflow-y: auto;
+  }
+  button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #00ffcc;
+    border: none;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<h1>Face + Voice to Text</h1>
+<video id="video" autoplay muted></video>
+<div id="output">Say something…</div>
+<button id="startBtn">Start Voice Recognition</button>
+
+<script type="module">
+// ====== FACE MESH ======
+import { FaceMesh } from 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js';
+import { Camera } from 'https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js';
+import { drawConnectors, drawLandmarks } from 'https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js';
+
+const videoElement = document.getElementById('video');
+
+const faceMesh = new FaceMesh({
+  locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+});
+
+faceMesh.setOptions({
+  maxNumFaces: 1,
+  refineLandmarks: true,
+  minDetectionConfidence: 0.5,
+  minTrackingConfidence: 0.5
+});
+
+faceMesh.onResults(results => {
+  const ctx = document.createElement('canvas').getContext('2d');
+  ctx.canvas.width = videoElement.videoWidth;
+  ctx.canvas.height = videoElement.videoHeight;
+  ctx.drawImage(videoElement, 0, 0, ctx.canvas.width, ctx.canvas.height);
+  if (results.multiFaceLandmarks) {
+    for (const landmarks of results.multiFaceLandmarks) {
+      drawConnectors(ctx, landmarks, FaceMesh.FACEMESH_TESSELATION, {color: '#00ffcc', lineWidth: 1});
+      drawLandmarks(ctx, landmarks, {color: '#ff00ff', lineWidth: 1});
+    }
+  }
+  videoElement.srcObject.getTracks()[0].stop(); // prevent double streaming
+});
+
+const camera = new Camera(videoElement, {
+  onFrame: async () => { await faceMesh.send({image: videoElement}); },
+  width: 480,
+  height: 360
+});
+camera.start();
+
+// ====== SPEECH RECOGNITION ======
+const output = document.getElementById('output');
+const startBtn = document.getElementById('startBtn');
+
+let recognition;
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-US';
+
+  recognition.onresult = (event) => {
+    let transcript = '';
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      transcript += event.results[i][0].transcript;
+    }
+    output.textContent = transcript;
+  };
+
+  recognition.onerror = (event) => {
+    console.error('Speech recognition error', event.error);
+  };
+} else {
+  output.textContent = "Your browser does not support Speech Recognition API";
+}
+
+startBtn.onclick = () => {
+  if (recognition) recognition.start();
+};
+</script>
+
+</body>
+</html>

@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ================= META ================= -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OBA Labs | omarbinamir.com</title>
 
-  <!-- ================= FIREBASE (ES MODULES) ================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -19,12 +17,10 @@
       appId: "1:415868024118:web:4ea58785b6a175c4fbef97"
     };
 
-    // ---------------- INITIALIZE FIREBASE ----------------
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // ---------------- LOGIN FUNCTION ----------------
     window.loginWithGoogle = async () => {
       try {
         await signInWithPopup(auth, provider);
@@ -34,7 +30,7 @@
       }
     };
 
-    // ---------------- AUTH STATE MONITOR ----------------
+    // ---------------- AUTH STATE & TELEPORT ----------------
     onAuthStateChanged(auth, (user) => {
       const greeting = document.getElementById("greeting");
       const button = document.getElementById("loginBtn");
@@ -45,6 +41,17 @@
         const name = user.displayName || "Builder";
         greeting.textContent = `Welcome back, ${name}! 🚀`;
         button.style.display = "none";
+
+        // START TELEPORT SEQUENCE AFTER 5 SECONDS
+        setTimeout(() => {
+            const blackout = document.getElementById("blackout-overlay");
+            blackout.style.opacity = "1"; // Go Black
+            
+            setTimeout(() => {
+                window.location.href = "LEADPAGE.HTML"; // Teleport
+            }, 1000); 
+        }, 5000);
+
       } else {
         greeting.textContent = "Sign in please.";
         button.style.display = "inline-block";
@@ -52,145 +59,77 @@
     });
   </script>
 
-  <!-- ================= STYLES ================= -->
   <style>
     /* ---------- GLOBAL ---------- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #000; color: #fff; overflow-x: hidden; }
+
+    /* ---------- BLACKOUT OVERLAY ---------- */
+    #blackout-overlay {
+        position: fixed;
+        inset: 0;
+        background: black;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 99999;
+        transition: opacity 1s ease-in-out;
     }
 
-    body {
-      font-family: system-ui, sans-serif;
-      background: #000;
-      color: #fff;
-      overflow-x: hidden;
-    }
-
-    /* ---------- CUSTOM CURSOR ---------- */
+    /* ---------- CURSOR ---------- */
     .cursor {
-      width: 20px;
-      height: 20px;
-      border: 2px solid #00d4ff;
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      box-shadow: 0 0 20px #00d4ff;
-      transition: transform 0.1s ease;
+      width: 20px; height: 20px; border: 2px solid #00d4ff; border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+      box-shadow: 0 0 20px #00d4ff; transition: transform 0.1s ease;
     }
 
-    /* ---------- NAVBAR ---------- */
     nav {
-      position: fixed;
-      width: 100%;
-      padding: 1.5rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      backdrop-filter: blur(10px);
-      background: rgba(0,0,0,.6);
-      border-bottom: 1px solid rgba(0,212,255,.2);
-      z-index: 1000;
+      position: fixed; width: 100%; padding: 1.5rem 5%; display: flex;
+      justify-content: space-between; align-items: center; backdrop-filter: blur(10px);
+      background: rgba(0,0,0,.6); border-bottom: 1px solid rgba(0,212,255,.2); z-index: 1000;
     }
 
     .logo {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #00d4ff;
+      font-size: 2rem; font-weight: 700; color: #00d4ff;
       background: linear-gradient(135deg, #00d4ff, #0077ff);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: #fff; text-decoration: none; transition: color 0.3s ease; }
+    .nav-links a:hover { color: #00d4ff; }
 
-    .nav-links a {
-      color: #fff;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    .nav-links a:hover {
-      color: #00d4ff;
-    }
-
-    /* ---------- HERO SECTION ---------- */
-    .hero {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      position: relative;
-    }
-
+    .hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; }
     .grid-bg {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background: linear-gradient(rgba(0,212,255,.1) 1px, transparent 1px),
                   linear-gradient(90deg, rgba(0,212,255,.1) 1px, transparent 1px);
-      background-size: 50px 50px;
-      transform: rotateX(60deg);
+      background-size: 50px 50px; transform: rotateX(60deg);
     }
 
-    .hero-content {
-      z-index: 2;
-    }
-
+    .hero-content { z-index: 2; }
     h1 {
-      font-size: 4.5rem;
-      letter-spacing: 5px;
-      color: #00d4ff;
+      font-size: 4.5rem; letter-spacing: 5px; color: #00d4ff;
       background: linear-gradient(135deg, #00d4ff, #0077ff);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    .subtitle {
-      color: #00d4ff;
-      margin-bottom: 2rem;
-      font-size: 1.5rem;
-    }
+    .subtitle { color: #00d4ff; margin-bottom: 2rem; font-size: 1.5rem; }
 
-    /* ---------- BUTTON ---------- */
     .cta-button {
-      padding: 1rem 3rem;
-      border: 2px solid #00d4ff;
-      background: transparent;
-      color: #00d4ff;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: all 0.3s ease;
+      padding: 1rem 3rem; border: 2px solid #00d4ff; background: transparent;
+      color: #00d4ff; cursor: pointer; font-size: 1.1rem; transition: all 0.3s ease;
     }
+    .cta-button:hover { background: #00d4ff; color: #000; box-shadow: 0 0 30px #00d4ff; }
 
-    .cta-button:hover {
-      background: #00d4ff;
-      color: #000;
-      box-shadow: 0 0 30px #00d4ff;
-    }
-
-    /* ---------- GREETING ---------- */
-    #greeting {
-      margin-top: 1.5rem;
-      font-size: 1.8rem;
-      color: #00d4ff;
-    }
+    #greeting { margin-top: 1.5rem; font-size: 1.8rem; color: #00d4ff; }
   </style>
 </head>
 
 <body>
-  <!-- ---------- CUSTOM CURSOR ---------- -->
+  <div id="blackout-overlay"></div>
+
   <div class="cursor"></div>
 
-  <!-- ---------- NAVBAR ---------- -->
   <nav>
     <div class="logo">OBA LABS</div>
     <ul class="nav-links">
@@ -200,7 +139,6 @@
     </ul>
   </nav>
 
-  <!-- ---------- HERO SECTION ---------- -->
   <section class="hero" id="home">
     <div class="grid-bg"></div>
     <div class="hero-content">
@@ -211,9 +149,7 @@
     </div>
   </section>
 
-  <!-- ================= SCRIPTS ================= -->
   <script>
-    // ---------- CUSTOM CURSOR ----------
     const cursor = document.querySelector(".cursor");
     document.addEventListener("mousemove", e => {
       cursor.style.left = e.clientX - 10 + "px";
