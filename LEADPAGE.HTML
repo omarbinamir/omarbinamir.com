@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmarBinAmir | Pro Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. CORE THEME & VARIABLES --- */
+        :root {
+            --bg-deep: #000000;
+            --bg-sidebar: #050505;
+            --bg-card: rgba(15, 15, 18, 0.6);
+            --accent: #6366f1;
+            --accent-dim: rgba(99, 102, 241, 0.15);
+            --border-glow: rgba(99, 102, 241, 0.15);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --glass-blur: blur(20px);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-deep: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-glow: #e2e8f0;
+        }
+
+        /* --- 2. LAYOUT & RESET --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            transition: background 0.4s ease;
+        }
+
+        /* --- 3. SIDEBAR (EMPIRELY STYLE) --- */
+        .sidebar {
+            width: 270px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-glow);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            z-index: 100;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            padding-left: 10px;
+        }
+
+        .brand-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--accent), #06b6d4);
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-section { margin-bottom: 25px; }
+        .nav-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            padding-left: 10px;
+            font-weight: 600;
+            opacity: 0.6;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            margin-bottom: 4px;
+        }
+
+        .nav-link:hover {
+            background: var(--accent-dim);
+            color: var(--text-main);
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: var(--accent-dim);
+            color: var(--accent);
+            box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.3);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+        }
+
+        /* --- 4. MAIN WORKSPACE --- */
+        .workspace {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .view {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .view.active { display: block; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 10px; }
+        header p { color: var(--text-muted); margin-bottom: 40px; }
+
+        /* --- 5. COMPONENT: CARDS & GRIDS --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 24px;
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        /* --- 6. COMPONENT: ANALYTICS OPTIONS --- */
+        .analytics-nav {
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid var(--border-glow);
+            margin-bottom: 30px;
+        }
+
+        .a-nav-item {
+            padding: 12px 4px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .a-nav-item.active { color: var(--accent); }
+        .a-nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0; width: 100%; height: 2px;
+            background: var(--accent);
+        }
+
+        .analytics-content { display: none; animation: fadeIn 0.3s ease; }
+        .analytics-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- 7. COMPONENT: SETTINGS UI --- */
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .share-field {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-glow);
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .share-field input {
+            background: transparent; border: none; color: #06b6d4;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; flex: 1;
+        }
+
+        .btn-action {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        /* --- 8. THEME TOGGLE --- */
+        .toggle {
+            width: 48px; height: 24px;
+            background: #222;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+        .toggle-dot {
+            width: 18px; height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px; left: 3px;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        [data-theme="light"] .toggle { background: var(--accent); }
+        [data-theme="light"] .toggle-dot { transform: translateX(24px); }
+
+        /* --- 9. COMING SOON SPLASH --- */
+        .coming-soon {
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .coming-soon h2 { font-size: 3rem; font-weight: 900; background: linear-gradient(to right, #6366f1, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .badge { background: var(--accent-dim); color: var(--accent); padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; margin-bottom: 15px; }
+
+        /* Statistics Styling */
+        .stat-huge { font-size: 2.5rem; font-weight: 700; color: var(--accent); font-family: 'JetBrains Mono'; }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-top: 5px; display: block; }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <aside class="sidebar">
+        <div class="brand-header">
+            <div class="brand-icon"></div>
+            omarbinamir
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">📂 Workspace</div>
+            <div class="nav-link active" onclick="navigate('overview', this)">Overview</div>
+            <div class="nav-link" onclick="navigate('analytics', this)">📈 Analytics</div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">⚙️ Account</div>
+            <div class="nav-link" onclick="navigate('settings', this)">Settings</div>
+            <div class="nav-link" onclick="navigate('security', this)">🛡️ Security</div>
+        </div>
+
+        <div class="sidebar-bottom">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;">Current Plan</div>
+            <div style="font-size: 0.95rem; font-weight: 600; color: #06b6d4;">Pro Enterprise</div>
+        </div>
+    </aside>
+
+    <main class="workspace">
+        
+        <section id="view-overview" class="view active">
+            <header>
+                <h1>My Projects</h1>
+                <p>Manage and deploy your creative builds.</p>
+            </header>
+            <div class="card-grid">
+                <div class="glass-card">
+                    <div style="font-size: 1.5rem; margin-bottom: 15px;">🍕</div>
+                    <h3>Pizza Plooza</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">A high-end interactive customization engine for premium food experiences.</p>
+                    <div style="display: flex; gap: 8px;">
+                        <span style="font-size: 0.7rem; color: var(--accent); background: var(--accent-dim); padding: 4px 8px; border-radius: 4px;">ACTIVE</span>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <div style="font-size: 1.5rem; margin-bottom: 15px;">🔗</div>
+                    <h3>Ideal Linc</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Minimalist performance tool for ultra-fast redirection and architecture.</p>
+                    <div style="display: flex; gap: 8px;">
+                        <span style="font-size: 0.7rem; color: #06b6d4; background: rgba(6,182,212,0.1); padding: 4px 8px; border-radius: 4px;">STABLE</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-analytics" class="view">
+            <header>
+                <h1>Analytics Center</h1>
+                <p>Usage statistics and application tools.</p>
+            </header>
+            
+            <div class="analytics-nav">
+                <div class="a-nav-item active" onclick="switchAnalytics('usage', this)">My Analytics</div>
+                <div class="a-nav-item" onclick="switchAnalytics('builder', this)">Website Builder</div>
+            </div>
+
+            <div id="usage-content" class="analytics-content active">
+                <div class="card-grid">
+                    <div class="glass-card">
+                        <span class="stat-label">Total Usage Time</span>
+                        <div class="stat-huge" id="usage-clock">128:42:15</div>
+                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Hours : Minutes : Seconds</p>
+                    </div>
+                    <div class="glass-card">
+                        <span class="stat-label">Subscription Tier</span>
+                        <div class="stat-huge" style="color: #06b6d4;">PRO</div>
+                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Active until Jan 2027</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="builder-content" class="analytics-content">
+                <div class="coming-soon">
+                    <span class="badge">BETA v0.1</span>
+                    <h2>Website Builder</h2>
+                    <p style="color: var(--text-muted); max-width: 400px; margin-top: 15px;">Craft professional landing pages with our drag-and-drop AI interface.</p>
+                    <div style="margin-top: 30px; font-weight: 700; color: var(--accent); letter-spacing: 2px;">COMING SOON</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-settings" class="view">
+            <header>
+                <h1>System Settings</h1>
+                <p>Adjust your interface and profile sharing.</p>
+            </header>
+            <div class="glass-card" style="padding: 0 30px;">
+                <div class="setting-row">
+                    <div>
+                        <h4 style="font-weight: 600;">Theme Mode</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Toggle between dark and light themes.</p>
+                    </div>
+                    <div class="toggle" onclick="toggleTheme()"><div class="toggle-dot"></div></div>
+                </div>
+                <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
+                    <h4 style="font-weight: 600;">Short Sharing Link</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Share your unique dashboard profile with others.</p>
+                    <div class="share-field">
+                        <input type="text" readonly value="https://clickly.net/short-shareing-link" id="share-input">
+                        <button class="btn-action" onclick="copyLink(this)">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-security" class="view">
+            <header>
+                <h1>Security</h1>
+                <p>Manage your account authentication and security protocols.</p>
+            </header>
+            <div class="glass-card">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                    <div style="color: #10b981; font-size: 1.5rem;">🛡️</div>
+                    <h4 style="font-weight: 600;">Account Protection Active</h4>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 30px;">Two-factor authentication is enabled for your Google login.</p>
+                <button class="btn-action" style="background: transparent; border: 1px solid var(--border-glow);">View Access Logs</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // 1. Navigation Controller
+        function navigate(viewId, el) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            document.getElementById(`view-${viewId}`).classList.add('active');
+            el.classList.add('active');
+        }
+
+        // 2. Analytics Sub-navigation
+        function switchAnalytics(contentId, el) {
+            document.querySelectorAll('.analytics-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.a-nav-item').forEach(i => i.classList.remove('active'));
+            
+            document.getElementById(`${contentId}-content`).classList.add('active');
+            el.classList.add('active');
+        }
+
+        // 3. Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const current = body.getAttribute('data-theme');
+            body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+        }
+
+        // 4. Utility: Copy Link
+        function copyLink(btn) {
+            const input = document.getElementById('share-input');
+            input.select();
+            navigator.clipboard.writeText(input.value);
+            const origText = btn.innerText;
+            btn.innerText = "COPIED";
+            btn.style.background = "#10b981";
+            setTimeout(() => { btn.innerText = origText; btn.style.background = ""; }, 2000);
+        }
+
+        // 5. Analytics Clock: Fake Real-time Usage Update
+        let totalSeconds = 463335; // Approx 128 hours
+        setInterval(() => {
+            totalSeconds++;
+            const hrs = Math.floor(totalSeconds / 3600);
+            const mins = Math.floor((totalSeconds % 3600) / 60);
+            const secs = totalSeconds % 60;
+            document.getElementById('usage-clock').innerText = 
+                `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
+    </script>
+</body>
+</html>
