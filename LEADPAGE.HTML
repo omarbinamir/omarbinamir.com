@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OmarBinAmir | Pro Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         /* --- 1. CORE THEME & VARIABLES --- */
         :root {
@@ -13,11 +13,11 @@
             --bg-card: rgba(15, 15, 18, 0.6);
             --accent: #6366f1;
             --accent-dim: rgba(99, 102, 241, 0.15);
-            --border-glow: rgba(99, 102, 241, 0.15);
+            --border-glow: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-muted: #94a3b8;
             --glass-blur: blur(20px);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
         }
 
         [data-theme="light"] {
@@ -31,6 +31,7 @@
 
         /* --- 2. LAYOUT & RESET --- */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
         body {
             background-color: var(--bg-deep);
             color: var(--text-main);
@@ -38,10 +39,21 @@
             height: 100vh;
             display: flex;
             overflow: hidden;
-            transition: background 0.4s ease;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1), 
+                        filter 0.8s ease, 
+                        opacity 0.8s ease,
+                        background 0.4s ease;
         }
 
-        /* --- 3. SIDEBAR (EMPIRELY STYLE) --- */
+        /* --- THE HYPER-WARP EXIT --- */
+        body.launching {
+            transform: scale(0.4) rotateX(10deg);
+            filter: blur(15px) brightness(0);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- 3. SIDEBAR --- */
         .sidebar {
             width: 270px;
             background: var(--bg-sidebar);
@@ -79,7 +91,6 @@
             margin-bottom: 12px;
             padding-left: 10px;
             font-weight: 600;
-            opacity: 0.6;
         }
 
         .nav-link {
@@ -100,7 +111,7 @@
         .nav-link:hover {
             background: var(--accent-dim);
             color: var(--text-main);
-            transform: translateX(5px);
+            transform: translateX(4px);
         }
 
         .nav-link.active {
@@ -109,15 +120,7 @@
             box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.3);
         }
 
-        .sidebar-bottom {
-            margin-top: auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
-        }
-
-        /* --- 4. MAIN WORKSPACE --- */
+        /* --- 4. WORKSPACE --- */
         .workspace {
             flex: 1;
             padding: 40px;
@@ -139,13 +142,13 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.8px; margin-bottom: 10px; }
+        header h1 { font-size: 2.3rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
         header p { color: var(--text-muted); margin-bottom: 40px; }
 
-        /* --- 5. COMPONENT: CARDS & GRIDS --- */
+        /* --- 5. PROJECT CARDS (HREF STYLES) --- */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
         }
 
@@ -154,82 +157,104 @@
             backdrop-filter: var(--glass-blur);
             border: 1px solid var(--border-glow);
             border-radius: 20px;
-            padding: 24px;
+            padding: 32px;
             transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
         .glass-card:hover {
-            border-color: rgba(99, 102, 241, 0.4);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+            border-color: var(--accent);
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
         }
 
-        /* --- 6. COMPONENT: ANALYTICS OPTIONS --- */
-        .analytics-nav {
-            display: flex;
-            gap: 20px;
-            border-bottom: 1px solid var(--border-glow);
-            margin-bottom: 30px;
-        }
-
-        .a-nav-item {
-            padding: 12px 4px;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            position: relative;
-        }
-
-        .a-nav-item.active { color: var(--accent); }
-        .a-nav-item.active::after {
-            content: '';
+        /* Hover Link Visual */
+        .glass-card::after {
+            content: 'VIEW PROJECT →';
             position: absolute;
-            bottom: -1px; left: 0; width: 100%; height: 2px;
-            background: var(--accent);
+            bottom: 25px;
+            right: 25px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--accent);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: var(--transition);
         }
 
-        .analytics-content { display: none; animation: fadeIn 0.3s ease; }
-        .analytics-content.active { display: block; }
+        .glass-card:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-        /* --- 7. COMPONENT: SETTINGS UI --- */
+        /* --- 6. BUTTONS & TOOLS --- */
+        .btn-launch-pro {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 10px 20px var(--accent-dim);
+            margin-top: 25px;
+        }
+
+        .btn-launch-pro:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+            filter: brightness(1.1);
+        }
+
+        /* --- 7. OVERLAYS --- */
+        #portal-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #portal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .loader-ring {
+            width: 50px; height: 50px;
+            border: 3px solid rgba(255,255,255,0.05);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- 8. SETTINGS COMPONENTS --- */
         .setting-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
+            padding: 24px 0;
             border-bottom: 1px solid var(--border-glow);
         }
 
-        .share-field {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--border-glow);
-            padding: 10px 15px;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .share-field input {
-            background: transparent; border: none; color: #06b6d4;
-            font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; flex: 1;
-        }
-
-        .btn-action {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        /* --- 8. THEME TOGGLE --- */
         .toggle {
             width: 48px; height: 24px;
             background: #222;
@@ -247,25 +272,11 @@
         }
         [data-theme="light"] .toggle { background: var(--accent); }
         [data-theme="light"] .toggle-dot { transform: translateX(24px); }
-
-        /* --- 9. COMING SOON SPLASH --- */
-        .coming-soon {
-            height: 60vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        .coming-soon h2 { font-size: 3rem; font-weight: 900; background: linear-gradient(to right, #6366f1, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .badge { background: var(--accent-dim); color: var(--accent); padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; margin-bottom: 15px; }
-
-        /* Statistics Styling */
-        .stat-huge { font-size: 2.5rem; font-weight: 700; color: var(--accent); font-family: 'JetBrains Mono'; }
-        .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-top: 5px; display: block; }
     </style>
 </head>
 <body data-theme="dark">
+
+    <div id="portal-overlay"><div class="loader-ring"></div></div>
 
     <aside class="sidebar">
         <div class="brand-header">
@@ -282,12 +293,6 @@
         <div class="nav-section">
             <div class="nav-label">⚙️ Account</div>
             <div class="nav-link" onclick="navigate('settings', this)">Settings</div>
-            <div class="nav-link" onclick="navigate('security', this)">🛡️ Security</div>
-        </div>
-
-        <div class="sidebar-bottom">
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;">Current Plan</div>
-            <div style="font-size: 0.95rem; font-weight: 600; color: #06b6d4;">Pro Enterprise</div>
         </div>
     </aside>
 
@@ -296,152 +301,89 @@
         <section id="view-overview" class="view active">
             <header>
                 <h1>My Projects</h1>
-                <p>Manage and deploy your creative builds.</p>
+                <p>Select a workspace to enter the development portal.</p>
             </header>
             <div class="card-grid">
-                <div class="glass-card">
-                    <div style="font-size: 1.5rem; margin-bottom: 15px;">🍕</div>
-                    <h3>Pizza Plooza</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">A high-end interactive customization engine for premium food experiences.</p>
-                    <div style="display: flex; gap: 8px;">
-                        <span style="font-size: 0.7rem; color: var(--accent); background: var(--accent-dim); padding: 4px 8px; border-radius: 4px;">ACTIVE</span>
-                    </div>
+                
+                <div class="glass-card" onclick="portalTo('pizza-plooza.html')">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">🍕</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Pizza Plooza</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
+                        A high-end interactive food customization engine for premium food experiences.
+                    </p>
+                    <span class="status-badge" style="color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.2);">ACTIVE</span>
                 </div>
-                <div class="glass-card">
-                    <div style="font-size: 1.5rem; margin-bottom: 15px;">🔗</div>
-                    <h3>Ideal Linc</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Minimalist performance tool for ultra-fast redirection and architecture.</p>
-                    <div style="display: flex; gap: 8px;">
-                        <span style="font-size: 0.7rem; color: #06b6d4; background: rgba(6,182,212,0.1); padding: 4px 8px; border-radius: 4px;">STABLE</span>
-                    </div>
+
+                <div class="glass-card" onclick="portalTo('ideal-linc.html')">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">🔗</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Ideal Linc</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
+                        Minimalist performance tool for ultra-fast redirection and architecture.
+                    </p>
+                    <span class="status-badge" style="color: #06b6d4; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2);">STABLE</span>
                 </div>
+
             </div>
         </section>
 
         <section id="view-analytics" class="view">
             <header>
-                <h1>Analytics Center</h1>
-                <p>Usage statistics and application tools.</p>
+                <h1>Tools Center</h1>
+                <p>Advanced creation engines.</p>
             </header>
-            
-            <div class="analytics-nav">
-                <div class="a-nav-item active" onclick="switchAnalytics('usage', this)">My Analytics</div>
-                <div class="a-nav-item" onclick="switchAnalytics('builder', this)">Website Builder</div>
-            </div>
-
-            <div id="usage-content" class="analytics-content active">
-                <div class="card-grid">
-                    <div class="glass-card">
-                        <span class="stat-label">Total Usage Time</span>
-                        <div class="stat-huge" id="usage-clock">128:42:15</div>
-                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Hours : Minutes : Seconds</p>
-                    </div>
-                    <div class="glass-card">
-                        <span class="stat-label">Subscription Tier</span>
-                        <div class="stat-huge" style="color: #06b6d4;">PRO</div>
-                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Active until Jan 2027</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="builder-content" class="analytics-content">
-                <div class="coming-soon">
-                    <span class="badge">BETA v0.1</span>
-                    <h2>Website Builder</h2>
-                    <p style="color: var(--text-muted); max-width: 400px; margin-top: 15px;">Craft professional landing pages with our drag-and-drop AI interface.</p>
-                    <div style="margin-top: 30px; font-weight: 700; color: var(--accent); letter-spacing: 2px;">COMING SOON</div>
-                </div>
+            <div class="glass-card" style="text-align: center; padding: 60px 40px;">
+                <h2 style="font-size: 2.2rem; margin-bottom: 15px;">Website Builder</h2>
+                <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 30px;">
+                    Start the drag-and-drop architect to build next-gen sites.
+                </p>
+                <button class="btn-launch-pro" onclick="portalTo('builder.html')">Launch Builder Engine</button>
             </div>
         </section>
 
         <section id="view-settings" class="view">
             <header>
-                <h1>System Settings</h1>
-                <p>Adjust your interface and profile sharing.</p>
+                <h1>Settings</h1>
+                <p>Manage your UI experience.</p>
             </header>
-            <div class="glass-card" style="padding: 0 30px;">
+            <div class="glass-card">
                 <div class="setting-row">
                     <div>
-                        <h4 style="font-weight: 600;">Theme Mode</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Toggle between dark and light themes.</p>
+                        <h4 style="font-weight: 600;">Dark/Light Mode</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Toggle the overall dashboard theme.</p>
                     </div>
                     <div class="toggle" onclick="toggleTheme()"><div class="toggle-dot"></div></div>
                 </div>
-                <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
-                    <h4 style="font-weight: 600;">Short Sharing Link</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Share your unique dashboard profile with others.</p>
-                    <div class="share-field">
-                        <input type="text" readonly value="https://clickly.net/short-shareing-link" id="share-input">
-                        <button class="btn-action" onclick="copyLink(this)">Copy</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-security" class="view">
-            <header>
-                <h1>Security</h1>
-                <p>Manage your account authentication and security protocols.</p>
-            </header>
-            <div class="glass-card">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                    <div style="color: #10b981; font-size: 1.5rem;">🛡️</div>
-                    <h4 style="font-weight: 600;">Account Protection Active</h4>
-                </div>
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 30px;">Two-factor authentication is enabled for your Google login.</p>
-                <button class="btn-action" style="background: transparent; border: 1px solid var(--border-glow);">View Access Logs</button>
             </div>
         </section>
 
     </main>
 
     <script>
-        // 1. Navigation Controller
+        // 1. Navigation
         function navigate(viewId, el) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            
             document.getElementById(`view-${viewId}`).classList.add('active');
             el.classList.add('active');
         }
 
-        // 2. Analytics Sub-navigation
-        function switchAnalytics(contentId, el) {
-            document.querySelectorAll('.analytics-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.a-nav-item').forEach(i => i.classList.remove('active'));
-            
-            document.getElementById(`${contentId}-content`).classList.add('active');
-            el.classList.add('active');
-        }
-
-        // 3. Theme Management
+        // 2. Theme Toggle
         function toggleTheme() {
             const body = document.body;
             const current = body.getAttribute('data-theme');
             body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
         }
 
-        // 4. Utility: Copy Link
-        function copyLink(btn) {
-            const input = document.getElementById('share-input');
-            input.select();
-            navigator.clipboard.writeText(input.value);
-            const origText = btn.innerText;
-            btn.innerText = "COPIED";
-            btn.style.background = "#10b981";
-            setTimeout(() => { btn.innerText = origText; btn.style.background = ""; }, 2000);
+        // 3. THE HYPER-WARP PORTAL
+        function portalTo(url) {
+            document.body.classList.add('launching');
+            setTimeout(() => {
+                document.getElementById('portal-overlay').classList.add('active');
+            }, 300);
+            setTimeout(() => {
+                window.location.href = url;
+            }, 1100);
         }
-
-        // 5. Analytics Clock: Fake Real-time Usage Update
-        let totalSeconds = 463335; // Approx 128 hours
-        setInterval(() => {
-            totalSeconds++;
-            const hrs = Math.floor(totalSeconds / 3600);
-            const mins = Math.floor((totalSeconds % 3600) / 60);
-            const secs = totalSeconds % 60;
-            document.getElementById('usage-clock').innerText = 
-                `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }, 1000);
     </script>
 </body>
 </html>
