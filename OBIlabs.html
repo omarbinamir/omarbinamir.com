@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBA Labs | Guest Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0a0a0c;
+            --bg-sidebar: #111114;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --accent-guest: #94a3b8;
+            /* Steel/Silver for Guest */
+            --accent-locked: #475569;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(15px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+        }
+
+        .brand-header {
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+            color: var(--accent-guest);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .guest-tag {
+            font-size: 0.6rem;
+            background: var(--accent-locked);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .nav-link {
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        /* --- WORKSPACE --- */
+        .workspace {
+            flex: 1;
+            padding: 50px;
+            overflow-y: auto;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* --- GLASS CARDS --- */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            transition: 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+            position: relative;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-guest {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--accent-guest);
+            color: var(--accent-guest);
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-guest:hover {
+            background: var(--accent-guest);
+            color: #000;
+        }
+
+        /* --- LOCKED STATE --- */
+        .locked-card {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .locked-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .upgrade-banner {
+            background: linear-gradient(90deg, #1e293b, #0f172a);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .upgrade-btn {
+            background: #fff;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="brand-header">
+            OBA LABS <span class="guest-tag">GUEST</span>
+        </div>
+
+        <nav>
+            <div class="nav-link active">Dashboard</div>
+            <div class="nav-link" onclick="window.location.href='index.html'">Sign In / Upgrade</div>
+        </nav>
+    </aside>
+
+    <main class="workspace">
+
+        <div class="upgrade-banner">
+            <div>
+                <p style="font-weight: 700;">Guest Mode Active</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">You are using limited trial versions of OBA
+                    tools.</p>
+            </div>
+            <a href="index.html" class="upgrade-btn">GET PRO ACCESS</a>
+        </div>
+
+        <header>
+            <h1>Guest Labs</h1>
+            <p>Experimental trial versions of our core engines.</p>
+        </header>
+
+        <div class="card-grid">
+
+            <div class="glass-card">
+                <div class="card-icon">🚰</div>
+                <h3>PIZZASINK</h3>
+                <p class="desc">A simplified viewer for pre-set ingredient layouts. Customization engine is disabled.
+                </p>
+                <button class="btn-guest">View Layouts</button>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-icon">🏃</div>
+                <h3>ANIMATING GUESTS</h3>
+                <p class="desc">Trial version: Rigid Node Engine. Advanced scaling and physics editing are unavailable.
+                </p>
+                <button class="btn-guest" onclick="window.location.href='animating-guests.html'">Launch Engine</button>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-icon">💨</div>
+                <h3>SPRAY POST</h3>
+                <p class="desc">Random pixel dispersal tool. Full vector layering and Paint Post features are locked.
+                </p>
+                <button class="btn-guest">Spray Pixels</button>
+            </div>
+
+            <div class="glass-card locked-card">
+                <div class="locked-badge">LOCKED</div>
+                <div class="card-icon">🌐</div>
+                <h3>Web Maker</h3>
+                <p class="desc">The drag-and-drop architect is only available for verified laboratory accounts.</p>
+                <button class="btn-guest"
+                    style="border-color: var(--accent-locked); color: var(--accent-locked); cursor: not-allowed;">Locked</button>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+
+</html>
