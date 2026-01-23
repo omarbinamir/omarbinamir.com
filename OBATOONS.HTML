@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>obatoons | Premium Animation</title>
+    <style>
+        :root {
+            --primary: #00d4ff;
+            --bg-dark: #05070a;
+            --bg-card: #12161d;
+            --text-main: #ffffff;
+            --text-dim: #a3a3a3;
+            --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 25px 60px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            background: linear-gradient(to bottom, rgba(5, 7, 10, 0.8) 0%, transparent 100%);
+        }
+
+        .navbar.scrolled {
+            background: rgba(5, 7, 10, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 15px 60px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--primary);
+            text-transform: lowercase;
+            /* Matches your request for lowercase */
+            text-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            padding: 0 60px;
+            overflow: hidden;
+        }
+
+        .hero-video-wrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .hero-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(77deg, rgba(5, 7, 10, 1) 0%, rgba(5, 7, 10, 0.4) 45%, transparent 100%),
+                linear-gradient(to top, var(--bg-dark), transparent 30%);
+        }
+
+        .hero-content {
+            max-width: 650px;
+            z-index: 2;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: lowercase;
+            /* Swapped to lowercase */
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            margin-bottom: 35px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 14px 35px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+        }
+
+        .btn-play {
+            background: var(--text-main);
+            color: #000;
+        }
+
+        .btn-play:hover {
+            transform: scale(1.05);
+            background: var(--primary);
+        }
+
+        .btn-info {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-info:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Content Rows */
+        .section-container {
+            padding: 40px 60px;
+            position: relative;
+            margin-top: -50px;
+        }
+
+        .row-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .row-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scroll-behavior: smooth;
+        }
+
+        .slider-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Cards */
+        .card {
+            min-width: 320px;
+            height: 180px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            z-index: 10;
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .card:hover video {
+            opacity: 1;
+        }
+
+        .card-info-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 60%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .card:hover .card-info-overlay {
+            opacity: 1;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            place-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.active {
+            display: grid;
+        }
+
+        .modal-container {
+            width: 90%;
+            max-width: 1000px;
+            background: var(--bg-card);
+            border-radius: 15px;
+            overflow: hidden;
+            animation: modalIn 0.5s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-video-box {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+        }
+
+        .modal-video-box video {
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-details {
+            padding: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 20px;
+            }
+
+            .hero {
+                padding: 0 20px;
+            }
+
+            .section-container {
+                padding: 40px 20px;
+            }
+
+            .card {
+                min-width: 260px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="logo">obatoons</div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#trending">Trending</a></li>
+            <li><a href="#featured">Featured</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-video-wrap">
+            <video class="hero-bg" autoplay muted loop playsinline>
+                <source src="ObaToons.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <span class="hero-tag">New Release</span>
+            <h1 class="hero-title">obatoons<br>studio 2025</h1>
+            <p class="hero-description">The ultimate showcase of motion graphics, character animation, and visual
+                storytelling excellence.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-play" onclick="openModal(0)">▶ Play Now</button>
+                <button class="btn btn-info" onclick="showInfo()">ⓘ More Info</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="section-container" id="trending">
+        <div class="row-header">
+            <h2 class="row-title">Trending Creations</h2>
+        </div>
+        <div class="slider-wrapper" id="trendingSlider"></div>
+    </section>
+
+    <section class="section-container" id="featured">
+        <div class="row-header">
+            <h2 class="row-title">Featured Highlights</h2>
+        </div>
+        <div class="slider-wrapper" id="featuredSlider"></div>
+    </section>
+
+    <div class="modal" id="videoModal">
+        <div class="modal-container">
+            <div class="modal-video-box">
+                <video id="modalVideo" controls></video>
+            </div>
+            <div class="modal-details">
+                <h2 id="modalTitle" style="font-size: 2rem; margin-bottom: 10px;"></h2>
+                <p id="modalDescription" style="color: var(--text-dim);"></p>
+                <button onclick="closeModal()" class="btn btn-info" style="margin-top: 20px;">Close Window</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const videoData = [
+            { title: "obatoons showreel", desc: "Our main cinematic visual experience.", file: "ObaToons.mp4" },
+            { title: "creative studio demo", desc: "A peak into the obatoons workflow.", file: "ObaToons.mp4" },
+            { title: "motion graphics", desc: "Experimental obatoons design.", file: "ObaToons.mp4" },
+            { title: "brand film", desc: "Narrative storytelling by obatoons.", file: "ObaToons.mp4" },
+            { title: "animation reel", desc: "Character work from obatoons.", file: "ObaToons.mp4" }
+        ];
+
+        function initApp() {
+            const containers = ['trendingSlider', 'featuredSlider'];
+            containers.forEach(id => {
+                const html = videoData.map((v, i) => `
+                    <div class="card" onclick="openModal(${i})">
+                        <video src="${v.file}" muted loop playsinline></video>
+                        <div class="card-info-overlay">
+                            <h4 style="margin-bottom:4px; text-transform: lowercase;">${v.title}</h4>
+                            <p style="font-size:0.7rem; color:var(--primary)">View Project →</p>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById(id).innerHTML = html;
+            });
+
+            document.querySelectorAll('.card').forEach(card => {
+                const v = card.querySelector('video');
+                card.addEventListener('mouseenter', () => v.play());
+                card.addEventListener('mouseleave', () => {
+                    v.pause();
+                    v.currentTime = 0;
+                });
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            window.scrollY > 50 ? nav.classList.add('scrolled') : nav.classList.remove('scrolled');
+        });
+
+        function openModal(index) {
+            const v = videoData[index];
+            document.getElementById('modalTitle').innerText = v.title;
+            document.getElementById('modalDescription').innerText = v.desc;
+            document.getElementById('modalVideo').src = v.file;
+            document.getElementById('videoModal').classList.add('active');
+            document.getElementById('modalVideo').play();
+        }
+
+        function closeModal() {
+            document.getElementById('videoModal').classList.remove('active');
+            document.getElementById('modalVideo').pause();
+        }
+
+        function showInfo() {
+            alert("obatoons creative studio - est 2025");
+        }
+
+        initApp();
+    </script>
+</body>
+
+</html>

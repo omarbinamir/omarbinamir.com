@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NODE PURE | OBA Labs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050507;
+            --panel: #111114;
+            --accent: #00ffcc;
+            --text: #f8fafc;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 10px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel);
+        }
+
+        main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--panel);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .canvas-container {
+            flex: 1;
+            background: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            border: 1px solid #222;
+            background: #000;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1e;
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.1s;
+        }
+
+        .btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-play {
+            background: var(--accent);
+            color: #000;
+            font-size: 1rem;
+        }
+
+        .timeline {
+            height: 100px;
+            background: var(--panel);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .frame {
+            min-width: 60px;
+            height: 45px;
+            background: #1a1a1e;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .frame.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0, 255, 204, 0.1);
+        }
+
+        .status-box {
+            background: rgba(0, 255, 204, 0.05);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            font-size: 0.7rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div style="font-weight:800;">NODE PURE // <span style="color:var(--accent)">STATIC SCALE</span></div>
+        <button class="btn btn-play" style="width:140px;" onclick="togglePlay()" id="playBtn">PLAY ANIM</button>
+    </header>
+
+    <main>
+        <div class="sidebar">
+            <div class="status-box">
+                <b style="color:var(--accent)">RIGID ENGINE ACTIVE</b><br>
+                • No Scaling allowed.<br>
+                • Fixed bone lengths.<br>
+                • Ghosting enabled.
+            </div>
+
+            <button class="btn" onclick="addNewGuest()">+ ADD GUEST</button>
+            <button class="btn" onclick="addFrame()">SAVE KEYFRAME</button>
+            <button class="btn" onclick="undoFrame()" style="color:#ff4444; border-color:#ff4444">DELETE FRAME</button>
+            <button class="btn" onclick="location.reload()"
+                style="margin-top:20px; font-size:0.6rem; opacity:0.5;">RESET EVERYTHING</button>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="mainCanvas" width="850" height="550"></canvas>
+        </div>
+    </main>
+
+    <div class="timeline" id="timeline">
+        <div id="frame-container" style="display:flex; gap:10px;"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let frames = [];
+        let currentFrameIdx = 0;
+        let isPlaying = false;
+        let playInterval;
+        let draggedNode = null;
+
+        // LOCKED BONE LENGTHS (Standard Node Animate Proportions)
+        const L = { spine: 85, neck: 25, arm: 55, leg: 70 };
+
+        function createGuest(x, y) {
+            return {
+                nodes: {
+                    hip: { x: x, y: y, type: 'ROOT' },
+                    neck: { x: x, y: y - L.spine, type: 'BODY' },
+                    head: { x: x, y: y - L.spine - L.neck, type: 'BODY' },
+                    lHand: { x: x - L.arm, y: y - L.spine, type: 'LIMB' },
+                    rHand: { x: x + L.arm, y: y - L.spine, type: 'LIMB' },
+                    lFoot: { x: x - 30, y: y + L.leg, type: 'LIMB' },
+                    rFoot: { x: x + 30, y: y + L.leg, type: 'LIMB' }
+                }
+            };
+        }
+
+        frames.push([createGuest(425, 300)]);
+
+        function solve(g) {
+            const n = g.nodes;
+            function stick(p1, p2, dist) {
+                const dx = p2.x - p1.x, dy = p2.y - p1.y;
+                const d = Math.sqrt(dx * dx + dy * dy) || 1;
+                const diff = (d - dist) / d;
+
+                // WEIGHTED RIG: Root (Hip) and Body (Neck) are lead weights.
+                // Limbs move 100% to satisfy distance. Body moves 0%.
+                let w1 = (p1.type === 'ROOT' || p1.type === 'BODY') ? 0 : 1;
+                let w2 = (p2.type === 'ROOT' || p2.type === 'BODY') ? 0 : 1;
+
+                // Special case: if we are dragging the limb, it gets priority
+                if (draggedNode === p1) w1 = 1;
+                if (draggedNode === p2) w2 = 1;
+
+                // If dragging the Hip, the whole body can move
+                if (draggedNode === n.hip) { w1 = 1; w2 = 1; }
+
+                const total = w1 + w2;
+                if (total === 0) return;
+
+                p1.x += dx * (w2 / total) * diff;
+                p1.y += dy * (w2 / total) * diff;
+                p2.x -= dx * (w1 / total) * diff;
+                p2.y -= dy * (w1 / total) * diff;
+            }
+
+            for (let i = 0; i < 40; i++) {
+                stick(n.hip, n.neck, L.spine);
+                stick(n.neck, n.head, L.neck);
+                stick(n.neck, n.lHand, L.arm);
+                stick(n.neck, n.rHand, L.arm);
+                stick(n.hip, n.lFoot, L.leg);
+                stick(n.hip, n.rFoot, L.leg);
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Ghost Frame (Previous)
+            if (!isPlaying && currentFrameIdx > 0) {
+                renderSet(frames[currentFrameIdx - 1], "rgba(255, 255, 255, 0.1)", false);
+            }
+
+            // 2. Main Frame
+            renderSet(frames[currentFrameIdx], "#fff", true);
+        }
+
+        function renderSet(guests, color, isMain) {
+            guests.forEach(g => {
+                if (isMain) solve(g);
+                const n = g.nodes;
+                ctx.strokeStyle = color; ctx.lineWidth = 7; ctx.lineCap = "round";
+
+                const links = [[n.hip, n.neck], [n.neck, n.head], [n.neck, n.lHand], [n.neck, n.rHand], [n.hip, n.lFoot], [n.hip, n.rFoot]];
+                links.forEach(l => { ctx.beginPath(); ctx.moveTo(l[0].x, l[0].y); ctx.lineTo(l[1].x, l[1].y); ctx.stroke(); });
+
+                // Circle Head
+                ctx.fillStyle = color; ctx.beginPath(); ctx.arc(n.head.x, n.head.y, 22, 0, Math.PI * 2); ctx.fill();
+
+                if (isMain && !isPlaying) {
+                    Object.values(n).forEach(node => {
+                        ctx.fillStyle = (node.type === 'ROOT') ? "#00ffcc" : "#ff3366";
+                        ctx.beginPath(); ctx.arc(node.x, node.y, 6, 0, Math.PI * 2); ctx.fill();
+                    });
+                }
+            });
+        }
+
+        canvas.onmousedown = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+            frames[currentFrameIdx].forEach(g => {
+                Object.values(g.nodes).forEach(node => {
+                    if (Math.hypot(mx - node.x, my - node.y) < 22) draggedNode = node;
+                });
+            });
+        };
+
+        window.onmousemove = (e) => {
+            if (draggedNode) {
+                const rect = canvas.getBoundingClientRect();
+                draggedNode.x = e.clientX - rect.left;
+                draggedNode.y = e.clientY - rect.top;
+                draw();
+            }
+        };
+
+        window.onmouseup = () => draggedNode = null;
+
+        function addNewGuest() { frames[currentFrameIdx].push(createGuest(200 + Math.random() * 400, 300)); draw(); }
+        function addFrame() { frames.push(JSON.parse(JSON.stringify(frames[currentFrameIdx]))); currentFrameIdx = frames.length - 1; updateTimeline(); }
+        function undoFrame() { if (frames.length > 1) { frames.pop(); currentFrameIdx = frames.length - 1; updateTimeline(); draw(); } }
+
+        function updateTimeline() {
+            const container = document.getElementById('frame-container');
+            container.innerHTML = '';
+            frames.forEach((f, i) => {
+                const div = document.createElement('div');
+                div.className = `frame ${i === currentFrameIdx ? 'active' : ''}`;
+                div.innerText = i + 1;
+                div.onclick = () => { currentFrameIdx = i; updateTimeline(); draw(); };
+                container.appendChild(div);
+            });
+        }
+
+        function togglePlay() {
+            if (isPlaying) { clearInterval(playInterval); isPlaying = false; document.getElementById('playBtn').innerText = "PLAY ANIM"; }
+            else {
+                if (frames.length < 2) return;
+                isPlaying = true; document.getElementById('playBtn').innerText = "STOP";
+                playInterval = setInterval(() => { currentFrameIdx = (currentFrameIdx + 1) % frames.length; draw(); updateTimeline(); }, 100);
+            }
+        }
+
+        updateTimeline();
+        setInterval(draw, 16);
+    </script>
+</body>
+
+</html>

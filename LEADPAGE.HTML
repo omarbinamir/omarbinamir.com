@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OmarBinAmir | Pro Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
         /* --- 1. CORE THEME & VARIABLES --- */
         :root {
@@ -30,8 +33,13 @@
         }
 
         /* --- 2. LAYOUT & RESET --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+        }
+
         body {
             background-color: var(--bg-deep);
             color: var(--text-main);
@@ -39,10 +47,10 @@
             height: 100vh;
             display: flex;
             overflow: hidden;
-            transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1), 
-                        filter 0.8s ease, 
-                        opacity 0.8s ease,
-                        background 0.4s ease;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1),
+                filter 0.8s ease,
+                opacity 0.8s ease,
+                background 0.4s ease;
         }
 
         /* --- THE HYPER-WARP EXIT --- */
@@ -82,7 +90,10 @@
             box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
         }
 
-        .nav-section { margin-bottom: 25px; }
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
         .nav-label {
             font-size: 0.7rem;
             text-transform: uppercase;
@@ -135,17 +146,35 @@
             animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .view.active { display: block; }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .view.active {
+            display: block;
         }
 
-        header h1 { font-size: 2.3rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 10px; }
-        header p { color: var(--text-muted); margin-bottom: 40px; }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
-        /* --- 5. PROJECT CARDS (HREF STYLES) --- */
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        /* --- 5. PROJECT CARDS --- */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -168,7 +197,7 @@
             border-color: var(--accent);
             transform: translateY(-8px);
             background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
         }
 
         /* Hover Link Visual */
@@ -197,6 +226,24 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        /* Pulse Animation for New Badge */
+        @keyframes badgePulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         /* --- 6. BUTTONS & TOOLS --- */
@@ -235,16 +282,26 @@
             align-items: center;
             justify-content: center;
         }
-        #portal-overlay.active { opacity: 1; pointer-events: all; }
+
+        #portal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
 
         .loader-ring {
-            width: 50px; height: 50px;
-            border: 3px solid rgba(255,255,255,0.05);
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.05);
             border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* --- 8. SETTINGS COMPONENTS --- */
         .setting-row {
@@ -256,27 +313,40 @@
         }
 
         .toggle {
-            width: 48px; height: 24px;
+            width: 48px;
+            height: 24px;
             background: #222;
             border-radius: 20px;
             position: relative;
             cursor: pointer;
         }
+
         .toggle-dot {
-            width: 18px; height: 18px;
+            width: 18px;
+            height: 18px;
             background: #fff;
             border-radius: 50%;
             position: absolute;
-            top: 3px; left: 3px;
+            top: 3px;
+            left: 3px;
             transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        [data-theme="light"] .toggle { background: var(--accent); }
-        [data-theme="light"] .toggle-dot { transform: translateX(24px); }
+
+        [data-theme="light"] .toggle {
+            background: var(--accent);
+        }
+
+        [data-theme="light"] .toggle-dot {
+            transform: translateX(24px);
+        }
     </style>
 </head>
+
 <body data-theme="dark">
 
-    <div id="portal-overlay"><div class="loader-ring"></div></div>
+    <div id="portal-overlay">
+        <div class="loader-ring"></div>
+    </div>
 
     <aside class="sidebar">
         <div class="brand-header">
@@ -297,21 +367,22 @@
     </aside>
 
     <main class="workspace">
-        
+
         <section id="view-overview" class="view active">
             <header>
                 <h1>My Projects</h1>
                 <p>Select a workspace to enter the development portal.</p>
             </header>
             <div class="card-grid">
-                
+
                 <div class="glass-card" onclick="portalTo('pizza-plooza.html')">
                     <div style="font-size: 1.8rem; margin-bottom: 20px;">🍕</div>
                     <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Pizza Plooza</h3>
                     <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
                         A high-end interactive food customization engine for premium food experiences.
                     </p>
-                    <span class="status-badge" style="color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.2);">ACTIVE</span>
+                    <span class="status-badge"
+                        style="color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.2);">ACTIVE</span>
                 </div>
 
                 <div class="glass-card" onclick="portalTo('ideal-linc.html')">
@@ -320,7 +391,21 @@
                     <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
                         Minimalist performance tool for ultra-fast redirection and architecture.
                     </p>
-                    <span class="status-badge" style="color: #06b6d4; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2);">STABLE</span>
+                    <span class="status-badge"
+                        style="color: #06b6d4; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2);">STABLE</span>
+                </div>
+
+                <div class="glass-card" onclick="portalTo('Animateoba.html')"
+                    style="border: 1px solid #d946ef; box-shadow: 0 0 20px rgba(217, 70, 239, 0.15);">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">✨</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px; color: #f5d0fe;">AnimateOBA</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
+                        The next-gen motion engine. Dash & blast your components into life with high-performance CSS
+                        orchestration.
+                    </p>
+                    <span class="status-badge"
+                        style="color: #ffffff; background: #d946ef; border: 1px solid #f5d0fe; animation: badgePulse 2s infinite ease-in-out;">NEW
+                        ENGINE</span>
                 </div>
 
             </div>
@@ -351,7 +436,9 @@
                         <h4 style="font-weight: 600;">Dark/Light Mode</h4>
                         <p style="font-size: 0.85rem; color: var(--text-muted);">Toggle the overall dashboard theme.</p>
                     </div>
-                    <div class="toggle" onclick="toggleTheme()"><div class="toggle-dot"></div></div>
+                    <div class="toggle" onclick="toggleTheme()">
+                        <div class="toggle-dot"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -386,4 +473,5 @@
         }
     </script>
 </body>
+
 </html>
