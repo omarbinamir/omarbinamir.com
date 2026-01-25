@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Brick Burgers Updated Menu</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffcc00",
+                        "secondary": "#5d4037",
+                        "background-light": "#ffffff",
+                        "background-dark": "#0f0f0f",
+                        "text-dark": "#1d190c",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #5d4037;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3e2b25;
+        }
+
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display smooth-scroll text-text-dark dark:text-white antialiased selection:bg-primary selection:text-text-dark">
+    <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-primary z-[100] transition-all duration-100"
+        style="width: 0%"></div>
+    <input autocomplete="off" class="peer hidden" id="drawer-toggle" type="checkbox" />
+    <label
+        class="fixed inset-0 bg-black/60 z-[60] opacity-0 pointer-events-none transition-opacity duration-300 peer-checked:opacity-100 peer-checked:pointer-events-auto backdrop-blur-sm"
+        for="drawer-toggle"></label>
+    <div
+        class="fixed top-0 right-0 h-full w-[300px] bg-white dark:bg-[#1a1a1a] z-[70] transform translate-x-full transition-transform duration-300 peer-checked:translate-x-0 shadow-2xl flex flex-col border-l border-white/10">
+        <div class="p-6 flex items-center justify-between border-b border-gray-100 dark:border-white/10">
+            <h2 class="text-xl font-black uppercase tracking-tight text-text-dark dark:text-white">Navigation</h2>
+            <label
+                class="cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors group"
+                for="drawer-toggle">
+                <span class="material-symbols-outlined group-hover:rotate-90 transition-transform">close</span>
+            </label>
+        </div>
+        <nav class="flex-1 p-6 flex flex-col gap-6">
+            <a class="text-2xl font-black uppercase hover:text-primary transition-colors" href="#">Home</a>
+            <a class="text-2xl font-black uppercase hover:text-primary transition-colors" href="#menu">Menu</a>
+            <a class="text-2xl font-black uppercase hover:text-primary transition-colors"
+                href="#locations">Locations</a>
+            <a class="text-2xl font-black uppercase hover:text-primary transition-colors" href="#founder">Founder</a>
+
+
+        </nav>
+        <div class="p-8 bg-primary">
+            <p class="text-xs font-bold text-text-dark/70 uppercase mb-2 tracking-widest">Order Hotline</p>
+            <p class="text-2xl font-black text-text-dark">0333 *** ****</p>
+        </div>
+    </div>
+    <div
+        class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#f4f1e6] dark:bg-background-dark/95 dark:border-white/10">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-10 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4 text-text-dark dark:text-white group cursor-pointer">
+                <div
+                    class="w-10 h-10 text-secondary dark:text-primary transition-colors duration-300 group-hover:rotate-6">
+                    <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 20C8 12.268 15.1634 6 24 6C32.8366 6 40 12.268 40 20H8Z" fill="currentColor"></path>
+                        <rect class="dark:fill-white/80" fill="#5d4037" height="12" rx="2" width="36" x="6" y="24">
+                        </rect>
+                        <path d="M6 22L10 26L14 22L18 26L22 22L26 26L30 22L34 26L38 22L42 26" stroke="#ffcc00"
+                            stroke-linecap="round" stroke-width="3"></path>
+                        <path d="M8 40C8 42.2091 15.1634 44 24 44C32.8366 44 40 42.2091 40 40V38H8V40Z"
+                            fill="currentColor"></path>
+                    </svg>
+                </div>
+                <h1 class="text-xl font-black uppercase tracking-tight hidden sm:block">Brick Burgers</h1>
+            </div>
+            <label
+                class="group flex items-center justify-center gap-2 h-10 px-6 bg-primary hover:bg-primary/90 active:scale-95 transition-all rounded-lg text-text-dark text-sm font-bold uppercase tracking-wider cursor-pointer select-none"
+                for="drawer-toggle">
+                <span>Menu</span>
+                <span
+                    class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">menu</span>
+            </label>
+        </div>
+    </div>
+    <div class="pt-[73px]">
+        <section class="relative min-h-[85vh] flex items-center justify-center bg-background-dark overflow-hidden">
+            <div class="absolute inset-0 z-0">
+                <img alt="A massive gourmet burger with dripping cheese and fresh toppings on a dark background"
+                    class="w-full h-full object-cover opacity-60"
+                    data-alt="Gourmet double cheeseburger stacked high with fresh ingredients on a dark background"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPJ2hL3UlSpfdmS6UebDg99uXQ4bWDRG6wl4JXcY8aCC0meewqXEqPY0ZFCsZ_CRqJi50fN12G3s9j755-8jji3kqpax8fkaEYbxiVUSqtfSmvzzKes-vnrGln_u_qXP00lR-g4gOLOTRqmjAjtsSm5kMsdUm5K1YjZqwYooBltqbzeIE4Tq2LAcau_U27Ft8AZaNjDTdjlNs5itFlNWKxHMN59YpW4q1OrCDRyfY-VA0FWZ6E-JWzXLkOhD5U4b_dmxwpEUEcGAhM" />
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent">
+                </div>
+            </div>
+            <div
+                class="relative z-10 container mx-auto px-4 sm:px-10 text-center sm:text-left flex flex-col items-center sm:items-start gap-6 max-w-[1280px]">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary border border-primary/30 backdrop-blur-sm">
+                    <span class="material-symbols-outlined text-sm">construction</span>
+                    <span class="text-xs font-bold tracking-widest uppercase">Under Construction Since 2018</span>
+                </div>
+                <h1
+                    class="text-white text-5xl sm:text-7xl md:text-8xl font-black leading-[0.9] tracking-tighter max-w-4xl drop-shadow-lg">
+                    BUILDING <br />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-yellow-200">BETTER
+                        BURGERS</span>
+                </h1>
+                <p class="text-gray-300 text-lg sm:text-xl font-medium max-w-lg leading-relaxed">
+                    Gourmet taste, constructed with passion. Every layer is a foundational element of flavor.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4">
+                    <a href="#menu"
+                        class="flex items-center justify-center h-14 px-8 bg-primary hover:bg-[#e6b800] text-text-dark text-base font-bold uppercase tracking-wider rounded-lg transition-colors shadow-[0_0_20px_rgba(255,204,0,0.4)]">
+                        View Menu
+                    </a>
+                    <a href="#locations"
+                        class="flex items-center justify-center h-14 px-8 bg-transparent border-2 border-white hover:bg-white hover:text-text-dark text-white text-base font-bold uppercase tracking-wider rounded-lg transition-all">
+                        Our Locations
+                    </a>
+                </div>
+            </div>
+        </section>
+        <section class="bg-primary py-12 sm:py-16 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-10 opacity-10 pointer-events-none transform rotate-12 scale-150">
+                <span class="material-symbols-outlined text-[300px]">call</span>
+            </div>
+            <div
+                class="container mx-auto px-4 sm:px-10 max-w-[1280px] flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex flex-col gap-2 text-center md:text-left">
+                    <h2 class="text-text-dark text-4xl sm:text-5xl font-black tracking-tight uppercase">Hungry?</h2>
+                    <p class="text-text-dark/80 text-lg font-medium">Delivery available across the city. Construction
+                        waits for no one.</p>
+                </div>
+                <div class="flex flex-col items-center md:items-end gap-3">
+                    <button
+                        class="relative overflow-hidden bg-white hover:bg-gray-50 text-text-dark rounded-xl px-8 py-4 shadow-xl transition-transform active:scale-95 flex items-center gap-4 group/btn cursor-pointer"
+                        onclick="navigator.clipboard.writeText('0333427****')">
+                        <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center">
+                            <span class="material-symbols-outlined">call</span>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Order Now</span>
+                            <span class="text-2xl font-black tracking-tight">0333 427 ****</span>
+                        </div>
+                        <div
+                            class="absolute inset-0 bg-black/5 opacity-0 group-hover/btn:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
+                            <span class="font-bold text-sm bg-text-dark text-white px-3 py-1 rounded-full">Click to
+                                Copy</span>
+                        </div>
+                    </button>
+                    <p class="text-xs font-medium text-text-dark/60 uppercase tracking-wide">Lines open 11am - 11pm</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="menu" class="py-20 bg-background-light dark:bg-[#1a1a1a]">
+            <div class="container mx-auto px-4 sm:px-10 max-w-[1280px]">
+                <div class="flex flex-col items-center mb-16 text-center">
+                    <span class="text-secondary dark:text-primary font-bold tracking-widest uppercase mb-2">The
+                        Blueprint</span>
+                    <h2 class="text-4xl sm:text-5xl font-black text-text-dark dark:text-white uppercase tracking-tight">
+                        Signature Burgers</h2>
+                    <div class="w-24 h-2 bg-primary mt-6 rounded-full"></div>
+                </div>
+
+                <!-- SPECIAL OFFER BANNER -->
+                <div
+                    class="mb-12 p-6 bg-gradient-to-r from-primary to-orange-400 rounded-2xl shadow-lg transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6 text-text-dark">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                                <span class="material-symbols-outlined text-4xl">local_offer</span>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black uppercase tracking-tight">Brick Deal!</h3>
+                                <p class="font-medium">Get a FREE Soft Drink with any Beef Burger.</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span
+                                class="inline-block px-4 py-2 bg-white text-text-dark font-black uppercase rounded-lg shadow-sm text-sm">Use
+                                Code: BRICK2024</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <button onclick="filterMenu('all', this)"
+                        class="filter-btn active px-6 py-2 rounded-full border-2 border-primary bg-primary text-text-dark font-bold uppercase tracking-wider transition-all hover:scale-105 shadow-md">All</button>
+                    <button onclick="filterMenu('beef', this)"
+                        class="filter-btn px-6 py-2 rounded-full border-2 border-primary/30 text-text-dark dark:text-white font-bold uppercase tracking-wider transition-all hover:border-primary hover:bg-primary/10">Beef</button>
+                    <button onclick="filterMenu('chicken', this)"
+                        class="filter-btn px-6 py-2 rounded-full border-2 border-primary/30 text-text-dark dark:text-white font-bold uppercase tracking-wider transition-all hover:border-primary hover:bg-primary/10">Chicken</button>
+                    <button onclick="filterMenu('veg', this)"
+                        class="filter-btn px-6 py-2 rounded-full border-2 border-primary/30 text-text-dark dark:text-white font-bold uppercase tracking-wider transition-all hover:border-primary hover:bg-primary/10">Veg</button>
+                    <button onclick="filterMenu('sides', this)"
+                        class="filter-btn px-6 py-2 rounded-full border-2 border-primary/30 text-text-dark dark:text-white font-bold uppercase tracking-wider transition-all hover:border-primary hover:bg-primary/10">Sides</button>
+                </div>
+                <div id="burger-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
+                    <div data-category="beef"
+                        class="menu-item group flex flex-col bg-white dark:bg-[#231f0f] rounded-2xl overflow-hidden border border-gray-100 dark:border-white/5 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                        <div class="h-64 overflow-hidden relative">
+                            <img alt="Classic cheeseburger with lettuce and tomato"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                data-alt="Classic beef burger with melted cheddar, crisp lettuce, and tomato on a toasted bun"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNpPAw5TBBj1WOVRjaKUFzJ_bT0qARJEFlZdGRtWlLyaUc49cly1aqO8OT7lI0asCA5Xw2QT5e5ZFv1k4KQWddWd4ZXVr8Rs5RhA8AxtGsASB632zqbDtbgywq-xSIYNxhin6hA3MZr4_EYtdwtsYIniTrZh7wumDN9WcuDCGJnSxTgQ3IS0ieB5ylk9JnIySmX8E2s8WXvFSTAx8Cvu80gxiBfsNfsuDvY7zTG2jl89PGbEoGq0kP9w0GIaQkjxQNmVM4jDeTDUlV" />
+                            <div
+                                class="absolute top-4 right-4 bg-secondary text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
+                                Best Seller
+                            </div>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="text-2xl font-bold text-text-dark dark:text-white mb-2">The Brick Classic</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow">A classic construction.
+                                Juicy grilled chicken patty, fresh lettuce, tomatoes, and house sauce on a toasted bun.
+                            </p>
+                            <div
+                                class="grid grid-cols-2 gap-4 pt-4 border-t border-dashed border-gray-200 dark:border-white/10">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-bold text-gray-400 uppercase">Solo</span>
+                                    <span class="text-xl font-black text-text-dark dark:text-white">Rs. 600</span>
+                                </div>
+                                <div class="flex flex-col items-end">
+                                    <span class="text-xs font-bold text-primary uppercase">With Fries</span>
+                                    <span class="text-xl font-black text-primary">Rs. 750</span>
+                                </div>
+                                <button
+                                    onclick="addToCart('The Brick Classic', 600, 'https://lh3.googleusercontent.com/aida-public/AB6AXuDNpPAw5TBBj1WOVRjaKUFzJ_bT0qARJEFlZdGRtWlLyaUc49cly1aqO8OT7lI0asCA5Xw2QT5e5ZFv1k4KQWddWd4ZXVr8Rs5RhA8AxtGsASB632zqbDtbgywq-xSIYNxhin6hA3MZr4_EYtdwtsYIniTrZh7wumDN9WcuDCGJnSxTgQ3IS0ieB5ylk9JnIySmX8E2s8WXvFSTAx8Cvu80gxiBfsNfsuDvY7zTG2jl89PGbEoGq0kP9w0GIaQkjxQNmVM4jDeTDUlV')"
+                                    class="col-span-2 mt-2 py-3 bg-primary/10 hover:bg-primary text-primary hover:text-text-dark font-bold uppercase rounded-lg transition-colors flex items-center justify-center gap-2 group/btn">
+                                    <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-category="chicken"
+                        class="menu-item group flex flex-col bg-white dark:bg-[#231f0f] rounded-2xl overflow-hidden border border-gray-100 dark:border-white/5 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                        <div class="h-64 overflow-hidden relative">
+                            <img alt="Crispy chicken burger with coleslaw"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                data-alt="Golden fried chicken burger with spicy slaw and pickles"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUwzcDIWZD_n0GxCtHBPt_aSSibJiE4F1rWlhHV9qFQ3dAjDyfLDpCnYpgkBpE9vUas1Mo0yOEJH3epWB6GNwhVTW7Cf65T5AWEjnEqhpgZDsC6jwse5qj5lo-AcUYPKkPZlwJNa15OAuYU0gJeZ--9Vj6a30mFERxKZrgJy2FNtujwPlzRHjP0Wt6YshxBZC7YOQJtUyg6qzw-9GA11qjoxuFUUTvqbbqUgihlYGT6Zm-12IojguJiDISTYTopNSd60iXSaV-yhwQ" />
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="text-2xl font-bold text-text-dark dark:text-white mb-2">The Golden Crunch</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow">Buttermilk fried chicken
+                                breast, spicy slaw, garlic mayo, and pickles. Constructed for maximum crunch.</p>
+                            <div
+                                class="grid grid-cols-2 gap-4 pt-4 border-t border-dashed border-gray-200 dark:border-white/10">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-bold text-gray-400 uppercase">Solo</span>
+                                    <span class="text-xl font-black text-text-dark dark:text-white">Rs. 550</span>
+                                </div>
+                                <div class="flex flex-col items-end">
+                                    <span class="text-xs font-bold text-primary uppercase">With Fries</span>
+                                    <span class="text-xl font-black text-primary">Rs. 700</span>
+                                </div>
+                                <button
+                                    onclick="addToCart('The Golden Crunch', 550, 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUwzcDIWZD_n0GxCtHBPt_aSSibJiE4F1rWlhHV9qFQ3dAjDyfLDpCnYpgkBpE9vUas1Mo0yOEJH3epWB6GNwhVTW7Cf65T5AWEjnEqhpgZDsC6jwse5qj5lo-AcUYPKkPZlwJNa15OAuYU0gJeZ--9Vj6a30mFERxKZrgJy2FNtujwPlzRHjP0Wt6YshxBZC7YOQJtUyg6qzw-9GA11qjoxuFUUTvqbbqUgihlYGT6Zm-12IojguJiDISTYTopNSd60iXSaV-yhwQ')"
+                                    class="col-span-2 mt-2 py-3 bg-primary/10 hover:bg-primary text-primary hover:text-text-dark font-bold uppercase rounded-lg transition-colors flex items-center justify-center gap-2 group/btn">
+                                    <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-category="veg"
+                        class="menu-item group flex flex-col bg-white dark:bg-[#231f0f] rounded-2xl overflow-hidden border border-gray-100 dark:border-white/5 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                        <div class="h-64 overflow-hidden relative">
+                            <img alt="Triple patty burger with bacon"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                data-alt="Massive triple patty burger with crispy bacon and onion rings"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRJgAongnFo49FOW98mAmRGi86bkE-GxIRUus3KDHlSeRihSgiTKISYiduAHPYlZA3Pk6EH-ZWJuHQFIYRQJzDdOaloF0pQZw5pUaCITB88ikbl_BWLeqIRVXEw0M2OGB0GycN5cMygm5KqIXfJJ-d1HUlPgdOvSlEaCVLhkG4pOP6eaSmIzGIH0GtL564vp27XhaO43dyRhPauoTATWPRWwhjm6OJRGY4hAgbrYp-9gq1y1oFLuAiGt_BCsGDyHaXb1i04Bfbf2Gz" />
+                            <div
+                                class="absolute top-4 right-4 bg-text-dark text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
+                                New Arrival
+                            </div>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="text-2xl font-bold text-text-dark dark:text-white mb-2">The Veggie Smash</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow">A heavy duty plant-based
+                                patty, smashed to perfection, topped with vegan cheese, onions, and special sauce.</p>
+                            <div
+                                class="grid grid-cols-2 gap-4 pt-4 border-t border-dashed border-gray-200 dark:border-white/10">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-bold text-gray-400 uppercase">Solo</span>
+                                    <span class="text-xl font-black text-text-dark dark:text-white">Rs. 650</span>
+                                </div>
+                                <div class="flex flex-col items-end">
+                                    <span class="text-xs font-bold text-primary uppercase">With Fries</span>
+                                    <span class="text-xl font-black text-primary">Rs. 800</span>
+                                </div>
+                                <button
+                                    onclick="addToCart('The Veggie Smash', 650, 'https://lh3.googleusercontent.com/aida-public/AB6AXuCRJgAongnFo49FOW98mAmRGi86bkE-GxIRUus3KDHlSeRihSgiTKISYiduAHPYlZA3Pk6EH-ZWJuHQFIYRQJzDdOaloF0pQZw5pUaCITB88ikbl_BWLeqIRVXEw0M2OGB0GycN5cMygm5KqIXfJJ-d1HUlPgdOvSlEaCVLhkG4pOP6eaSmIzGIH0GtL564vp27XhaO43dyRhPauoTATWPRWwhjm6OJRGY4hAgbrYp-9gq1y1oFLuAiGt_BCsGDyHaXb1i04Bfbf2Gz')"
+                                    class="col-span-2 mt-2 py-3 bg-primary/10 hover:bg-primary text-primary hover:text-text-dark font-bold uppercase rounded-lg transition-colors flex items-center justify-center gap-2 group/btn">
+                                    <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- Correctly closing the Grid -->
+
+            <!-- Sides Section (Now properly inside container if desired, OR separate) -->
+            <!-- Original design had sides inside the same container. Let's keep it clean. -->
+
+            <div id="sides-section"
+                class="bg-[#f8f8f5] dark:bg-[#231f0f] rounded-2xl p-8 sm:p-12 border border-gray-200 dark:border-white/5 transition-all duration-300 mt-20">
+                <div class="flex items-center gap-4 mb-8">
+                    <h3 class="text-2xl font-black text-text-dark dark:text-white uppercase tracking-tight">Sides
+                        & Beverages</h3>
+                    <div class="h-[2px] flex-grow bg-gray-200 dark:bg-white/10"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+                    <div
+                        class="flex items-center justify-between group cursor-pointer hover:bg-white dark:hover:bg-white/5 p-3 rounded-lg transition-colors">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-secondary dark:text-primary">kebab_dining</span>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h4 class="font-bold text-text-dark dark:text-white">Brick Fries</h4>
+                                    <span
+                                        class="px-2 py-0.5 bg-secondary text-white text-[10px] font-bold uppercase rounded-full">Popular</span>
+                                </div>
+                                <p class="text-xs text-gray-500">Classic salted thick cut</p>
+                            </div>
+                        </div>
+                        <button onclick="addToCart('Brick Fries', 220)"
+                            class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-black/20 rounded-lg hover:bg-primary border border-gray-100 dark:border-white/10 transition-colors group/btn">
+                            <span
+                                class="font-bold text-text-dark dark:text-white text-sm group-hover/btn:text-text-dark">Rs.
+                                220</span>
+                            <span
+                                class="material-symbols-outlined text-lg text-primary group-hover/btn:text-text-dark">add</span>
+                        </button>
+                    </div>
+                    <div
+                        class="flex items-center justify-between group cursor-pointer hover:bg-white dark:hover:bg-white/5 p-3 rounded-lg transition-colors">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-secondary dark:text-primary">lunch_dining</span>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h4 class="font-bold text-text-dark dark:text-white">Loaded Brick Fries</h4>
+                                    <span
+                                        class="px-2 py-0.5 bg-primary text-text-dark text-[10px] font-bold uppercase rounded-full">Must
+                                        Try</span>
+                                </div>
+                                <p class="text-xs text-gray-500">Cheese & Sauce</p>
+                            </div>
+                        </div>
+                        <button onclick="addToCart('Loaded Brick Fries', 330)"
+                            class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-black/20 rounded-lg hover:bg-primary border border-gray-100 dark:border-white/10 transition-colors group/btn">
+                            <span
+                                class="font-bold text-text-dark dark:text-white text-sm group-hover/btn:text-text-dark">Rs.
+                                330</span>
+                            <span
+                                class="material-symbols-outlined text-lg text-primary group-hover/btn:text-text-dark">add</span>
+                        </button>
+                    </div>
+                    <div
+                        class="flex items-center justify-between group cursor-pointer hover:bg-white dark:hover:bg-white/5 p-3 rounded-lg transition-colors">
+                        <div class="flex items-center gap-4">
+                            <span
+                                class="material-symbols-outlined text-secondary dark:text-primary">local_fire_department</span>
+                            <div>
+                                <h4 class="font-bold text-text-dark dark:text-white">Crack Fries</h4>
+                                <p class="text-xs text-gray-500">Seasoned</p>
+                            </div>
+                        </div>
+                        <button onclick="addToCart('Crack Fries', 270)"
+                            class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-black/20 rounded-lg hover:bg-primary border border-gray-100 dark:border-white/10 transition-colors group/btn">
+                            <span
+                                class="font-bold text-text-dark dark:text-white text-sm group-hover/btn:text-text-dark">Rs.
+                                270</span>
+                            <span
+                                class="material-symbols-outlined text-lg text-primary group-hover/btn:text-text-dark">add</span>
+                        </button>
+                    </div>
+                    <div
+                        class="flex items-center justify-between group cursor-pointer hover:bg-white dark:hover:bg-white/5 p-3 rounded-lg transition-colors">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-secondary dark:text-primary">local_drink</span>
+                            <div>
+                                <h4 class="font-bold text-text-dark dark:text-white">Soft Drink</h4>
+                                <p class="text-xs text-gray-500">Regular (250ml)</p>
+                            </div>
+                        </div>
+                        <button onclick="addToCart('Soft Drink', 160)"
+                            class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-black/20 rounded-lg hover:bg-primary border border-gray-100 dark:border-white/10 transition-colors group/btn">
+                            <span
+                                class="font-bold text-text-dark dark:text-white text-sm group-hover/btn:text-text-dark">Rs.
+                                160</span>
+                            <span
+                                class="material-symbols-outlined text-lg text-primary group-hover/btn:text-text-dark">add</span>
+                        </button>
+                    </div>
+                    <div
+                        class="flex items-center justify-between group cursor-pointer hover:bg-white dark:hover:bg-white/5 p-3 rounded-lg transition-colors">
+                        <div class="flex items-center gap-4">
+                            <span class="material-symbols-outlined text-secondary dark:text-primary">water_drop</span>
+                            <div>
+                                <h4 class="font-bold text-text-dark dark:text-white">Water</h4>
+                                <p class="text-xs text-gray-500">Mineral water (500ml)</p>
+                            </div>
+                        </div>
+                        <button onclick="addToCart('Water', 120)"
+                            class="flex items-center gap-2 px-3 py-1 bg-white dark:bg-black/20 rounded-lg hover:bg-primary border border-gray-100 dark:border-white/10 transition-colors group/btn">
+                            <span
+                                class="font-bold text-text-dark dark:text-white text-sm group-hover/btn:text-text-dark">Rs.
+                                120</span>
+                            <span
+                                class="material-symbols-outlined text-lg text-primary group-hover/btn:text-text-dark">add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+    </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section
+        class="py-20 bg-[#f8f8f5] dark:bg-[#231f0f] border-y border-gray-100 dark:border-white/5 relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-10 opacity-5 pointer-events-none transform -rotate-12 scale-150">
+            <span class="material-symbols-outlined text-[300px]">format_quote</span>
+        </div>
+        <div class="container mx-auto px-4 sm:px-10 max-w-[1280px]">
+            <div class="flex flex-col items-center mb-16 text-center">
+                <span class="text-secondary dark:text-primary font-bold tracking-widest uppercase mb-2">Community</span>
+                <h2 class="text-4xl sm:text-5xl font-black text-text-dark dark:text-white uppercase tracking-tight">
+                    What People Say</h2>
+                <div class="w-24 h-2 bg-primary mt-6 rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="bg-white dark:bg-[#1a1a1a] p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-white/5 relative">
+                    <div class="flex gap-1 text-primary mb-4">
+                        <span class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 font-medium italic">"The structure of these
+                        burgers
+                        is engineering perfection. The Brick Classic is the most stable and delicious thing I've
+                        ever
+                        eaten."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                            <img src="https://ui-avatars.com/api/?name=Alex+M&background=ffcc00&color=fff" alt="User" />
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-text-dark dark:text-white">Alex M.</h4>
+                            <p class="text-xs text-secondary dark:text-primary uppercase font-bold tracking-wider">
+                                Food
+                                Critic</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1a1a1a] p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-white/5 relative">
+                    <div class="flex gap-1 text-primary mb-4">
+                        <span class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 font-medium italic">"Finally, a place that
+                        understands the architecture of flavor. The fries are built different. Highly recommended!"
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                            <img src="https://ui-avatars.com/api/?name=Sarah+K&background=5d4037&color=fff"
+                                alt="User" />
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-text-dark dark:text-white">Sarah K.</h4>
+                            <p class="text-xs text-secondary dark:text-primary uppercase font-bold tracking-wider">
+                                Local
+                                Guide</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1a1a1a] p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-white/5 relative">
+                    <div class="flex gap-1 text-primary mb-4">
+                        <span class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star</span><span
+                            class="material-symbols-outlined">star_half</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 font-medium italic">"Fast delivery, solid
+                        packaging.
+                        The burger didn't even slide apart. It's like they used cement (the tasty kind)."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                            <img src="https://ui-avatars.com/api/?name=David+R&background=333&color=fff" alt="User" />
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-text-dark dark:text-white">David R.</h4>
+                            <p class="text-xs text-secondary dark:text-primary uppercase font-bold tracking-wider">
+                                Verified Buyer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-20 bg-primary text-text-dark">
+        <div class="container mx-auto px-4 sm:px-10 max-w-[1024px] text-center">
+            <span class="material-symbols-outlined text-6xl mb-6">mail</span>
+            <h2 class="text-4xl sm:text-5xl font-black uppercase tracking-tight mb-4">Join The Brick Club</h2>
+            <p class="text-xl font-medium mb-10 max-w-2xl mx-auto opacity-80">Get exclusive updates on our
+                blueprint,
+                secret menu items, and construction news.</p>
+            <form onsubmit="event.preventDefault(); alert('Welcome to the club!');"
+                class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                <input type="email" required placeholder="Enter your email address"
+                    class="flex-1 bg-white/90 border-0 rounded-xl px-6 py-4 text-lg font-medium placeholder-gray-500 focus:ring-4 focus:ring-black/10 outline-none" />
+                <button type="submit"
+                    class="bg-secondary text-white font-black uppercase tracking-wider px-8 py-4 rounded-xl hover:bg-black transition-colors shadow-xl">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="locations" class="py-20 bg-white dark:bg-background-dark border-y border-gray-100 dark:border-white/5">
+        <div class="container mx-auto px-4 sm:px-10 max-w-[1280px]">
+            <div class="flex flex-col items-center mb-12 text-center">
+                <span class="text-secondary dark:text-primary font-bold tracking-widest uppercase mb-2">Our
+                    Sites</span>
+                <h2 class="text-4xl sm:text-5xl font-black text-text-dark dark:text-white uppercase tracking-tight">
+                    Find Us</h2>
+                <div class="w-24 h-2 bg-primary mt-6 rounded-full"></div>
+            </div>
+            <div class="flex flex-col items-center text-center max-w-2xl mx-auto">
+                <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-primary text-4xl">location_on</span>
+                </div>
+                <h3 class="text-3xl font-black mb-4">Lahore, Pakistan</h3>
+                <p class="text-xl text-gray-600 dark:text-gray-400 font-medium">
+                    Punjab, Pakistan<br />
+                    Building flavors across the heart of the city.
+                </p>
+                <div class="mt-10 p-6 border-2 border-dashed border-primary rounded-2xl w-full">
+                    <p class="text-sm font-bold uppercase tracking-widest text-primary mb-2">Operating Hours</p>
+                    <p class="text-lg font-black">Daily: 11:00 AM - 11:00 PM</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section (Useful Info) -->
+    <section class="py-20 bg-white dark:bg-background-dark border-t border-gray-100 dark:border-white/5">
+        <div class="container mx-auto px-4 sm:px-10 max-w-[1024px]">
+            <div class="flex flex-col items-center mb-12 text-center">
+                <span class="text-secondary dark:text-primary font-bold tracking-widest uppercase mb-2">Help
+                    Center</span>
+                <h2 class="text-3xl sm:text-4xl font-black text-text-dark dark:text-white uppercase tracking-tight">Need
+                    to Know</h2>
+                <div class="w-16 h-1.5 bg-primary mt-4 rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 dark:bg-[#1a1a1a] p-6 rounded-2xl border border-gray-100 dark:border-white/5">
+                    <h3 class="font-bold text-xl mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">schedule</span>
+                        Delivery Times?
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400">We aim for 30-45 minutes within Lahore. Heavy traffic or
+                        rain may add delays, but our bricks stay hot.</p>
+                </div>
+                <div class="bg-gray-50 dark:bg-[#1a1a1a] p-6 rounded-2xl border border-gray-100 dark:border-white/5">
+                    <h3 class="font-bold text-xl mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">restaurant</span>
+                        Halal Status?
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400">100% Halal certified beef and chicken, sourced daily
+                        from local premium suppliers.</p>
+                </div>
+                <div class="bg-gray-50 dark:bg-[#1a1a1a] p-6 rounded-2xl border border-gray-100 dark:border-white/5">
+                    <h3 class="font-bold text-xl mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">payments</span>
+                        Payment Methods?
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400">We accept Cash on Delivery (COD) and Credit/Debit Cards
+                        upon delivery (let us know to bring the machine!).</p>
+                </div>
+                <div class="bg-gray-50 dark:bg-[#1a1a1a] p-6 rounded-2xl border border-gray-100 dark:border-white/5">
+                    <h3 class="font-bold text-xl mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">celebration</span>
+                        Eatery Events?
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400">Yes! We cater for large construction crews (parties).
+                        Contact our hotline 24 hours in advance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="founder" class="bg-secondary text-white py-20 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-32 h-32 border-l-4 border-t-4 border-primary/20 m-6"></div>
+        <div class="absolute bottom-0 right-0 w-32 h-32 border-r-4 border-b-4 border-primary/20 m-6"></div>
+        <div class="container mx-auto px-4 sm:px-10 max-w-[1024px] flex flex-col md:flex-row items-center gap-12">
+            <div class="w-full md:w-1/2 flex justify-center md:justify-end">
+                <div class="relative">
+                    <div
+                        class="w-64 h-80 sm:w-80 sm:h-96 rounded-lg overflow-hidden bg-gray-800 border-4 border-primary shadow-2xl relative z-10 rotate-3">
+                        <img alt="Portrait of Omarbinamir Obai"
+                            class="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-500"
+                            data-alt="Portrait of the founder" src="op.png" />
+                    </div>
+                    <div class="absolute inset-0 border-4 border-white/10 rounded-lg -rotate-3 z-0"></div>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-2 mb-6">
+                    <span class="material-symbols-outlined text-primary">engineering</span>
+                    <span class="text-primary font-bold tracking-widest uppercase text-sm">The Founder</span>
+                </div>
+                <blockquote class="text-3xl sm:text-4xl font-black leading-tight mb-8 font-display">
+                    "Omarbinamir is the founder/owner."
+                </blockquote>
+                <p class="text-lg text-white/80 mb-8 italic">
+                    "I own this website and more. Explore everyday, everywhere."
+                </p>
+                <div>
+                    <h4 class="text-xl font-bold uppercase tracking-wide">Omarbinamir Oba</h4>
+                    <p class="text-white/60 mt-1">Chief Architect of Taste</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="bg-background-dark border-t border-white/10 py-10">
+        <div class="container mx-auto px-4 sm:px-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2 text-white">
+                <div class="w-6 h-6 text-primary">
+                    <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 20C8 12.268 15.1634 6 24 6C32.8366 6 40 12.268 40 20H8Z" fill="currentColor">
+                        </path>
+                        <rect fill="#ffcc00" height="12" rx="2" width="36" x="6" y="24"></rect>
+                        <path d="M8 40C8 42.2091 15.1634 44 24 44C32.8366 44 40 42.2091 40 40V38H8V40Z"
+                            fill="currentColor"></path>
+                    </svg>
+                </div>
+                <span class="font-bold uppercase tracking-wider text-sm">Brick Burgers</span>
+            </div>
+            <p class="text-gray-500 text-sm">© 2024 Brick Burgers. Built to last.</p>
+            <div class="flex gap-4">
+                <a class="w-8 h-8 rounded bg-white/5 flex items-center justify-center hover:bg-primary hover:text-text-dark transition-colors text-white"
+                    href="#">
+                    <span class="text-xs font-bold">IG</span>
+                </a>
+                <a class="w-8 h-8 rounded bg-white/5 flex items-center justify-center hover:bg-primary hover:text-text-dark transition-colors text-white"
+                    href="#">
+                    <span class="text-xs font-bold">FB</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+    </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <dialog id="checkout-modal"
+        class="backdrop:bg-black/80 rounded-2xl p-0 w-full max-w-md bg-transparent shadow-2xl open:animate-fade-in z-[80]">
+        <div class="bg-white dark:bg-[#1a1a1a] p-6 rounded-2xl border border-white/10">
+            <div class="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-white/10 pb-4">
+                <h3 class="text-2xl font-black uppercase text-text-dark dark:text-white">Checkout</h3>
+                <button onclick="document.getElementById('checkout-modal').close()"
+                    class="material-symbols-outlined text-gray-500 hover:text-red-500 cursor-pointer transition-colors">close</button>
+            </div>
+            <form id="checkout-form" onsubmit="handleCheckout(event)" class="flex flex-col gap-4">
+                <div class="flex flex-col items-center justify-center p-4">
+                    <p class="text-sm text-gray-500 mb-4 text-center italic">Tap the burger to take a bite!</p>
+                    <div id="burger-game"
+                        class="relative w-48 h-48 cursor-pointer select-none transition-transform active:scale-95"
+                        onclick="eatBurger()">
+                        <div id="bg-layer1"
+                            class="absolute inset-0 bg-contain bg-no-repeat bg-center transition-opacity duration-300"
+                            style="background-image: url('https://em-content.zobj.net/source/microsoft-teams/363/hamburger_1f354.png');">
+                        </div>
+                        <div id="bg-layer-bites" class="absolute inset-0 w-full h-full pointer-events-none"></div>
+                    </div>
+                    <p id="game-status" class="text-xs font-black uppercase text-primary mt-4 tracking-widest">Hungry?
+                    </p>
+                </div>
+
+                <div class="pt-4 border-t border-gray-100 dark:border-white/10 mt-2">
+                    <div class="flex justify-between items-end mb-4">
+                        <span class="text-sm font-medium text-gray-500">Total Amount</span>
+                        <div class="text-right">
+                            <div id="checkout-discount-row" class="text-xs text-green-500 font-bold hidden">
+                                - Rs. <span id="checkout-discount">0</span>
+                            </div>
+                            <span id="checkout-total" class="text-3xl font-black text-primary">Rs. 0</span>
+                        </div>
+                    </div>
+                    <!-- Quick Checkout (Guest) -->
+                    <button type="submit"
+                        class="w-full py-4 bg-primary hover:bg-[#ffe066] text-text-dark font-black uppercase tracking-wider rounded-xl transition-colors shadow-lg active:scale-95 flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">bolt</span>
+                        Instant Order
+                    </button>
+                    <p class="text-[10px] text-center text-gray-400 mt-2">By ordering, you agree to our Terms of Taste.
+                    </p>
+                </div>
+            </form>
+        </div>
+    </dialog>
+    <!-- Cart Toggle -->
+    <input autocomplete="off" class="peer/cart hidden" id="cart-toggle" type="checkbox" />
+    <label
+        class="fixed inset-0 bg-black/60 z-[60] opacity-0 pointer-events-none transition-opacity duration-300 peer-checked/cart:opacity-100 peer-checked/cart:pointer-events-auto backdrop-blur-sm"
+        for="cart-toggle"></label>
+
+    <!-- Cart Drawer -->
+    <div
+        class="fixed top-0 left-0 h-full w-[350px] bg-white dark:bg-[#1a1a1a] z-[70] transform -translate-x-full transition-transform duration-300 peer-checked/cart:translate-x-0 shadow-2xl flex flex-col border-r border-white/10">
+        <div class="p-6 flex items-center justify-between border-b border-gray-100 dark:border-white/10">
+            <h2
+                class="text-xl font-black uppercase tracking-tight text-text-dark dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                Your Order
+            </h2>
+            <label
+                class="cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors group"
+                for="cart-toggle">
+                <span class="material-symbols-outlined group-hover:rotate-90 transition-transform">close</span>
+            </label>
+        </div>
+
+        <!-- Cart Items Area -->
+        <div id="cart-items" class="flex-1 p-6 flex flex-col gap-4 overflow-y-auto">
+            <div class="flex flex-col items-center justify-center h-full text-gray-500 opacity-50">
+                <span class="material-symbols-outlined text-6xl mb-4">production_quantity_limits</span>
+                <p class="font-bold uppercase tracking-wider">Your cart is empty</p>
+            </div>
+        </div>
+
+        <!-- Cart Footer -->
+        <div class="p-6 bg-gray-50 dark:bg-white/5 border-t border-gray-100 dark:border-white/10">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-sm font-bold text-gray-500 uppercase">Total</span>
+                <span id="cart-total" class="text-2xl font-black text-primary">Rs. 0</span>
+            </div>
+            <button onclick="openCheckout()"
+                class="w-full py-4 bg-primary hover:bg-[#e6b800] text-text-dark font-black uppercase tracking-wider rounded-xl transition-colors shadow-lg active:scale-95">
+                Checkout Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart Floating Button (Top Left) -->
+    <label for="cart-toggle"
+        class="fixed top-24 left-4 z-[40] w-14 h-14 bg-white dark:bg-[#231f0f] border border-gray-100 dark:border-white/10 rounded-full shadow-xl flex items-center justify-center cursor-pointer hover:scale-110 transition-transform group">
+        <span
+            class="material-symbols-outlined text-text-dark dark:text-white group-hover:text-primary transition-colors">shopping_bag</span>
+        <span id="cart-count"
+            class="absolute -top-1 -right-1 w-6 h-6 bg-primary text-text-dark text-xs font-black flex items-center justify-center rounded-full border-2 border-white dark:border-gray-900 transform scale-0 transition-transform">0</span>
+    </label>
+
+    <script>
+        // --- Persistence Logic ---
+        function loadCart() {
+            const saved = localStorage.getItem('brickCart');
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch (e) {
+                    console.error('Cart load error', e);
+                    return [];
+                }
+            }
+            return [];
+        }
+
+        function saveCart(cartData) {
+            localStorage.setItem('brickCart', JSON.stringify(cartData));
+        }
+
+        // --- State ---
+        let cart = loadCart();
+        let appliedDiscount = 0;
+        let discountType = null; // 'fixed' or 'percent' or 'items'
+        let appliedCode = null;
+
+        // --- Core Functions ---
+        window.addToCart = function (name, price, image) {
+            const existingItem = cart.find(item => item.name === name);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                // PARTAYY MODE CHECK
+                let finalPrice = price;
+                if (window.partayyModeActive) { // Simply check if active
+                    finalPrice = 600;
+                }
+
+                cart.push({
+                    name: name,
+                    price: finalPrice,
+                    image: image,
+                    quantity: 1
+                });
+            }
+
+            saveCart(cart);
+            updateCartUI();
+
+            // Auto open logic
+            const cartToggle = document.getElementById('cart-toggle');
+            cartToggle.checked = true;
+        }
+
+        window.updateQuantity = function (name, change) {
+            const itemIndex = cart.findIndex(item => item.name === name);
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += change;
+                if (cart[itemIndex].quantity <= 0) {
+                    cart.splice(itemIndex, 1);
+                }
+            }
+            saveCart(cart);
+            updateCartUI();
+        }
+
+        // --- Filtering Logic ---
+        window.filterMenu = function (category, btn) {
+            // Update buttons
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('active', 'bg-primary', 'border-primary');
+                b.classList.add('border-primary/30');
+            });
+            btn.classList.add('active', 'bg-primary', 'border-primary');
+            btn.classList.remove('border-primary/30');
+
+            const burgerGrid = document.getElementById('burger-grid');
+            const sidesSection = document.getElementById('sides-section');
+            const items = document.querySelectorAll('.menu-item');
+
+            // Logic:
+            // If Sides: Hide burger grid, Show sides.
+            // If All: Show everything.
+            // If Beef/Chicken/Veg: Hide sides, Filter burger grid items.
+
+            if (category === 'sides') {
+                burgerGrid.classList.add('hidden');
+                sidesSection.classList.remove('hidden');
+            } else {
+                burgerGrid.classList.remove('hidden');
+
+                if (category === 'all') {
+                    items.forEach(item => item.classList.remove('hidden'));
+                    sidesSection.classList.remove('hidden');
+                } else {
+                    sidesSection.classList.add('hidden'); // Hide sides when specific burger category selected
+                    items.forEach(item => {
+                        if (item.dataset.category === category) {
+                            item.classList.remove('hidden');
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                }
+            }
+        }
+
+        // --- Checkout Logic ---
+        // --- Checkout Logic ---
+        window.openCheckout = function () {
+            if (cart.length === 0) {
+                alert("Your cart is empty! Build a burger first.");
+                return;
+            }
+            // Reset Promo
+            appliedDiscount = 0;
+            discountType = null;
+            appliedCode = null;
+            document.getElementById('checkout-discount-row').classList.add('hidden');
+            document.getElementById('promo-input').value = '';
+            document.getElementById('promo-message').innerText = '';
+            document.getElementById('promo-message').className = "text-xs font-bold mt-1";
+
+            // Check for claimed promo
+            const claimed = localStorage.getItem('claimedPromo');
+            if (claimed) {
+                document.getElementById('promo-input').value = claimed;
+                // Auto apply? Let's just fill it.
+            }
+
+            const modal = document.getElementById('checkout-modal');
+            updateCheckoutTotal();
+            modal.showModal();
+        }
+
+        window.claimPromo = function (code) {
+            localStorage.setItem('claimedPromo', code);
+            alert('Promo Code ' + code + ' Claimed!\nIt will be auto-filled at checkout.');
+            // Visual feedback?
+            // document.getElementById('cart-toggle').checked = false; // Close drawer? No, let them browse.
+        }
+
+        window.applyPromo = function () {
+            const code = document.getElementById('promo-input').value.trim().toUpperCase();
+            const messageEl = document.getElementById('promo-message');
+
+            // Reset first
+            appliedDiscount = 0;
+            discountType = null;
+            appliedCode = null;
+
+            if (!code) return;
+
+            // 'new2026' -> Free Fries and Drink. 
+            // Implementation: We will add visual item lines or just note it. 
+            // For simplicity in this structure: We will add them to the cart if not present? 
+            // BUT the user is in checkout. Pushing to cart might be weird if they don't see it until post-order.
+            // Let's handle it by adding items to cart immediately if they aren't there!
+
+            let cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            if (code === 'NEW2026') { // Case insensitive check
+                messageEl.innerText = "Promo Applied: Free Fries & Soft Drink added!";
+                messageEl.className = "text-xs font-bold mt-1 text-green-500";
+                appliedCode = 'NEW2026';
+                discountType = 'items';
+
+                // Logic to add valid items if not exists or ensure they are free? 
+                // Easiest is to add them with 0 price for this session or just update total calculation to ignore them? 
+                // Let's just track it and handle in "Processing".
+            } else if (code === '99') {
+                if (cartTotal < 300) {
+                    messageEl.innerText = "Order must be at least Rs 300 for this code.";
+                    messageEl.className = "text-xs font-bold mt-1 text-red-500";
+                    updateCheckoutTotal();
+                    return;
+                }
+                appliedDiscount = 299;
+                discountType = 'fixed';
+                appliedCode = '99';
+                messageEl.innerText = "Promo Applied: Rs. 299 OFF!";
+                messageEl.className = "text-xs font-bold mt-1 text-green-500";
+            } else if (code === 'BIG BRICK') {
+                appliedDiscount = 0.30; // 30%
+                discountType = 'percent';
+                appliedCode = 'BIG BRICK';
+                messageEl.innerText = "Promo Applied: 30% OFF!";
+                messageEl.className = "text-xs font-bold mt-1 text-green-500";
+            } else if (code === 'OBA-DEV-40') {
+                appliedDiscount = 0.40; // 40%
+                discountType = 'percent';
+                appliedCode = 'OBA-DEV-40';
+                messageEl.innerText = "DEV MODE: 40% OFF!";
+                messageEl.className = "text-xs font-bold mt-1 text-purple-600";
+            } else {
+                messageEl.innerText = "Invalid Promo Code";
+                messageEl.className = "text-xs font-bold mt-1 text-red-500";
+            }
+            updateCheckoutTotal();
+        }
+
+        window.updateCheckoutTotal = function () {
+            let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let finalPrice = total;
+            let displayDiscount = 0;
+
+            if (discountType === 'fixed') {
+                finalPrice = Math.max(0, total - appliedDiscount);
+                displayDiscount = appliedDiscount;
+            } else if (discountType === 'percent') {
+                let discountAmt = Math.round(total * appliedDiscount);
+                finalPrice = total - discountAmt;
+                displayDiscount = discountAmt;
+            }
+
+            document.getElementById('checkout-total').innerText = 'Rs. ' + Math.round(finalPrice);
+
+            if (displayDiscount > 0) {
+                document.getElementById('checkout-discount').innerText = displayDiscount;
+                document.getElementById('checkout-discount-row').classList.remove('hidden');
+            } else {
+                document.getElementById('checkout-discount-row').classList.add('hidden');
+            }
+        }
+
+
+        window.handleCheckout = function (e) {
+            e.preventDefault();
+            // Simulate processing
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Processing...';
+
+            setTimeout(() => {
+                cart = [];
+                saveCart(cart);
+                updateCartUI();
+                document.getElementById('checkout-modal').close();
+                e.target.reset();
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+
+                let msg = 'Order Placed Successfully! We are starting construction.';
+                if (appliedCode === 'NEW2026') {
+                    msg += '\n\n(Promo: Free Fries & Soft Drink included in your order!)';
+                }
+                alert(msg);
+                document.getElementById('cart-toggle').checked = false; // Close drawer
+            }, 1500);
+        }
+
+        // --- Render Cart ---
+        function updateCartUI() {
+            const cartContainer = document.getElementById('cart-items');
+            const totalElement = document.getElementById('cart-total');
+            const countElement = document.getElementById('cart-count');
+
+            // Update Count Badge
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            countElement.innerText = totalItems;
+
+            if (totalItems > 0) {
+                countElement.classList.remove('scale-0');
+            } else {
+                countElement.classList.add('scale-0');
+            }
+
+            // Calculate Total
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            totalElement.innerText = 'Rs. ' + total;
+
+            // Render Items
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-gray-500 opacity-50">
+                        <span class="material-symbols-outlined text-6xl mb-4">production_quantity_limits</span>
+                        <p class="font-bold uppercase tracking-wider">Your cart is empty</p>
+                    </div>
+                `;
+            } else {
+                cartContainer.innerHTML = cart.map(item => `
+                    <div class="flex items-center gap-4 bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5 animate-fade-in">
+                        ${item.image ? `<img src="${item.image}" class="w-16 h-16 rounded-lg object-cover bg-white" />` : '<div class="w-16 h-16 rounded-lg bg-gray-200 dark:bg-white/10 flex items-center justify-center"><span class="material-symbols-outlined">fastfood</span></div>'}
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-text-dark dark:text-white truncate">${item.name}</h4>
+                            <div class="flex items-center justify-between mt-1">
+                                <span class="text-primary font-bold text-sm">Rs. ${item.price * item.quantity}</span>
+                                
+                                <div class="flex items-center gap-2 bg-white dark:bg-black/20 rounded-lg px-2 py-1">
+                                    <button onclick="updateQuantity('${item.name}', -1)" class="w-6 h-6 flex items-center justify-center rounded hover:bg-black/5 text-gray-500 hover:text-red-500 transition-colors">
+                                        <span class="material-symbols-outlined text-base">remove</span>
+                                    </button>
+                                    <span class="text-sm font-bold w-4 text-center">${item.quantity}</span>
+                                    <button onclick="updateQuantity('${item.name}', 1)" class="w-6 h-6 flex items-center justify-center rounded hover:bg-black/5 text-gray-500 hover:text-green-500 transition-colors">
+                                        <span class="material-symbols-outlined text-base">add</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Initialize
+        updateCartUI();
+
+        // Promo Toggle Logic
+        function togglePromos(checkbox) {
+            const list = document.getElementById('promo-list');
+            if (checkbox.checked) {
+                list.classList.remove('hidden');
+            } else {
+                list.classList.add('hidden');
+            }
+        }
+
+        // Burger Game Logic
+        let biteCount = 0;
+        window.eatBurger = function () {
+            biteCount++;
+            const burger = document.getElementById('burger-game');
+            const status = document.getElementById('game-status');
+            const bites = document.getElementById('bg-layer-bites');
+
+            // Random Bite
+            const x = Math.random() * 80 + 10;
+            const y = Math.random() * 80 + 10;
+            const size = Math.random() * 20 + 20;
+
+            const biteMark = document.createElement('div');
+            biteMark.className = 'absolute bg-white dark:bg-[#1a1a1a] rounded-full';
+            biteMark.style.width = size + 'px';
+            biteMark.style.height = size + 'px';
+            biteMark.style.left = x + '%';
+            biteMark.style.top = y + '%';
+            biteMark.style.transform = 'translate(-50%, -50%)';
+            bites.appendChild(biteMark);
+
+            // Feedback
+            if (biteCount < 5) {
+                status.innerText = "Yum! Keep eating!";
+            } else if (biteCount < 10) {
+                status.innerText = "Almost gone!";
+            } else {
+                status.innerText = "IT'S GONE! (You were hungry!)";
+                document.getElementById('bg-layer1').style.opacity = '0';
+                // Reset after 2s
+                setTimeout(() => {
+                    bites.innerHTML = '';
+                    document.getElementById('bg-layer1').style.opacity = '1';
+                    biteCount = 0;
+                    status.innerText = "More?";
+                }, 2000);
+            }
+        }
+
+        // --- COOL STUFF LOGIC ---
+
+        // 1. Floating Emojis
+        const emojis = ['🍔', '🍟', '🥤', '🍕', '🧱', '⭐'];
+        setInterval(() => {
+            const el = document.createElement('div');
+            el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            el.className = 'floating-emoji';
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            document.body.appendChild(el);
+
+            // Cleanup
+            setTimeout(() => el.remove(), 25000);
+        }, 3000); // New emoji every 3 seconds
+
+        // 2. Cursor Trail
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.8) { // Don't do it every frame
+                const dot = document.createElement('div');
+                dot.className = 'cursor-trail';
+                dot.style.left = e.clientX + 'px';
+                dot.style.top = e.clientY + 'px';
+                document.body.appendChild(dot);
+
+                setTimeout(() => {
+                    dot.style.transform = 'translate(0, 20px) scale(0)';
+                    dot.style.opacity = '0';
+                    setTimeout(() => dot.remove(), 500);
+                }, 10);
+            }
+        });
+
+        // 3. Konami Code (Party Mode)
+        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let kPos = 0;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konami[kPos]) {
+                kPos++;
+                if (kPos === konami.length) {
+                    togglePartyMode();
+                    kPos = 0;
+                }
+            } else {
+                kPos = 0;
+            }
+        });
+
+        function togglePartyMode() {
+            document.body.classList.toggle('party-mode');
+            if (document.body.classList.contains('party-mode')) {
+                alert("🎉 PARTY MODE ACTIVATED! 🎉\n(Type the code again to deactivate)");
+                // Explode some items
+                for (let i = 0; i < 50; i++) {
+                    window.eatBurger(); // Just kidding, let's just make emojis
+                    const el = document.createElement('div');
+                    el.innerText = '🎉';
+                    el.className = 'floating-emoji';
+                    el.style.left = Math.random() * 100 + 'vw';
+                    el.style.bottom = '50vh'; // Start middle
+                    el.style.animationDuration = '2s';
+                    document.body.appendChild(el);
+                }
+            }
+        }
+
+        // 4. OBA Easter Egg (Professional Tier)
+        const obaCode = ['o', 'b', 'a', 'ArrowUp', 'ArrowDown', 'ArrowUp', 'ArrowDown'];
+        let obaPos = 0;
+        document.addEventListener('keydown', (e) => {
+            // Simple key binding
+            if (e.key.toLowerCase() === obaCode[obaPos].toLowerCase() || e.key === obaCode[obaPos]) {
+                obaPos++;
+                if (obaPos === obaCode.length) {
+                    activateOBAMode();
+                    obaPos = 0;
+                }
+            } else {
+                obaPos = 0;
+            }
+        });
+
+        function activateOBAMode() {
+            alert("🌟 OBA DEV MODE UNLOCKED 🌟\n40% OFF Discount claimed!");
+            // Auto claim 40% code
+            // Since we don't have a 40% code in the system, let's inject it into the Claim logic or just set it directly
+            // We'll set a special localStorage flag
+            localStorage.setItem('claimedPromo', 'OBA-DEV-40');
+
+            // Visual Flair
+            const flair = document.createElement('div');
+            flair.className = 'fixed inset-0 bg-primary/20 pointer-events-none z-[9999] animate-pulse';
+            document.body.appendChild(flair);
+            setTimeout(() => flair.remove(), 2000);
+        }
+
+        // 5. Scroll Progress (Professional)
+        window.addEventListener('scroll', () => {
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPos = window.scrollY;
+            const percentage = (scrollPos / docHeight) * 100;
+            document.getElementById('scroll-progress').style.width = percentage + '%';
+        });
+
+        // 6. PARTAYY MODE (The Real One)
+        // Sequence: Up, Up, Up, Down, Down, Down
+        const partayyCode = ['ArrowUp', 'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowDown'];
+        let partayyPos = 0;
+        window.partayyModeActive = false;
+        window.partayyModeUsed = 0; // 0 = unused, 1 = used
+
+        document.addEventListener('keydown', (e) => {
+            // Case insensitive for letters
+            const input = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+            const target = partayyCode[partayyPos].length === 1 ? partayyCode[partayyPos].toLowerCase() : partayyCode[partayyPos];
+
+            if (input === target) {
+                partayyPos++;
+                if (partayyPos === partayyCode.length) {
+                    activatePartayyMode();
+                    partayyPos = 0;
+                }
+            } else {
+                partayyPos = 0;
+            }
+        });
+
+        function activatePartayyMode() {
+            if (window.partayyModeUsed > 0) {
+                alert("Partayy Mode can only be used ONCE! The party is over.");
+                return;
+            }
+            window.partayyModeActive = true;
+            window.partayyModeUsed = 1;
+
+            // Visuals
+            document.body.classList.add('party-mode');
+            alert("🕺 PARTAYY MODE ACTIVE! 🕺\nEverything is now Rs. 600!\n(Limited Time Magic)");
+
+            // Update current cart prices?
+            // "changes everythings price to 600" implies current view too.
+            // Let's update the cart immediately.
+            cart.forEach(item => {
+                item.price = 600;
+            });
+            saveCart(cart);
+            updateCartUI();
+
+            // VISUAL UPDATE: Change all prices on page
+            // We use a TreeWalker to find all text nodes containing "Rs."
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+            const nodesTochange = [];
+            while (walker.nextNode()) {
+                if (walker.currentNode.nodeValue.includes('Rs.')) {
+                    nodesTochange.push(walker.currentNode);
+                }
+            }
+
+            nodesTochange.forEach(node => {
+                const parent = node.parentNode;
+                // Avoid changing inputs or specific IDs if needed
+                if (parent.tagName !== 'SCRIPT' && parent.tagName !== 'STYLE' && !parent.id.includes('checkout-total')) {
+                    // Regex to find Rs. followed by digits, possibly with whitespace
+                    // We replace ONLY the price part, preserving other text properties
+                    const newVal = node.nodeValue.replace(/Rs\.\s*\d+/, 'Rs. 600');
+
+                    if (newVal !== node.nodeValue) {
+                        node.nodeValue = newVal;
+                        parent.classList.add('text-red-500', 'animate-pulse');
+                    }
+                }
+            });
+
+            // Explode Emojis
+            for (let i = 0; i < 50; i++) {
+                const el = document.createElement('div');
+                el.innerText = '💃';
+                el.className = 'floating-emoji';
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.bottom = '0';
+                el.style.animationDuration = '3s';
+                document.body.appendChild(el);
+            }
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tracker Graph</title>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0f1115;
+            --card-bg: #1c1f26;
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --text-main: #ffffff;
+            --text-secondary: #9ca3af;
+            --danger: #ef4444;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, #fff 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Tracker Section */
+        .tracker-card {
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .date-display {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .count-display {
+            font-size: 8rem;
+            font-weight: 800;
+            line-height: 1;
+            margin: 1rem 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        button {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-add {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-add:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-sub {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        .btn-sub:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Graph Section */
+        .graph-card {
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            height: 400px;
+            position: relative;
+        }
+
+        .debug-section {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #333;
+        }
+
+        .btn-reset {
+            background: transparent;
+            color: #444;
+            font-size: 0.8rem;
+            padding: 0.5rem;
+        }
+
+        .btn-reset:hover {
+            color: var(--danger);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Daily Input Tracker</h1>
+            <p class="subtitle">Your 5-Year Journey</p>
+        </header>
+
+        <div class="tracker-card">
+            <div class="date-display" id="dateDisplay">TODAY</div>
+            <div class="count-display" id="countDisplay">0</div>
+
+            <div class="controls">
+                <button class="btn-sub" onclick="updateCount(-1)">-</button>
+                <button class="btn-add" onclick="updateCount(1)">+ Add Item</button>
+            </div>
+        </div>
+
+        <div class="graph-card">
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <div class="debug-section">
+            <button class="btn-reset" onclick="hardReset()">Reset All Data (Debug)</button>
+            <button class="btn-reset" onclick="simulateNextDay()">Simulate Next Day (Debug)</button>
+        </div>
+    </div>
+
+    <script>
+        // --- State Management ---
+        const STORE_KEY = 'daily_tracker_data_v1';
+        let state = {
+            currentDate: new Date().toDateString(),
+            currentCount: 0,
+            history: [] // Array of {date: string, count: number}
+        };
+
+        // --- Initialization ---
+        function init() {
+            // Load data
+            const savedRegex = localStorage.getItem(STORE_KEY);
+            if (savedRegex) {
+                try {
+                    const parsed = JSON.parse(savedRegex);
+                    // Merge saved history, but we need to check if the day has changed
+                    state.history = parsed.history || [];
+
+                    const savedDate = parsed.currentDate;
+                    const today = new Date().toDateString();
+
+                    if (savedDate !== today) {
+                        // Day has changed!
+                        console.log(`New day detected. Previous: ${savedDate}, Today: ${today}`);
+
+                        // 1. Archive the previous day's count
+                        // Only archive if it's not already in history (prevent double adds on weird refreshes)
+                        const exists = state.history.find(h => h.date === savedDate);
+                        if (!exists) {
+                            state.history.push({
+                                date: savedDate,
+                                count: parsed.currentCount || 0
+                            });
+                        }
+
+                        // 2. Reset for today
+                        state.currentCount = 0;
+                        state.currentDate = today;
+                    } else {
+                        // Same day, just restore count
+                        state.currentCount = parsed.currentCount || 0;
+                        state.currentDate = parsed.currentDate;
+                    }
+
+                } catch (e) {
+                    console.error("Error parsing saved data", e);
+                    // Fallback to default state if corrupt
+                }
+            } else {
+                // First time user
+                state.currentDate = new Date().toDateString();
+            }
+
+            saveState();
+            renderUI();
+            initChart();
+        }
+
+        function saveState() {
+            localStorage.setItem(STORE_KEY, JSON.stringify(state));
+        }
+
+        // --- Core Logic ---
+        function updateCount(amount) {
+            state.currentCount += amount;
+            if (state.currentCount < 0) state.currentCount = 0; // Optional: prevent negative
+            saveState();
+            renderUI();
+        }
+
+        function renderUI() {
+            document.getElementById('countDisplay').innerText = state.currentCount;
+            document.getElementById('dateDisplay').innerText = state.currentDate.toUpperCase();
+        }
+
+        // --- Chart.js ---
+        let chartInstance = null;
+
+        function initChart() {
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            // Prepare data for chart
+            // We want to show history. 
+            // Optional: Fill in missing dates if desired, but for now we just plot recorded days.
+
+            const labels = state.history.map(h => {
+                // Format date nicely (e.g., "Oct 24")
+                const d = new Date(h.date);
+                return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
+            });
+            const dataPoints = state.history.map(h => h.count);
+
+            // Chart Configuration
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(139, 92, 246, 0.5)'); // Primary color
+            gradient.addColorStop(1, 'rgba(139, 92, 246, 0.0)');
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Daily Items',
+                        data: dataPoints,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#1c1f26',
+                        pointBorderColor: '#8b5cf6',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        tension: 0.4, // Smooth curves
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(28, 31, 38, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#a78bfa',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            padding: 10
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#6b7280'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#6b7280'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            if (!chartInstance) return;
+            const labels = state.history.map(h => {
+                const d = new Date(h.date);
+                return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
+            });
+            const dataPoints = state.history.map(h => h.count);
+
+            chartInstance.data.labels = labels;
+            chartInstance.data.datasets[0].data = dataPoints;
+            chartInstance.update();
+        }
+
+        // --- Debugging Helpers ---
+        function hardReset() {
+            if (confirm("Are you sure? This will delete all history.")) {
+                localStorage.removeItem(STORE_KEY);
+                location.reload();
+            }
+        }
+
+        function simulateNextDay() {
+            // Trick the app into thinking it's tomorrow
+            // We modify the 'currentDate' in state to be yesterday, then reload the page logic
+            // actually easier: save state with an old date
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            state.currentDate = yesterday.toDateString();
+            // keep current count as is, so it gets archived
+            saveState();
+
+            alert("Time travel complete! Reloading to trigger day rollover...");
+            location.reload();
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+
+</html>

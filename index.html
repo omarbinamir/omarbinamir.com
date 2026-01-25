@@ -22,7 +22,7 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // Global timer reference to allow stopping teleport
+    // Global timer reference
     window.teleportTimer = null;
 
     window.loginWithGoogle = async () => {
@@ -30,21 +30,17 @@
         await signInWithPopup(auth, provider);
       } catch (err) {
         console.error("Auth error:", err);
+        alert("Login failed. Please try again.");
       }
     };
 
     // ---------------- DEACTIVATE LOGIC ----------------
     window.deactivateAccount = async () => {
-      // 1. Stop the teleporting immediately
-      if (window.teleportTimer) {
-        clearTimeout(window.teleportTimer);
-      }
+      if (window.teleportTimer) clearTimeout(window.teleportTimer);
 
-      // 2. Verification Prompt
       const confirmation = prompt("To deactivate, type 'De-activate' below:");
 
       if (confirmation === "De-activate") {
-        // 3. Mark for deletion and force re-authentication
         localStorage.setItem("oba_pending_delete", "true");
         alert("Re-authentication required. Please sign in one last time to instantly delete your account.");
         await signOut(auth);
@@ -54,18 +50,20 @@
       }
     };
 
-    // ---------------- GUEST MODE (REDIRECT TO OBILABS.html) ----------------
+    // ---------------- GUEST MODE ----------------
     window.enterAsGuest = () => {
       const greeting = document.getElementById("greeting");
       greeting.textContent = "Entering as Guest... 🛠️";
       document.getElementById("loginBtn").style.display = "none";
       document.getElementById("guestBtn").style.display = "none";
+      document.getElementById("userAvatar").style.display = "none";
 
       setTimeout(() => {
         const blackout = document.getElementById("blackout-overlay");
         blackout.style.opacity = "1";
         setTimeout(() => {
-          window.location.href = "OBILABS.html"; // Updated redirect
+          // GUEST REDIRECT
+          window.location.href = "dashdash.html";
         }, 1000);
       }, 2000);
     };
@@ -76,9 +74,9 @@
       const loginBtn = document.getElementById("loginBtn");
       const guestBtn = document.getElementById("guestBtn");
       const deactivateBtn = document.getElementById("deactivateBtn");
+      const avatar = document.getElementById("userAvatar");
 
       if (user) {
-        // CHECK IF USER JUST SIGNED IN TO DELETE
         if (localStorage.getItem("oba_pending_delete") === "true") {
           greeting.textContent = "Finalizing deactivation...";
           try {
@@ -94,23 +92,38 @@
         }
 
         const name = user.displayName || "Builder";
-        greeting.textContent = `Welcome back, ${name}! 🚀`;
+        const photo = user.photoURL;
+
+        greeting.innerHTML = `Welcome back,<br>${name}! 🚀`;
+
+        if (photo) {
+          avatar.src = photo;
+          avatar.style.display = "block";
+        }
+
         loginBtn.style.display = "none";
         guestBtn.style.display = "none";
         deactivateBtn.style.display = "inline-block";
 
-        // START TELEPORT SEQUENCE
+        setTimeout(() => {
+          greeting.textContent = "Initiating Link...";
+        }, 1500);
+
         window.teleportTimer = setTimeout(() => {
           const blackout = document.getElementById("blackout-overlay");
           blackout.style.opacity = "1";
-          setTimeout(() => { window.location.href = "LEADPAGE.HTML"; }, 1000);
-        }, 5000);
+          setTimeout(() => {
+            // USER AUTH REDIRECT
+            window.location.href = "dashdash.html";
+          }, 1000);
+        }, 3000);
 
       } else {
-        greeting.textContent = "Sign in please.";
+        greeting.textContent = "Identity Verification Required";
         loginBtn.style.display = "inline-block";
         guestBtn.style.display = "inline-block";
         deactivateBtn.style.display = "none";
+        avatar.style.display = "none";
       }
     });
   </script>
@@ -127,6 +140,7 @@
       background: #000;
       color: #fff;
       overflow-x: hidden;
+      cursor: none;
     }
 
     #blackout-overlay {
@@ -187,8 +201,7 @@
     .grid-bg {
       position: absolute;
       inset: 0;
-      background: linear-gradient(rgba(0, 212, 255, .1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 212, 255, .1) 1px, transparent 1px);
+      background: linear-gradient(rgba(0, 212, 255, .1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, .1) 1px, transparent 1px);
       background-size: 50px 50px;
       transform: rotateX(60deg);
     }
@@ -196,6 +209,35 @@
     .hero-content {
       z-index: 2;
       padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #userAvatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid #00d4ff;
+      box-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
+      object-fit: cover;
+      margin-bottom: 20px;
+      display: none;
+      animation: pulseAvatar 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseAvatar {
+      0% {
+        box-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
+      }
+
+      50% {
+        box-shadow: 0 0 45px rgba(0, 212, 255, 0.9);
+      }
+
+      100% {
+        box-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
+      }
     }
 
     h1 {
@@ -280,8 +322,9 @@
 
     #greeting {
       margin-top: 1.5rem;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       color: #00d4ff;
+      line-height: 1.4;
     }
   </style>
 </head>
@@ -297,19 +340,16 @@
   <section class="hero" id="home">
     <div class="grid-bg"></div>
     <div class="hero-content">
+      <img id="userAvatar" src="" alt="User Avatar">
       <h1>OBA LABS</h1>
       <p class="subtitle">Innovation Beyond Imagination</p>
 
       <div class="btn-container">
         <div class="row">
-          <button id="loginBtn" class="cta-button" onclick="loginWithGoogle()" style="display:none;">Sign in with
-            Google</button>
-          <button id="guestBtn" class="secondary-button" onclick="enterAsGuest()" style="display:none;">Continue as
-            Guest</button>
+          <button id="loginBtn" class="cta-button" onclick="loginWithGoogle()">Sign in with Google</button>
+          <button id="guestBtn" class="secondary-button" onclick="enterAsGuest()">Continue as Guest</button>
         </div>
-
         <div id="greeting">Loading…</div>
-
         <button id="deactivateBtn" class="deactivate-button" onclick="deactivateAccount()">Deactivate Account</button>
       </div>
     </div>
