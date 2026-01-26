@@ -669,33 +669,7 @@
             </div>
         </div>
     </section>
-    <footer class="bg-background-dark border-t border-white/10 py-10">
-        <div class="container mx-auto px-4 sm:px-10 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-2 text-white">
-                <div class="w-6 h-6 text-primary">
-                    <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 20C8 12.268 15.1634 6 24 6C32.8366 6 40 12.268 40 20H8Z" fill="currentColor">
-                        </path>
-                        <rect fill="#ffcc00" height="12" rx="2" width="36" x="6" y="24"></rect>
-                        <path d="M8 40C8 42.2091 15.1634 44 24 44C32.8366 44 40 42.2091 40 40V38H8V40Z"
-                            fill="currentColor"></path>
-                    </svg>
-                </div>
-                <span class="font-bold uppercase tracking-wider text-sm">Brick Burgers</span>
-            </div>
-            <p class="text-gray-500 text-sm">© 2024 Brick Burgers. Built to last.</p>
-            <div class="flex gap-4">
-                <a class="w-8 h-8 rounded bg-white/5 flex items-center justify-center hover:bg-primary hover:text-text-dark transition-colors text-white"
-                    href="#">
-                    <span class="text-xs font-bold">IG</span>
-                </a>
-                <a class="w-8 h-8 rounded bg-white/5 flex items-center justify-center hover:bg-primary hover:text-text-dark transition-colors text-white"
-                    href="#">
-                    <span class="text-xs font-bold">FB</span>
-                </a>
-            </div>
-        </div>
-    </footer>
+    </div>
     </div>
     </div>
 
@@ -709,21 +683,6 @@
                     class="material-symbols-outlined text-gray-500 hover:text-red-500 cursor-pointer transition-colors">close</button>
             </div>
             <form id="checkout-form" onsubmit="handleCheckout(event)" class="flex flex-col gap-4">
-                <div class="flex flex-col items-center justify-center p-4">
-                    <p class="text-sm text-gray-500 mb-4 text-center italic">Tap the burger to take a bite!</p>
-                    <div id="burger-game"
-                        class="relative w-48 h-48 cursor-pointer select-none transition-transform active:scale-95"
-                        onclick="eatBurger()">
-                        <div id="bg-layer1"
-                            class="absolute inset-0 bg-contain bg-no-repeat bg-center transition-opacity duration-300"
-                            style="background-image: url('https://em-content.zobj.net/source/microsoft-teams/363/hamburger_1f354.png');">
-                        </div>
-                        <div id="bg-layer-bites" class="absolute inset-0 w-full h-full pointer-events-none"></div>
-                    </div>
-                    <p id="game-status" class="text-xs font-black uppercase text-primary mt-4 tracking-widest">Hungry?
-                    </p>
-                </div>
-
                 <div class="pt-4 border-t border-gray-100 dark:border-white/10 mt-2">
                     <div class="flex justify-between items-end mb-4">
                         <span class="text-sm font-medium text-gray-500">Total Amount</span>
@@ -1116,61 +1075,9 @@
             }
         }
 
-        // Burger Game Logic
-        let biteCount = 0;
-        window.eatBurger = function () {
-            biteCount++;
-            const burger = document.getElementById('burger-game');
-            const status = document.getElementById('game-status');
-            const bites = document.getElementById('bg-layer-bites');
-
-            // Random Bite
-            const x = Math.random() * 80 + 10;
-            const y = Math.random() * 80 + 10;
-            const size = Math.random() * 20 + 20;
-
-            const biteMark = document.createElement('div');
-            biteMark.className = 'absolute bg-white dark:bg-[#1a1a1a] rounded-full';
-            biteMark.style.width = size + 'px';
-            biteMark.style.height = size + 'px';
-            biteMark.style.left = x + '%';
-            biteMark.style.top = y + '%';
-            biteMark.style.transform = 'translate(-50%, -50%)';
-            bites.appendChild(biteMark);
-
-            // Feedback
-            if (biteCount < 5) {
-                status.innerText = "Yum! Keep eating!";
-            } else if (biteCount < 10) {
-                status.innerText = "Almost gone!";
-            } else {
-                status.innerText = "IT'S GONE! (You were hungry!)";
-                document.getElementById('bg-layer1').style.opacity = '0';
-                // Reset after 2s
-                setTimeout(() => {
-                    bites.innerHTML = '';
-                    document.getElementById('bg-layer1').style.opacity = '1';
-                    biteCount = 0;
-                    status.innerText = "More?";
-                }, 2000);
-            }
-        }
-
         // --- COOL STUFF LOGIC ---
 
-        // 1. Floating Emojis
-        const emojis = ['🍔', '🍟', '🥤', '🍕', '🧱', '⭐'];
-        setInterval(() => {
-            const el = document.createElement('div');
-            el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            el.className = 'floating-emoji';
-            el.style.left = Math.random() * 100 + 'vw';
-            el.style.animationDuration = (Math.random() * 10 + 10) + 's';
-            document.body.appendChild(el);
 
-            // Cleanup
-            setTimeout(() => el.remove(), 25000);
-        }, 3000); // New emoji every 3 seconds
 
         // 2. Cursor Trail
         document.addEventListener('mousemove', (e) => {
@@ -1190,37 +1097,7 @@
         });
 
         // 3. Konami Code (Party Mode)
-        const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-        let kPos = 0;
-        document.addEventListener('keydown', (e) => {
-            if (e.key === konami[kPos]) {
-                kPos++;
-                if (kPos === konami.length) {
-                    togglePartyMode();
-                    kPos = 0;
-                }
-            } else {
-                kPos = 0;
-            }
-        });
 
-        function togglePartyMode() {
-            document.body.classList.toggle('party-mode');
-            if (document.body.classList.contains('party-mode')) {
-                alert("🎉 PARTY MODE ACTIVATED! 🎉\n(Type the code again to deactivate)");
-                // Explode some items
-                for (let i = 0; i < 50; i++) {
-                    window.eatBurger(); // Just kidding, let's just make emojis
-                    const el = document.createElement('div');
-                    el.innerText = '🎉';
-                    el.className = 'floating-emoji';
-                    el.style.left = Math.random() * 100 + 'vw';
-                    el.style.bottom = '50vh'; // Start middle
-                    el.style.animationDuration = '2s';
-                    document.body.appendChild(el);
-                }
-            }
-        }
 
         // 4. OBA Easter Egg (Professional Tier)
         const obaCode = ['o', 'b', 'a', 'ArrowUp', 'ArrowDown', 'ArrowUp', 'ArrowDown'];
@@ -1239,7 +1116,7 @@
         });
 
         function activateOBAMode() {
-            alert("🌟 OBA DEV MODE UNLOCKED 🌟\n40% OFF Discount claimed!");
+            alert("OBA UNLOCKED\n40% OFF Discount claimed!");
             // Auto claim 40% code
             // Since we don't have a 40% code in the system, let's inject it into the Claim logic or just set it directly
             // We'll set a special localStorage flag
@@ -1285,7 +1162,7 @@
 
         function activatePartayyMode() {
             if (window.partayyModeUsed > 0) {
-                alert("Partayy Mode can only be used ONCE! The party is over.");
+                alert("you cant use it twice.");
                 return;
             }
             window.partayyModeActive = true;
@@ -1293,7 +1170,7 @@
 
             // Visuals
             document.body.classList.add('party-mode');
-            alert("🕺 PARTAYY MODE ACTIVE! 🕺\nEverything is now Rs. 600!\n(Limited Time Magic)");
+            alert(" PARTAYY MODE ACTIVE! \nEverything is now Rs. 600!\n(Limited Time Magic)");
 
             // Update current cart prices?
             // "changes everythings price to 600" implies current view too.
@@ -1329,18 +1206,8 @@
                 }
             });
 
-            // Explode Emojis
-            for (let i = 0; i < 50; i++) {
-                const el = document.createElement('div');
-                el.innerText = '💃';
-                el.className = 'floating-emoji';
-                el.style.left = Math.random() * 100 + 'vw';
-                el.style.bottom = '0';
-                el.style.animationDuration = '3s';
-                document.body.appendChild(el);
-            }
-        }
 
+        }
     </script>
 </body>
 
