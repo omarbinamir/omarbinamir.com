@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Member Portal | Brick Burgers</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=JetBrains+Mono:wght@100..800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffcc00",
+                        "secondary": "#5d4037",
+                        "blueprint": "#0047ab",
+                        "background-dark": "#0a0a0a",
+                        "card-dark": "#161616",
+                    },
+                    fontFamily: {
+                        "display": ["Outfit", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #5d4037;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ffcc00;
+        }
+
+        .glass {
+            background: rgba(22, 22, 22, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .blueprint-grid {
+            background-image:
+                linear-gradient(rgba(0, 71, 171, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 71, 171, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.5s ease-out forwards;
+        }
+
+        .post-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark font-display text-white antialiased min-h-screen blueprint-grid">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4 group cursor-pointer" onclick="window.location.href='brickburger.html'">
+                <div class="relative w-12 h-12">
+                    <div
+                        class="absolute inset-0 bg-primary/20 rounded-xl rotate-6 group-hover:rotate-12 transition-transform duration-500">
+                    </div>
+                    <div
+                        class="absolute inset-0 bg-primary rounded-xl flex items-center justify-center text-background-dark shadow-lg shadow-primary/20 z-10 transition-transform group-hover:scale-105">
+                        <span class="material-symbols-outlined font-black text-2xl">architecture</span>
+                    </div>
+                    <div
+                        class="absolute -bottom-1 -right-1 w-4 h-4 bg-secondary rounded-full border-2 border-background-dark z-20">
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-xl font-black uppercase tracking-tighter leading-none">Brick <span
+                            class="text-primary italic">Club</span></h1>
+                    <span class="text-[9px] font-mono text-gray-500 uppercase tracking-widest mt-1">Certified Architect
+                        Portal</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div id="user-profile" class="flex items-center gap-3 opacity-0 transition-opacity duration-500">
+                    <div class="text-right hidden sm:block">
+                        <p id="user-name" class="text-sm font-bold leading-none"></p>
+                        <p class="text-[10px] text-primary uppercase font-mono tracking-widest">Architect</p>
+                    </div>
+                    <img id="user-photo" src=""
+                        class="w-10 h-10 rounded-full border-2 border-primary/20 bg-card-dark shadow-lg" />
+                    <button onclick="logout()" class="p-2 hover:bg-white/5 rounded-full transition-colors group">
+                        <span class="material-symbols-outlined text-gray-500 group-hover:text-red-500">logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-4 pt-24 pb-12">
+
+        <!-- Feed Section -->
+        <section class="space-y-8" id="post-feed">
+            <div class="flex items-center gap-6 mb-8">
+                <h3 class="text-2xl font-black uppercase tracking-tight">Main <span
+                        class="text-primary italic font-mono px-2">Feed</span></h3>
+                <div class="flex-1 h-[1px] bg-white/5"></div>
+            </div>
+
+            <!-- Pinned Owner Post -->
+            <article
+                class="post-card glass rounded-3xl overflow-hidden shadow-xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+                <div class="p-5 flex items-center justify-between border-b border-white/5">
+                    <div class="flex items-center gap-3">
+                        <img src="op.png" class="w-10 h-10 rounded-full border-2 border-primary shadow-lg" />
+                        <div>
+                            <h4 class="text-sm font-black uppercase tracking-tight flex items-center gap-2">
+                                Official Owner
+                                <span class="material-symbols-outlined text-primary text-xs">verified</span>
+                            </h4>
+                            <p class="text-[9px] font-mono text-primary uppercase tracking-widest">Pinned Blueprint</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <p class="text-xl font-black leading-tight text-white italic">
+                        "I'm the Official owner of Brickburger. Ask what you wanna add at <span
+                            class="text-primary font-mono lowercase">oforomarbinamir@gmail.com</span> — if it's good,
+                        I'll add it in about a month. Keep your hopes up!!"
+                    </p>
+                </div>
+
+                <div class="p-4 flex items-center gap-6 border-t border-white/5 bg-white/[0.02]">
+                    <div class="flex items-center gap-1.5 opacity-50">
+                        <span class="material-symbols-outlined text-sm">push_pin</span>
+                        <span class="text-[8px] font-black uppercase tracking-widest">Architect's Directive</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Posts injected here -->
+        </section>
+    </main>
+
+    <script>
+        // --- Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
+            authDomain: "obalabs-c56ab.firebaseapp.com",
+            databaseURL: "https://obalabs-c56ab-default-rtdb.firebaseio.com",
+            projectId: "obalabs-c56ab",
+            storageBucket: "obalabs-c56ab.firebasestorage.app",
+            messagingSenderId: "415868024118",
+            appId: "1:415868024118:web:4ea58785b6a175c4fbef97",
+            measurementId: "G-31STXB0DGM"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+        const storage = firebase.storage();
+
+        let currentUser = null;
+
+        // --- Auth Guard ---
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                updateUI(user);
+                loadPosts();
+            } else {
+                window.location.href = 'brickburger.html';
+            }
+        });
+
+        function updateUI(user) {
+            document.getElementById('user-profile').classList.remove('opacity-0');
+            document.getElementById('user-name').innerText = user.displayName;
+            document.getElementById('user-photo').src = user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName);
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'brickburger.html';
+            });
+        }
+
+        // --- Feed Logic ---
+        function loadPosts() {
+            const feed = document.getElementById('post-feed');
+
+            db.ref('posts').orderByChild('timestamp').on('value', (snapshot) => {
+                const posts = [];
+                snapshot.forEach(child => {
+                    posts.push({ id: child.key, ...child.val() });
+                });
+
+                posts.reverse();
+
+                const postsHTML = posts.map(post => {
+                    const date = new Date(post.timestamp).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    // Force Owner Profile Pic
+                    const profilePic = 'op.png';
+
+                    return `
+                        <article class="post-card glass rounded-3xl overflow-hidden animate-slide-up shadow-xl">
+                            <div class="p-5 flex items-center justify-between border-b border-white/5">
+                                <div class="flex items-center gap-3">
+                                    <img src="${profilePic}" class="w-8 h-8 rounded-full border border-primary/30" />
+                                    <div>
+                                        <h4 class="text-sm font-black uppercase tracking-tight">${post.author}</h4>
+                                        <p class="text-[9px] font-mono text-gray-500 uppercase tracking-widest">${date}</p>
+                                    </div>
+                                </div>
+                                <span class="material-symbols-outlined text-white/20">more_horiz</span>
+                            </div>
+                            
+                            ${post.text ? `<div class="p-5 text-sm sm:text-base leading-relaxed text-gray-300 font-medium">${post.text}</div>` : ''}
+                            
+                            ${post.mediaUrl ? `
+                                <div class="w-full bg-black/40">
+                                    ${post.mediaType === 'image'
+                                ? `<img src="${post.mediaUrl}" class="w-full max-h-[600px] object-contain block mx-auto" loading="lazy" />`
+                                : `<video src="${post.mediaUrl}" controls class="w-full max-h-[600px] object-contain block mx-auto"></video>`
+                            }
+                                </div>
+                            ` : ''}
+
+                            <div class="p-4 flex items-center gap-6 border-t border-white/5 bg-white/[0.02]">
+                                <button class="flex items-center gap-1.5 group">
+                                    <span class="material-symbols-outlined text-lg text-gray-500 group-hover:text-primary transition-colors">favorite</span>
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white transition-colors underline decoration-primary/30">Inspect</span>
+                                </button>
+                                <button class="flex items-center gap-1.5 group">
+                                    <span class="material-symbols-outlined text-lg text-gray-500 group-hover:text-primary transition-colors">chat_bubble</span>
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white transition-colors">Thread</span>
+                                </button>
+                                <div class="ml-auto flex items-center gap-1 opacity-20">
+                                    <span class="material-symbols-outlined text-sm">verified</span>
+                                    <span class="text-[8px] font-black uppercase tracking-widest">Certified Brick</span>
+                                </div>
+                            </div>
+                        </article>
+                    `;
+                }).join('');
+
+                const existingPosts = feed.querySelectorAll('article');
+                existingPosts.forEach(p => p.remove());
+
+                // Static Pinned Post
+                const pinnedHTML = `
+                    <article class="post-card glass rounded-3xl overflow-hidden shadow-xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent mb-8">
+                        <div class="p-5 flex items-center justify-between border-b border-white/5">
+                            <div class="flex items-center gap-3">
+                                <img src="op.png" class="w-10 h-10 rounded-full border-2 border-primary shadow-lg" />
+                                <div>
+                                    <h4 class="text-sm font-black uppercase tracking-tight flex items-center gap-2">Official Owner <span class="material-symbols-outlined text-primary text-xs">verified</span></h4>
+                                    <p class="text-[9px] font-mono text-primary uppercase tracking-widest font-bold">Pinned Blueprint</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-xl font-black leading-tight text-white">
+                                "I'm the Official owner of Brickburger. Ask what you wanna add at <span class="text-primary font-mono lowercase">oforomarbinamir@gmail.com</span> — if it's good, I'll add it in about a month. Keep your hopes up!!"
+                            </p>
+                        </div>
+                        <div class="p-4 flex items-center gap-6 border-t border-white/5 bg-white/[0.02]">
+                            <div class="flex items-center gap-1.5 opacity-50">
+                                <span class="material-symbols-outlined text-sm">push_pin</span>
+                                <span class="text-[8px] font-black uppercase tracking-widest">Architect's Directive</span>
+                            </div>
+                        </div>
+                    </article>
+                `;
+
+                feed.insertAdjacentHTML('afterbegin', pinnedHTML);
+                feed.insertAdjacentHTML('beforeend', postsHTML);
+            });
+        }
+
+        // --- Architect Easter Egg ---
+        let keySequence = [];
+        const targetKeys = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowUp", "ArrowDown", "ArrowUp", "ArrowDown"];
+
+        window.addEventListener('keydown', (e) => {
+            keySequence.push(e.key);
+            if (keySequence.length > targetKeys.length) keySequence.shift();
+
+            if (JSON.stringify(keySequence) === JSON.stringify(targetKeys)) {
+                triggerOverdrive();
+                keySequence = []; // Reset
+            }
+        });
+
+        function triggerOverdrive() {
+            // Create technical glitch effect
+            const overlay = document.createElement('div');
+            overlay.className = 'fixed inset-0 z-[100] pointer-events-none mix-blend-difference bg-primary opacity-20 animate-pulse';
+            document.body.appendChild(overlay);
+
+            document.body.classList.add('scale-[1.02]', 'transition-transform', 'duration-500');
+
+            // Temporary Style Injection
+            const style = document.createElement('style');
+            style.id = 'overdrive-style';
+            style.innerHTML = `
+                .post-card { border-color: #ffcc00 !important; transform: skewX(-1deg); }
+                .blueprint-grid { background-size: 15px 15px; background-color: #001a3d; }
+                h1, h3 { color: #ffcc00; text-shadow: 2px 2px #5d4037; }
+            `;
+            document.head.appendChild(style);
+
+            setTimeout(() => {
+                overlay.remove();
+                document.body.classList.remove('scale-[1.02]');
+                const activeStyle = document.getElementById('overdrive-style');
+                if (activeStyle) activeStyle.remove();
+            }, 5000);
+
+            // Alert for feedback
+            console.log("%c BRICK LABS: OVERDRIVE MODE ACTIVATED ", "background: #ffcc00; color: #000; font-weight: bold; padding: 10px;");
+        }
+    </script>
+</body>
+
+</html>
