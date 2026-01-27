@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Map Architect | Free Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: #0f0f0f;
+            color: white;
+            overflow: hidden;
+        }
+
+        .loader-container {
+            position: fixed;
+            inset: 0;
+            background: #0f0f0f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .brick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .brick {
+            width: 40px;
+            height: 20px;
+            background: #ffcc00;
+            border-radius: 4px;
+            animation: brick-pulse 1.5s infinite ease-in-out;
+        }
+
+        .brick:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .brick:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .brick:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+
+        .brick:nth-child(5) {
+            animation-delay: 0.8s;
+        }
+
+        .brick:nth-child(6) {
+            animation-delay: 1s;
+        }
+
+        @keyframes brick-pulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(0.9);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+                background: #ffffff;
+            }
+        }
+
+        .progress-bar {
+            width: 250px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #ffcc00;
+            transition: width 0.3s ease-out;
+            box-shadow: 0 0 20px #ffcc00;
+        }
+
+        .main-content {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .premium-btn {
+            background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+            color: #1d190c;
+            padding: 1.25rem 3rem;
+            border-radius: 1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(255, 204, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .premium-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 204, 0, 0.5);
+        }
+
+        .premium-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .rickroll-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 2rem;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffcc00;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOADING SCREEN -->
+    <div id="loader" class="loader-container">
+        <div class="brick-grid">
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+        </div>
+        <h2 id="loading-text" class="text-xl font-bold tracking-[0.3em] uppercase mb-2">Initializing Biomes</h2>
+        <p class="text-white/40 text-xs font-mono mb-8">Architect Map Engine v4.2.0</p>
+        <div class="progress-bar">
+            <div id="progress" class="progress-fill"></div>
+        </div>
+    </div>
+
+    <!-- MAIN UI -->
+    <div id="content" class="main-content">
+        <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/5 border border-white/10 mb-8">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-white/60">Generation Complete</span>
+        </div>
+
+        <h1 class="text-6xl md:text-8xl font-black mb-6 leading-none">YOUR FREE <br> <span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-[#ffcc00] to-orange-500">3D TERRAIN</span>
+        </h1>
+
+        <p class="text-white/60 max-w-xl text-lg mb-12">
+            The Architect has constructed your high-fidelity procedural map. Ready for production, architectural
+            visualizers, or high-stakes burger navigation.
+        </p>
+
+        <div id="status-display" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+            <div class="bg-white/5 p-6 rounded-2xl border border-white/10 text-left">
+                <p class="text-xs text-white/40 uppercase font-black mb-1">Complexity</p>
+                <p class="text-2xl font-black">ULTRA-HD</p>
+            </div>
+            <div class="bg-white/5 p-6 rounded-2xl border border-white/10 text-left">
+                <p class="text-xs text-white/40 uppercase font-black mb-1">Polygons</p>
+                <p class="text-2xl font-black">12.4 MILLION</p>
+            </div>
+        </div>
+
+        <p id="auto-msg" class="text-primary font-black animate-pulse uppercase tracking-widest">Constructing final
+            assets... Please wait.</p>
+    </div>
+
+    <!-- START OVERLAY -->
+    <div id="start-overlay"
+        class="fixed inset-0 z-[300] bg-black flex flex-col items-center justify-center p-8 text-center">
+        <div class="brick-grid mb-12">
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+        </div>
+        <h1 class="text-4xl font-black mb-8 tracking-tighter">ARCHITECT MAP ENGINE <span
+                class="text-primary">READY</span></h1>
+        <button onclick="bootEngine()" class="premium-btn">
+            <span class="material-symbols-outlined">power_settings_new</span>
+            INITIALIZE 3D MAP ENGINE
+        </button>
+        <p class="mt-8 text-white/20 font-mono text-[10px] uppercase tracking-widest">v4.2.0
+            SECURE_CONNECTION_ESTABLISHED</p>
+    </div>
+
+    <!-- RICKROLL MODAL -->
+    <div id="rickroll" class="rickroll-overlay">
+        <div class="text-center max-w-2xl">
+            <span class="material-symbols-outlined text-8xl text-red-500 mb-6">celebration</span>
+            <h2 class="text-5xl font-black uppercase mb-4">YOU GOT RICKROLLED!</h2>
+            <p class="text-xl text-white/60 mb-12 italic">The map was a blueprint... for a masterpiece.</p>
+            <div class="bg-primary/20 border-2 border-primary p-8 rounded-3xl mb-8">
+                <h3 class="text-2xl font-black text-primary mb-4 uppercase">MISSION: SUCCESS</h3>
+                <p class="text-lg leading-relaxed text-white">
+                    "This is an AWESOME BUILD! Tell everybody to check out this map generator so we can Rickroll more
+                    peeps!"
+                </p>
+            </div>
+            <button onclick="location.reload()"
+                class="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-full text-white/40 hover:text-white transition-all text-sm uppercase font-bold tracking-widest">
+                Restart Engine
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function bootEngine() {
+            // Open video in another page (new tab)
+            window.open('https://www.youtube.com/watch?v=g4uOsS0FsEs', '_blank');
+
+            // Switch to Success screen on this page
+            const overlay = document.getElementById('start-overlay');
+            overlay.style.opacity = '0';
+
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('content').style.display = 'none';
+
+                const rick = document.getElementById('rickroll');
+                rick.style.display = 'flex';
+
+                // Spawn confetti
+                for (let i = 0; i < 100; i++) {
+                    createConfetti();
+                }
+            }, 500);
+        }
+
+        function createConfetti() {
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.animationDelay = Math.random() * 3 + 's';
+            c.style.backgroundColor = Math.random() > 0.5 ? '#ffcc00' : '#ff5500';
+            document.body.appendChild(c);
+        }
+    </script>
+</body>
+
+</html>

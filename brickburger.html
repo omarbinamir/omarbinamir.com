@@ -1129,7 +1129,105 @@
                 });
         };
 
-        // --- COOL STUFF LOGIC ---
+        // --- GLOBAL SECRET CODE SYSTEM ---
+        let typedSequence = "";
+        const secretCode = "1234river";
+        let footBroken = false;
+        let cheatApplied = false;
+
+        document.addEventListener('keydown', (e) => {
+            if (cheatApplied) return;
+
+            // Only track alphanumeric and numbers
+            if (e.key.length === 1) {
+                typedSequence += e.key.toLowerCase();
+
+                // Keep only the last N characters where N is length of secret code
+                if (typedSequence.length > secretCode.length) {
+                    typedSequence = typedSequence.slice(-secretCode.length);
+                }
+
+                // Check if user messed up (typed wrong key for the current position)
+                // This simulates the "broken foot" logic globally
+                const currentPos = typedSequence.length - 1;
+                if (typedSequence[currentPos] !== secretCode[currentPos] && !secretCode.startsWith(typedSequence)) {
+                    // If they type something that doesn't match the start of the code at all
+                    if (!footBroken && Math.random() < 0.2) {
+                        footBroken = true;
+                        showGlobalWarning("SYSTEM ALERT: PATH DEVIATION DETECTED. FOOT CRACKED.");
+                    }
+                    typedSequence = ""; // Reset on error
+                }
+
+                if (typedSequence === secretCode) {
+                    if (footBroken) {
+                        showGlobalWarning("ACCESS DENIED: ARCHITECT DOES NOT HELP THE BROKEN.");
+                        typedSequence = "";
+                        return;
+                    }
+                    activateSecretDiscount();
+                }
+            }
+        });
+
+        function showGlobalWarning(msg) {
+            const warning = document.createElement('div');
+            warning.className = 'fixed top-10 left-1/2 -translate-x-1/2 z-[200] bg-red-600 text-white px-6 py-3 rounded-full font-black uppercase text-xs shadow-2xl animate-bounce';
+            warning.innerText = msg;
+            document.body.appendChild(warning);
+            setTimeout(() => warning.remove(), 3000);
+        }
+
+        function activateSecretDiscount() {
+            cheatApplied = true;
+            const burgerGrid = document.getElementById('burger-grid');
+            const burgerItems = burgerGrid.querySelectorAll('.menu-item');
+
+            burgerItems.forEach(item => {
+                const priceSpans = item.querySelectorAll('span');
+                priceSpans.forEach(span => {
+                    if (span.innerText.includes('Rs.')) {
+                        let currentPrice = parseInt(span.innerText.replace('Rs.', '').trim().replace(',', ''));
+                        if (!isNaN(currentPrice)) {
+                            let discountedPrice = Math.round(currentPrice * 0.9);
+                            span.style.transition = 'all 0.5s ease';
+                            span.classList.remove('text-text-dark', 'dark:text-white', 'text-primary');
+                            span.classList.add('text-orange-500', 'font-black');
+                            span.innerText = 'Rs. ' + discountedPrice;
+                        }
+                    }
+                });
+
+                const cartBtn = item.querySelector('button[onclick*="addToCart"]');
+                if (cartBtn) {
+                    let onclickStr = cartBtn.getAttribute('onclick');
+                    let newOnclick = onclickStr.replace(/(addToCart\s*\(\s*['"].*?['"]\s*,\s*)(\d+)/, (match, p1, p2) => {
+                        return p1 + Math.round(parseInt(p2) * 0.9);
+                    });
+                    cartBtn.setAttribute('onclick', newOnclick);
+                    cartBtn.classList.remove('bg-primary/10', 'text-primary');
+                    cartBtn.classList.add('bg-orange-500', 'text-white');
+                    cartBtn.innerHTML = '<span class="material-symbols-outlined">key</span> Code Unlocked';
+                }
+            });
+
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md';
+            modal.innerHTML = `
+                <div class="bg-background-dark p-8 rounded-3xl border-2 border-primary max-w-sm w-full text-center shadow-[0_0_100px_rgba(255,204,0,0.3)]">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-background-dark text-3xl">done_all</span>
+                    </div>
+                    <h2 class="text-3xl font-black uppercase text-white mb-2">Labyrinth Solved</h2>
+                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">The Architect is impressed. You've navigated the stages of life and the flow of nature. 10% discount has been constructed.</p>
+                    <button onclick="this.parentElement.parentElement.remove()" class="w-full py-4 bg-primary text-background-dark font-black rounded-xl hover:shadow-[0_0_20px_rgba(255,204,0,0.5)] transition-all">Enter the Site</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Run the system
+        initRiddleSystem();
 
 
 
