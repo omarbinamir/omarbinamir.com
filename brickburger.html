@@ -16,6 +16,7 @@
     <!-- Firebase SDK (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <script id="tailwind-config">
         tailwind.config = {
@@ -57,6 +58,110 @@
 
         .smooth-scroll {
             scroll-behavior: smooth;
+        }
+
+        /* PARTY MODE STYLES */
+        @keyframes rainbow-border {
+            0% {
+                border-color: #ff0000;
+                box-shadow: 0 0 20px #ff0000;
+            }
+
+            20% {
+                border-color: #ffcc00;
+                box-shadow: 0 0 20px #ffcc00;
+            }
+
+            40% {
+                border-color: #00ff00;
+                box-shadow: 0 0 20px #00ff00;
+            }
+
+            60% {
+                border-color: #00d4ff;
+                box-shadow: 0 0 20px #00d4ff;
+            }
+
+            80% {
+                border-color: #ff00ff;
+                box-shadow: 0 0 20px #ff00ff;
+            }
+
+            100% {
+                border-color: #ff0000;
+                box-shadow: 0 0 20px #ff0000;
+            }
+        }
+
+        .party-active .menu-item {
+            animation: rainbow-border 2s linear infinite;
+            transform: rotate(1deg);
+        }
+
+        .party-active .menu-item:nth-child(even) {
+            transform: rotate(-1deg);
+        }
+
+        @keyframes party-bg {
+            0% {
+                background-color: #1a1a1a;
+            }
+
+            50% {
+                background-color: #2d0a3d;
+            }
+
+            100% {
+                background-color: #1a1a1a;
+            }
+        }
+
+        .party-active body {
+            animation: party-bg 1s linear infinite;
+        }
+
+        .confetti-piece {
+            position: fixed;
+            z-index: 1000;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+        }
+
+        /* BETTER SHOP LOOK IN PARTY MODE */
+        .party-active .menu-item {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 204, 0, 0.5) !important;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .party-active .menu-item:hover {
+            transform: scale(1.05) rotate(2deg) !important;
+            box-shadow: 0 0 40px rgba(255, 204, 0, 0.4);
+        }
+
+        .party-active .menu-item h3 {
+            color: #ffcc00 !important;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+
+        /* BETTER ABOUT PAGE IN PARTY MODE */
+        .party-active #founder {
+            background: linear-gradient(45deg, #1a1a1a, #5d4037, #1a1a1a) !important;
+            border-top: 4px solid #ffcc00;
+            border-bottom: 4px solid #ffcc00;
+        }
+
+        .party-active #founder img {
+            border-color: #ffcc00 !important;
+            box-shadow: 0 0 50px rgba(255, 204, 0, 0.5);
+        }
+
+        .party-active #founder blockquote {
+            color: #ffcc00 !important;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+            font-size: 3rem;
         }
     </style>
 </head>
@@ -632,21 +737,32 @@
                     <p class="text-gray-600 dark:text-gray-400">100% Halal certified beef and chicken, sourced daily
                         from local premium suppliers.</p>
                 </div>
-                <div class="bg-gray-50 dark:bg-[#1a1a1a] p-6 rounded-2xl border border-gray-100 dark:border-white/5">
-                    <h3 class="font-bold text-xl mb-2 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">payments</span>
-                        Payment Methods?
+                <div
+                    class="faq-item bg-gray-50 dark:bg-[#1a1a1a] p-6 rounded-2xl border border-gray-100 dark:border-white/5 transition-all hover:border-primary/50 group/faq">
+                    <h3
+                        class="font-bold text-xl mb-2 flex items-center gap-2 group-hover/faq:text-primary transition-colors">
+                        <span
+                            class="material-symbols-outlined text-primary group-hover/faq:scale-110 transition-transform">payments</span>
+                        Human Architecture?
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400">We accept Cash on Delivery (COD) and Credit/Debit Cards
-                        upon delivery (let us know to bring the machine!).</p>
+                    <p class="text-gray-600 dark:text-gray-400 font-medium">
+                        Our designs reflect life itself. Consider the builder's journey: What walks on two legs in its
+                        prime, three in its winter years, and four in its humble beginning? Sequence these stages
+                        (Prime, Winter, then Infancy) to reveal the path.
+                    </p>
                 </div>
-                <div class="bg-gray-50 dark:bg-[#1a1a1a] p-6 rounded-2xl border border-gray-100 dark:border-white/5">
-                    <h3 class="font-bold text-xl mb-2 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">celebration</span>
-                        Eatery Events?
+                <div
+                    class="faq-item bg-gray-50 dark:bg-[#1a1a1a] p-6 rounded-2xl border border-gray-100 dark:border-white/5 transition-all hover:border-primary/50 group/faq">
+                    <h3
+                        class="font-bold text-xl mb-2 flex items-center gap-2 group-hover/faq:text-primary transition-colors">
+                        <span
+                            class="material-symbols-outlined text-primary group-hover/faq:scale-110 transition-transform">celebration</span>
+                        The Endless Flow?
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400">Yes! We cater for large construction crews (parties).
-                        Contact our hotline 24 hours in advance.</p>
+                    <p class="text-gray-600 dark:text-gray-400 font-medium">
+                        "I move through the landscape with no feet, and speak through the stones with no voice. I am the
+                        nature's blueprint that follows the numbers of man." (r-i-v-e-r)
+                    </p>
                 </div>
             </div>
         </div>
@@ -807,15 +923,9 @@
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
-                // PARTAYY MODE CHECK
-                let finalPrice = price;
-                if (window.partayyModeActive) { // Simply check if active
-                    finalPrice = 600;
-                }
-
                 cart.push({
                     name: name,
-                    price: finalPrice,
+                    price: price,
                     image: image,
                     quantity: 1
                 });
@@ -1101,6 +1211,7 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        const db = firebase.database();
         const provider = new firebase.auth.GoogleAuthProvider();
 
         window.handleSubscribe = function (btn) {
@@ -1131,8 +1242,7 @@
 
         // --- GLOBAL SECRET CODE SYSTEM ---
         let typedSequence = "";
-        const secretCode = "1234river";
-        let footBroken = false;
+        const secretCode = "234river";
         let cheatApplied = false;
 
         document.addEventListener('keydown', (e) => {
@@ -1142,30 +1252,13 @@
             if (e.key.length === 1) {
                 typedSequence += e.key.toLowerCase();
 
-                // Keep only the last N characters where N is length of secret code
+                // Keep only the last N characters
                 if (typedSequence.length > secretCode.length) {
                     typedSequence = typedSequence.slice(-secretCode.length);
                 }
 
-                // Check if user messed up (typed wrong key for the current position)
-                // This simulates the "broken foot" logic globally
-                const currentPos = typedSequence.length - 1;
-                if (typedSequence[currentPos] !== secretCode[currentPos] && !secretCode.startsWith(typedSequence)) {
-                    // If they type something that doesn't match the start of the code at all
-                    if (!footBroken && Math.random() < 0.2) {
-                        footBroken = true;
-                        showGlobalWarning("SYSTEM ALERT: PATH DEVIATION DETECTED. FOOT CRACKED.");
-                    }
-                    typedSequence = ""; // Reset on error
-                }
-
                 if (typedSequence === secretCode) {
-                    if (footBroken) {
-                        showGlobalWarning("ACCESS DENIED: ARCHITECT DOES NOT HELP THE BROKEN.");
-                        typedSequence = "";
-                        return;
-                    }
-                    activateSecretDiscount();
+                    activatePartyMode();
                 }
             }
         });
@@ -1178,22 +1271,97 @@
             setTimeout(() => warning.remove(), 3000);
         }
 
-        function activateSecretDiscount() {
+        async function activatePartyMode() {
+            const user = auth.currentUser;
+
+            if (!user) {
+                showAuthRequiredModal();
+                return;
+            }
+
+            // Check usage in database
+            try {
+                const snapshot = await db.ref('users/' + user.uid + '/partyModeUsed').once('value');
+                if (snapshot.val() === true) {
+                    showGlobalWarning("ACCESS DENIED: ONE-TIME PARTY MODE ALREADY CLAIMED.");
+                    return;
+                }
+            } catch (err) {
+                console.error("Firebase Database Error:", err);
+                if (err.code === 'PERMISSION_DENIED') {
+                    showGlobalWarning("ACCESS DENIED: FIREBASE RULES PREVENT CHECK. PLEASE CHECK REALTIME DB RULES.");
+                } else {
+                    showGlobalWarning("CONNECTION ERROR: COULD NOT VERIFY ELIGIBILITY. CHECK CONSOLE.");
+                }
+                return;
+            }
+
+            // Mark as used immediately
+            await db.ref('users/' + user.uid).update({
+                partyModeUsed: true,
+                lastClaimedAt: firebase.database.ServerValue.TIMESTAMP,
+                displayName: user.displayName,
+                email: user.email
+            });
+
             cheatApplied = true;
+            document.body.classList.add('party-active');
+
+            // 1. CONFETTI BURST
+            for (let i = 0; i < 100; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti-piece';
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.top = '-20px';
+                c.style.backgroundColor = ['#ffcc00', '#ff00ff', '#00d4ff', '#ff0000', '#00ff00'][Math.floor(Math.random() * 5)];
+                c.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(c);
+
+                const speed = 3 + Math.random() * 5;
+                const anim = c.animate([
+                    { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+                    { transform: `translateY(110vh) rotate(${720 + Math.random() * 720}deg)`, opacity: 0 }
+                ], { duration: speed * 1000, easing: 'linear' });
+
+                anim.onfinish = () => c.remove();
+            }
+
+            // 2. UPDATE PRICES TO 10% OFF
             const burgerGrid = document.getElementById('burger-grid');
             const burgerItems = burgerGrid.querySelectorAll('.menu-item');
 
             burgerItems.forEach(item => {
+                const titleNode = item.querySelector('h3');
+                const burgerName = titleNode ? titleNode.innerText.trim() : "";
                 const priceSpans = item.querySelectorAll('span');
+
+                let newSoloPrice = 0;
+                if (burgerName.includes('Brick Classic') || burgerName.includes('Golden Crunch')) {
+                    newSoloPrice = 540;
+                } else if (burgerName.includes('Veggie Smash')) {
+                    newSoloPrice = 600;
+                }
+
                 priceSpans.forEach(span => {
                     if (span.innerText.includes('Rs.')) {
                         let currentPrice = parseInt(span.innerText.replace('Rs.', '').trim().replace(',', ''));
                         if (!isNaN(currentPrice)) {
-                            let discountedPrice = Math.round(currentPrice * 0.9);
-                            span.style.transition = 'all 0.5s ease';
+                            // Determine if this is the Solo price by looking for the sibling label
+                            const label = span.previousElementSibling?.innerText.toUpperCase() || "";
+
+                            let discountedPrice;
+                            if (label === "SOLO" && newSoloPrice > 0) {
+                                discountedPrice = newSoloPrice;
+                            } else {
+                                // Apply generic 10% for others (With Fries) or items not specified
+                                discountedPrice = Math.round(currentPrice * 0.9);
+                            }
+
+                            span.style.transition = 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
                             span.classList.remove('text-text-dark', 'dark:text-white', 'text-primary');
-                            span.classList.add('text-orange-500', 'font-black');
+                            span.classList.add('text-yellow-400', 'font-black', 'text-2xl', 'italic');
                             span.innerText = 'Rs. ' + discountedPrice;
+                            span.style.textShadow = '0 0 10px rgba(255,204,0,0.8)';
                         }
                     }
                 });
@@ -1201,29 +1369,98 @@
                 const cartBtn = item.querySelector('button[onclick*="addToCart"]');
                 if (cartBtn) {
                     let onclickStr = cartBtn.getAttribute('onclick');
-                    let newOnclick = onclickStr.replace(/(addToCart\s*\(\s*['"].*?['"]\s*,\s*)(\d+)/, (match, p1, p2) => {
-                        return p1 + Math.round(parseInt(p2) * 0.9);
-                    });
-                    cartBtn.setAttribute('onclick', newOnclick);
+
+                    // We extract the original price from the onclick attribute to apply the correct discount if not a named burger
+                    let newPrice = newSoloPrice;
+                    if (!newPrice) {
+                        let match = onclickStr.match(/addToCart\s*\(\s*['"].*?['"]\s*,\s*(\d+)/);
+                        if (match) {
+                            newPrice = Math.round(parseInt(match[1]) * 0.9);
+                        }
+                    }
+
+                    if (newPrice) {
+                        let newOnclick = onclickStr.replace(/(addToCart\s*\(\s*['"].*?['"]\s*,\s*)(\d+)/, (match, p1, p2) => {
+                            return p1 + newPrice;
+                        });
+                        cartBtn.setAttribute('onclick', newOnclick);
+                    }
+
                     cartBtn.classList.remove('bg-primary/10', 'text-primary');
-                    cartBtn.classList.add('bg-orange-500', 'text-white');
-                    cartBtn.innerHTML = '<span class="material-symbols-outlined">key</span> Code Unlocked';
+                    cartBtn.classList.add('bg-gradient-to-r', 'from-pink-500', 'to-yellow-500', 'text-white', 'animate-bounce');
+                    cartBtn.innerHTML = '<span class="material-symbols-outlined">celebration</span> PARTY DEAL!';
                 }
             });
 
+            // 3. SHOW THE PARTY MODAL
             const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md';
+            modal.className = 'fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl';
             modal.innerHTML = `
-                <div class="bg-background-dark p-8 rounded-3xl border-2 border-primary max-w-sm w-full text-center shadow-[0_0_100px_rgba(255,204,0,0.3)]">
-                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                        <span class="material-symbols-outlined text-background-dark text-3xl">done_all</span>
-                    </div>
-                    <h2 class="text-3xl font-black uppercase text-white mb-2">Labyrinth Solved</h2>
-                    <p class="text-gray-400 text-sm mb-6 leading-relaxed">The Architect is impressed. You've navigated the stages of life and the flow of nature. 10% discount has been constructed.</p>
-                    <button onclick="this.parentElement.parentElement.remove()" class="w-full py-4 bg-primary text-background-dark font-black rounded-xl hover:shadow-[0_0_20px_rgba(255,204,0,0.5)] transition-all">Enter the Site</button>
+                <div class="bg-gradient-to-br from-indigo-900 to-black p-12 rounded-[3rem] border-4 border-yellow-400 max-w-lg w-full text-center shadow-[0_0_150px_rgba(255,204,0,0.5)] transform scale-110">
+                    <div class="text-7xl mb-6">🎉</div>
+                    <h2 class="text-6xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-white to-yellow-400 mb-4 italic tracking-tighter">VVIP MODE</h2>
+                    <p class="text-yellow-200 text-xl font-bold mb-8 uppercase tracking-widest animate-pulse">Official Architect Discount: Special Party Prices Applied!</p>
+                    <p class="text-gray-400 text-sm mb-10 leading-relaxed italic">Everything has been upgraded. The shop is glowing. The Architect is celebrating. Welcome to the Premium Celebration.</p>
+                    <button onclick="this.parentElement.parentElement.remove()" class="w-full py-6 bg-yellow-400 text-black font-black text-2xl rounded-2xl hover:scale-105 transition-all shadow-2xl uppercase italic tracking-tighter">Enter the Party</button>
                 </div>
             `;
             document.body.appendChild(modal);
+
+            // 4. CHANGE HEADER
+            const mainTitle = document.querySelector('h1 span');
+            if (mainTitle) {
+                mainTitle.innerText = "PARTY BURGERS";
+                mainTitle.classList.add('animate-pulse');
+            }
+        }
+
+        function showAuthRequiredModal() {
+            const modal = document.createElement('div');
+            modal.id = 'party-auth-modal';
+            modal.className = 'fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md';
+            modal.innerHTML = `
+                <div class="bg-[#1a1a1a] p-10 rounded-3xl border-2 border-primary max-w-sm w-full text-center shadow-2xl">
+                    <div class="material-symbols-outlined text-primary text-6xl mb-4">lock_open</div>
+                    <h2 class="text-3xl font-black text-white uppercase mb-4">Verification Required</h2>
+                    <p class="text-gray-400 mb-8 italic">To unlock your one-time Architect Party Discount, please verify your identity.</p>
+                    <button id="party-login-btn" class="w-full py-4 bg-primary text-black font-black rounded-xl hover:scale-105 transition-all flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        Verify with Google
+                    </button>
+                    <button onclick="this.parentElement.parentElement.remove()" class="mt-4 text-gray-500 text-sm font-bold uppercase">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('party-login-btn').onclick = () => {
+                auth.signInWithPopup(provider).then(() => {
+                    modal.remove();
+                    // Re-try activation now that user is logged in
+                    activatePartyMode();
+                }).catch(err => {
+                    console.error("Auth failed", err);
+                    alert("Authentication failed.");
+                });
+            };
+        }
+
+        // Initialize the Riddle System
+        function initRiddleSystem() {
+            console.log("Architect System Initialized...");
+            console.log("Hint: The Labyrinth requires the sequence of life and nature.");
+
+            // Add subtle interaction to FAQ items
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    const icon = item.querySelector('.material-symbols-outlined').innerText;
+                    if (icon === 'payments') {
+                        console.log("Clue: Prime, Winter, Infancy...");
+                    } else if (icon === 'celebration') {
+                        console.log("Clue: The waters of the blueprint.");
+                    }
+                });
+            });
         }
 
         // Run the system
