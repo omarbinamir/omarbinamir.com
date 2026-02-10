@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Generator | Premium Ultra 3X</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Plus+Jakarta+Sans:wght@300..800&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #ffd700;
+            --purple: #9333ea;
+            --pink: #ec4899;
+            --cyan: #06b6d4;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #000;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .bg-glow {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 30%, rgba(255, 215, 0, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Loading */
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: all 0.5s ease;
+        }
+
+        #loading.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 215, 0, 0.2);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .load-text {
+            margin-top: 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: var(--gold);
+        }
+
+        /* Denied */
+        #denied {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+        }
+
+        #denied.show {
+            display: flex;
+        }
+
+        .denied-box {
+            text-align: center;
+            padding: 50px;
+            border: 1px solid rgba(255, 50, 50, 0.3);
+            border-radius: 20px;
+            background: rgba(255, 50, 50, 0.05);
+        }
+
+        .denied-box h2 {
+            color: #ff6666;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 15px;
+        }
+
+        .denied-box p {
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            z-index: 100;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+        }
+
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--gold);
+        }
+
+        .token-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .token-badge span:first-child {
+            color: var(--gold);
+        }
+
+        .token-badge .count {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        /* Main */
+        .main {
+            padding: 120px 40px 60px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            display: none;
+        }
+
+        .main.show {
+            display: block;
+        }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 42px;
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(90deg, var(--gold), #fff, var(--gold));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 50px;
+        }
+
+        /* Generator Card */
+        .generator-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 24px;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .token-display {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, var(--gold), var(--purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.3);
+            position: relative;
+        }
+
+        .token-display::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border: 2px dashed rgba(255, 215, 0, 0.4);
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .token-display span {
+            font-size: 50px;
+            color: black;
+        }
+
+        .current-tokens {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 64px;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .tokens-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 40px;
+        }
+
+        /* Amount Selector */
+        .amount-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .amount-btn {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .amount-btn:hover {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .amount-btn.selected {
+            border-color: var(--gold);
+            background: var(--gold);
+            color: black;
+        }
+
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--gold), var(--purple));
+            border: none;
+            border-radius: 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 900;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+        }
+
+        .generate-btn:active {
+            transform: scale(0.98);
+        }
+
+        .generate-btn:disabled {
+            background: #333;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Success Animation */
+        .success-flash {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 215, 0, 0.2);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 1000;
+        }
+
+        .success-flash.show {
+            animation: flash 0.5s ease;
+        }
+
+        @keyframes flash {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* History */
+        .history-section {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .history-title {
+            font-size: 14px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .history-item .amount {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .history-item .time {
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+    <div class="success-flash" id="success-flash"></div>
+
+    <!-- Loading -->
+    <div id="loading">
+        <div class="loader"></div>
+        <p class="load-text">Verifying Access</p>
+    </div>
+
+    <!-- Denied -->
+    <div id="denied">
+        <div class="denied-box">
+            <span class="material-symbols-outlined"
+                style="font-size: 60px; color: #ff3333; margin-bottom: 20px;">block</span>
+            <h2>ACCESS DENIED</h2>
+            <p>Premium Ultra 3X members only.</p>
+            <p style="font-size: 12px;">Redirecting in <span id="countdown">5</span> seconds...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="header" style="display: none;">
+        <a href="Premuim-ultra-3x-special.html" class="back-btn">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Back to Dashboard
+        </a>
+        <div class="header-title">TOKEN GENERATOR</div>
+        <div class="token-badge">
+            <span class="material-symbols-outlined">toll</span>
+            <span class="count" id="header-tokens">0</span>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main" id="main">
+        <h1 class="page-title">Token Generator</h1>
+        <p class="page-subtitle">Premium members can generate unlimited tokens instantly.</p>
+
+        <div class="generator-card">
+            <div class="token-display">
+                <span class="material-symbols-outlined">toll</span>
+            </div>
+
+            <div class="current-tokens" id="current-tokens">0</div>
+            <div class="tokens-label">Current Balance</div>
+
+            <div class="amount-selector">
+                <button class="amount-btn" data-amount="10">+10</button>
+                <button class="amount-btn selected" data-amount="50">+50</button>
+                <button class="amount-btn" data-amount="100">+100</button>
+                <button class="amount-btn" data-amount="500">+500</button>
+            </div>
+
+            <button class="generate-btn" id="generate-btn">
+                <span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 10px;">bolt</span>
+                Generate Tokens
+            </button>
+
+            <div class="history-section">
+                <div class="history-title">Recent Generations</div>
+                <div class="history-list" id="history-list"></div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
+            authDomain: "obalabs-c56ab.firebaseapp.com",
+            databaseURL: "https://obalabs-c56ab-default-rtdb.firebaseio.com",
+            projectId: "obalabs-c56ab",
+            storageBucket: "obalabs-c56ab.firebasestorage.app",
+            messagingSenderId: "415868024118",
+            appId: "1:415868024118:web:4ea58785b6a175c4fbef97"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const AUTHORIZED_EMAILS = [
+            "oforomarbinamir@gmail.com",
+            "example2@gmail.com",
+            "example3@gmail.com"
+        ];
+
+        let userState = { uid: '', tokens: 0 };
+        let selectedAmount = 50;
+        let history = [];
+
+        function showDenied() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('denied').classList.add('show');
+            let count = 5;
+            setInterval(() => {
+                count--;
+                document.getElementById('countdown').textContent = count;
+                if (count <= 0) window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function showMain() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('header').style.display = 'flex';
+            document.getElementById('main').classList.add('show');
+        }
+
+        function updateDisplay() {
+            document.getElementById('current-tokens').textContent = userState.tokens;
+            document.getElementById('header-tokens').textContent = userState.tokens;
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
+            history.slice(-5).reverse().forEach(h => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `<span class="amount">+${h.amount} tokens</span><span class="time">${h.time}</span>`;
+                list.appendChild(item);
+            });
+        }
+
+        async function saveToDB() {
+            if (!userState.uid) return;
+            await set(ref(db, 'users/' + userState.uid + '/tokens'), userState.tokens);
+        }
+
+        // Amount buttons
+        document.querySelectorAll('.amount-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedAmount = parseInt(btn.dataset.amount);
+            };
+        });
+
+        // Generate button
+        document.getElementById('generate-btn').onclick = async () => {
+            const btn = document.getElementById('generate-btn');
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+
+            // Animate
+            await new Promise(r => setTimeout(r, 500));
+
+            userState.tokens += selectedAmount;
+            history.push({
+                amount: selectedAmount,
+                time: new Date().toLocaleTimeString()
+            });
+
+            await saveToDB();
+            updateDisplay();
+            renderHistory();
+
+            // Flash effect
+            const flash = document.getElementById('success-flash');
+            flash.classList.add('show');
+            setTimeout(() => flash.classList.remove('show'), 500);
+
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 10px;">bolt</span> Generate Tokens';
+        };
+
+        // Auth check
+        onAuthStateChanged(auth, async (user) => {
+            setTimeout(async () => {
+                if (user && user.email) {
+                    const email = user.email.toLowerCase().trim();
+                    const isAuthorized = AUTHORIZED_EMAILS.some(e => e.toLowerCase().trim() === email);
+
+                    if (isAuthorized) {
+                        userState.uid = user.uid;
+
+                        try {
+                            const snap = await get(ref(db, 'users/' + user.uid));
+                            if (snap.exists()) {
+                                userState.tokens = snap.val().tokens ?? 0;
+                            }
+                        } catch (e) { console.error(e); }
+
+                        updateDisplay();
+                        showMain();
+                    } else {
+                        showDenied();
+                    }
+                } else {
+                    showDenied();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>

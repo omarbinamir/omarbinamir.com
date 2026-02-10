@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Ultra 3X | Elite Dashboard</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --gold: #ffd700;
+            --gold-dark: #b8860b;
+            --purple: #9333ea;
+            --pink: #ec4899;
+            --cyan: #06b6d4;
+            --bg-deep: #030303;
+            --bg-sidebar: #080808;
+            --bg-card: rgba(15, 15, 18, 0.6);
+            --border-glow: rgba(255, 215, 0, 0.15);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --glass-blur: blur(20px);
+            --transition: all 0.4s cubic-bezier(0.2, 1, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1), filter 0.8s ease, opacity 0.8s ease;
+        }
+
+        body.launching {
+            transform: scale(0.4) rotateX(10deg);
+            filter: blur(15px) brightness(0);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- LOADING SCREEN --- */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: all 0.8s ease;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .loader-ring {
+            position: absolute;
+            inset: 0;
+            border: 3px solid transparent;
+            border-radius: 50%;
+        }
+
+        .loader-ring:nth-child(1) {
+            border-top-color: var(--gold);
+            animation: spin 1.5s linear infinite;
+        }
+
+        .loader-ring:nth-child(2) {
+            inset: 10px;
+            border-right-color: var(--purple);
+            animation: spin 2s linear infinite reverse;
+        }
+
+        .loader-ring:nth-child(3) {
+            inset: 20px;
+            border-bottom-color: var(--pink);
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-icon {
+            position: absolute;
+            inset: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--gold);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            margin-top: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--gold);
+        }
+
+        /* --- ACCESS DENIED --- */
+        #access-denied {
+            position: fixed;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+            background: #000;
+            text-align: center;
+            padding: 40px;
+        }
+
+        #access-denied.show {
+            display: flex;
+        }
+
+        .denied-box {
+            background: rgba(255, 50, 50, 0.05);
+            border: 1px solid rgba(255, 50, 50, 0.3);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 450px;
+        }
+
+        .denied-icon {
+            font-size: 60px;
+            color: #ff3333;
+            margin-bottom: 20px;
+        }
+
+        .denied-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            color: #ff6666;
+            margin-bottom: 10px;
+        }
+
+        .denied-msg {
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .countdown-badge {
+            display: inline-block;
+            background: #ff3333;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            padding: 8px 20px;
+            border-radius: 8px;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-glow);
+            display: flex;
+            flex-direction: column;
+            padding: 25px 20px;
+            z-index: 100;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gold), var(--purple));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .brand-icon span {
+            font-size: 20px;
+            color: black;
+        }
+
+        .brand-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .brand-sub {
+            font-size: 9px;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* User Card */
+        .user-card {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 3px solid var(--gold);
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .user-email-display {
+            font-size: 10px;
+            color: var(--text-muted);
+            word-break: break-all;
+        }
+
+        /* Token Display */
+        .token-card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(147, 51, 234, 0.1));
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .token-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: black;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .token-info {
+            flex: 1;
+        }
+
+        .token-count {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .token-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .add-token-btn {
+            background: var(--gold);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .add-token-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Nav */
+        .nav-section {
+            margin-bottom: 20px;
+        }
+
+        .nav-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            padding-left: 12px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            margin-bottom: 4px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--text-main);
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--gold);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-link span {
+            font-size: 20px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-glow);
+        }
+
+        .logout-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff6666;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .logout-link:hover {
+            background: rgba(255, 50, 50, 0.1);
+        }
+
+        /* --- WORKSPACE --- */
+        .workspace {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            background: radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.03) 0%, transparent 50%);
+        }
+
+        .view {
+            display: none;
+            max-width: 1100px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Cards Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 30px;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255, 215, 0, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--gold);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .card-badge.new {
+            background: var(--pink);
+            color: white;
+            border-color: var(--pink);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* Themes Grid */
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .theme-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px);
+        }
+
+        .theme-card.owned {
+            border-color: var(--purple);
+        }
+
+        .theme-card.active {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .theme-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            margin: 0 auto 12px;
+        }
+
+        .theme-name {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .theme-price {
+            font-size: 10px;
+            color: var(--gold);
+        }
+
+        .theme-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-btn.buy {
+            background: var(--gold);
+            color: black;
+        }
+
+        .theme-btn.equip {
+            background: rgba(147, 51, 234, 0.3);
+            color: var(--purple);
+            border: 1px solid var(--purple);
+        }
+
+        .theme-btn.equipped {
+            background: rgba(100, 100, 100, 0.3);
+            color: #666;
+            cursor: default;
+        }
+
+        /* Settings */
+        .settings-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .setting-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Portal Overlay */
+        #portal-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #portal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .portal-loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 215, 0, 0.2);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .workspace {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
+            <div class="loader-icon">
+                <span class="material-symbols-outlined">diamond</span>
+            </div>
+        </div>
+        <p class="loading-text">Verifying Elite Access</p>
+    </div>
+
+    <!-- Access Denied -->
+    <div id="access-denied">
+        <div class="denied-box">
+            <span class="material-symbols-outlined denied-icon">block</span>
+            <h2 class="denied-title">Access Denied</h2>
+            <p class="denied-msg">This dashboard is for Premium Ultra 3X members only.</p>
+            <p class="denied-msg" id="denied-email" style="font-size: 11px; color: #ff6666;"></p>
+            <div class="countdown-badge">Redirecting in <span id="countdown">5</span></div>
+        </div>
+    </div>
+
+    <!-- Portal Overlay -->
+    <div id="portal-overlay">
+        <div class="portal-loader"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="main-sidebar" style="display: none;">
+        <div class="brand-header">
+            <div class="brand-icon">
+                <span class="material-symbols-outlined">workspace_premium</span>
+            </div>
+            <div>
+                <div class="brand-text">ULTRA 3X</div>
+                <div class="brand-sub">Premium Dashboard</div>
+            </div>
+        </div>
+
+        <!-- User Card -->
+        <div class="user-card">
+            <div class="user-avatar">
+                <span class="material-symbols-outlined">person</span>
+            </div>
+            <div class="user-name" id="sidebar-user-name">Elite Member</div>
+            <div class="user-email-display" id="sidebar-user-email">loading...</div>
+        </div>
+
+        <!-- Token Card -->
+        <div class="token-card">
+            <div class="token-icon">
+                <span class="material-symbols-outlined">toll</span>
+            </div>
+            <div class="token-info">
+                <div class="token-count" id="token-count">∞</div>
+                <div class="token-label">Elite Tokens</div>
+            </div>
+            <button class="add-token-btn" onclick="addFreeToken()" title="Add Free Token">+</button>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-section">
+            <div class="nav-label">Dashboard</div>
+            <div class="nav-link active" onclick="navigate('overview', this)">
+                <span class="material-symbols-outlined">grid_view</span> Overview
+            </div>
+            <div class="nav-link" onclick="navigate('themes', this)">
+                <span class="material-symbols-outlined">palette</span> Theme Vault
+            </div>
+            <div class="nav-link" onclick="navigate('tools', this)">
+                <span class="material-symbols-outlined">build</span> Tools
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">Account</div>
+            <div class="nav-link" onclick="navigate('settings', this)">
+                <span class="material-symbols-outlined">settings</span> Settings
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="logout-link" onclick="logoutUser()">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </div>
+        </div>
+    </aside>
+
+    <!-- Workspace -->
+    <main class="workspace" id="main-workspace" style="display: none;">
+
+        <!-- Overview View -->
+        <section id="view-overview" class="view active">
+            <div class="page-header">
+                <h1 class="page-title">Welcome Back, Elite</h1>
+                <p class="page-subtitle">Your exclusive projects and tools await.</p>
+            </div>
+
+            <div class="card-grid">
+                <div class="glass-card" onclick="portalTo('brickburger.html')">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ff4d00, #ff8800);">
+                        <span class="material-symbols-outlined">local_fire_department</span>
+                    </div>
+                    <h3 class="card-title">Fire HQ</h3>
+                    <p class="card-desc">The ultimate burger ordering experience with themes and tokens.</p>
+                    <span class="card-badge">Active</span>
+                </div>
+
+                <div class="glass-card" onclick="portalTo('Animateoba.html')">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #d946ef, #f472b6);">
+                        <span class="material-symbols-outlined">animation</span>
+                    </div>
+                    <h3 class="card-title">AnimateOBA</h3>
+                    <p class="card-desc">Next-gen motion engine for high-performance CSS animations.</p>
+                    <span class="card-badge new">New Engine</span>
+                </div>
+
+                <div class="glass-card" onclick="portalTo('OBAILABS.html')">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                        <span class="material-symbols-outlined">science</span>
+                    </div>
+                    <h3 class="card-title">OBA Labs</h3>
+                    <p class="card-desc">Experimental tools and prototypes from the lab.</p>
+                    <span class="card-badge">Beta</span>
+                </div>
+
+                <div class="glass-card" onclick="portalTo('TERMINAL.html')">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #22c55e, #16a34a);">
+                        <span class="material-symbols-outlined">terminal</span>
+                    </div>
+                    <h3 class="card-title">Terminal</h3>
+                    <p class="card-desc">Access the command interface for advanced operations.</p>
+                    <span class="card-badge">Pro</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Themes View -->
+        <section id="view-themes" class="view">
+            <div class="page-header">
+                <h1 class="page-title">Theme Vault</h1>
+                <p class="page-subtitle">As a Premium member, all themes are FREE for you.</p>
+            </div>
+
+            <div class="themes-grid" id="themes-container"></div>
+        </section>
+
+        <!-- Tools View -->
+        <section id="view-tools" class="view">
+            <div class="page-header">
+                <h1 class="page-title">Elite Tools</h1>
+                <p class="page-subtitle">Premium-only development tools and utilities.</p>
+            </div>
+ 
+            <div class="card-grid">
+                <div class="glass-card" onclick="portalTo('premium-token-generator.html')">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ffd700, #ff8800);">
+                        <span class="material-symbols-outlined">toll</span>
+                    </div>
+                    <h3 class="card-title">Token Generator</h3>
+                    <p class="card-desc">Generate unlimited tokens instantly. Premium exclusive!</p>
+                    <span class="card-badge new">Hot</span>
+                </div>
+
+                <div class="glass-card" onclick="portalTo('premium-analytics.html')">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #9333ea, #ec4899);">
+                        <span class="material-symbols-outlined">analytics</span>
+                    </div>
+                    <h3 class="card-title">Analytics Dashboard</h3>
+                    <p class="card-desc">Real-time stats, charts, and insights for elite members.</p>
+                    <span class="card-badge">Stats</span>
+                </div>
+
+                <div class="glass-card" onclick="portalTo('premium-secrets.html')">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ff3333, #ff6666);">
+                        <span class="material-symbols-outlined">lock_open</span>
+                    </div>
+                    <h3 class="card-title">Secret Vault</h3>
+                    <p class="card-desc">Exclusive codes, cheats, and hidden features revealed.</p>
+                    <span class="card-badge new">VIP</span>
+                </div>
+
+                <div class="glass-card" onclick="portalTo('builder.html')">
+                    <div class="card-icon">
+                        <span class="material-symbols-outlined">architecture</span>
+                    </div>
+                    <h3 class="card-title">Website Builder</h3>
+                    <p class="card-desc">Drag-and-drop architect for next-gen sites.</p>
+                    <span class="card-badge">Launch</span>
+                </div>
+
+                <div class="glass-card" onclick="portalTo('mapgen.html')">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">
+                        <span class="material-symbols-outlined">map</span>
+                    </div>
+                    <h3 class="card-title">Map Generator</h3>
+                    <p class="card-desc">Generate custom maps for your projects.</p>
+                    <span class="card-badge">Tool</span>
+                </div>
+
+                <div class="glass-card" onclick="portalTo('TERMINAL.html')">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #22c55e, #16a34a);">
+                        <span class="material-symbols-outlined">terminal</span>
+                    </div>
+                    <h3 class="card-title">Admin Terminal</h3>
+                    <p class="card-desc">Access the command interface for advanced operations.</p>
+                    <span class="card-badge">Pro</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings View -->
+        <section id="view-settings" class="view">
+            <div class="page-header">
+                <h1 class="page-title">Settings</h1>
+                <p class="page-subtitle">Manage your elite account.</p>
+            </div>
+
+            <div class="settings-card">
+                <div class="setting-row">
+                    <div>
+                        <div class="setting-title">Account Email</div>
+                        <div class="setting-desc" id="settings-email">loading...</div>
+                    </div>
+                    <span class="card-badge">Verified</span>
+                </div>
+                <div class="setting-row">
+                    <div>
+                        <div class="setting-title">Membership Status</div>
+                        <div class="setting-desc">Premium Ultra 3X Special</div>
+                    </div>
+                    <span class="card-badge" style="background: var(--gold); color: black;">Elite</span>
+                </div>
+                <div class="setting-row">
+                    <div>
+                        <div class="setting-title">Token Balance</div>
+                        <div class="setting-desc">Unlimited tokens for premium members</div>
+                    </div>
+                    <span class="token-count" id="settings-tokens" style="font-size: 20px;">∞</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
+            authDomain: "obalabs-c56ab.firebaseapp.com",
+            databaseURL: "https://obalabs-c56ab-default-rtdb.firebaseio.com",
+            projectId: "obalabs-c56ab",
+            storageBucket: "obalabs-c56ab.firebasestorage.app",
+            messagingSenderId: "415868024118",
+            appId: "1:415868024118:web:4ea58785b6a175c4fbef97",
+            measurementId: "G-31STXB0DGM"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // ===============================================
+        // 🔒 AUTHORIZED PREMIUM MEMBERS
+        // ===============================================
+        const AUTHORIZED_EMAILS = [
+            "oforomarbinamir@gmail.com",
+            "example2@gmail.com",
+            "example3@gmail.com"
+        ];
+        // ===============================================
+
+        const themes = [
+            { id: 'fire-hq', name: 'Fire HQ', color: '#ff4d00' },
+            { id: 'frost', name: 'Sub-Zero', color: '#00ffff' },
+            { id: 'neon', name: 'Cyber Neon', color: '#ff00ff' },
+            { id: 'golden', name: 'Elite Gold', color: '#ffd700' },
+            { id: 'matrix', name: 'Matrix', color: '#00ff41' },
+            { id: 'vaporwave', name: 'Vaporwave', color: '#ff00ff' },
+            { id: 'midnight', name: 'Midnight', color: '#ff0000' },
+            { id: 'ocean', name: 'Deep Ocean', color: '#00d2ff' },
+            { id: 'emerald', name: 'Emerald', color: '#50c878' },
+            { id: 'candy', name: 'Candy Pop', color: '#ff1493' },
+            { id: 'abyssal', name: 'Abyssal', color: '#4b0082' },
+            { id: 'cyber', name: 'Cyber', color: '#00ff99' },
+        ];
+
+        let userState = {
+            authenticated: false,
+            uid: '',
+            email: '',
+            tokens: 999,
+            purchasedThemes: themes.map(t => t.id), // Premium gets all
+            activeTheme: 'golden'
+        };
+
+        function showDenied(email) {
+            document.getElementById('loading-screen').classList.add('hidden');
+            document.getElementById('access-denied').classList.add('show');
+            if (email) document.getElementById('denied-email').textContent = email;
+
+            let count = 5;
+            const interval = setInterval(() => {
+                count--;
+                document.getElementById('countdown').textContent = count;
+                if (count <= 0) {
+                    clearInterval(interval);
+                    window.location.href = 'index.html';
+                }
+            }, 1000);
+        }
+
+        function showDashboard(user) {
+            document.getElementById('loading-screen').classList.add('hidden');
+            document.getElementById('main-sidebar').style.display = 'flex';
+            document.getElementById('main-workspace').style.display = 'block';
+
+            // Update UI
+            document.getElementById('sidebar-user-name').textContent = user.displayName || 'Elite Member';
+            document.getElementById('sidebar-user-email').textContent = user.email;
+            document.getElementById('settings-email').textContent = user.email;
+
+            updateTokenDisplay();
+            renderThemes();
+        }
+
+        function updateTokenDisplay() {
+            document.getElementById('token-count').textContent = userState.tokens === 999 ? '∞' : userState.tokens;
+            document.getElementById('settings-tokens').textContent = userState.tokens === 999 ? '∞' : userState.tokens;
+        }
+
+        function renderThemes() {
+            const container = document.getElementById('themes-container');
+            container.innerHTML = '';
+
+            themes.forEach(t => {
+                const isOwned = userState.purchasedThemes.includes(t.id);
+                const isActive = userState.activeTheme === t.id;
+
+                const card = document.createElement('div');
+                card.className = `theme-card ${isOwned ? 'owned' : ''} ${isActive ? 'active' : ''}`;
+                card.innerHTML = `
+                    <div class="theme-preview" style="background: ${t.color};"></div>
+                    <div class="theme-name">${t.name}</div>
+                    <div class="theme-price">${isOwned ? 'Owned' : 'FREE'}</div>
+                    <button class="theme-btn ${isActive ? 'equipped' : (isOwned ? 'equip' : 'buy')}">${isActive ? 'Equipped' : (isOwned ? 'Equip' : 'Claim Free')}</button>
+                `;
+
+                const btn = card.querySelector('button');
+                btn.onclick = () => {
+                    if (!isActive) {
+                        if (!isOwned) userState.purchasedThemes.push(t.id);
+                        userState.activeTheme = t.id;
+                        saveToDB();
+                        renderThemes();
+                    }
+                };
+
+                container.appendChild(card);
+            });
+        }
+
+        async function saveToDB() {
+            if (!userState.uid) return;
+            try {
+                await set(ref(db, 'users/' + userState.uid), {
+                    tokens: userState.tokens,
+                    purchasedThemes: userState.purchasedThemes,
+                    activeTheme: userState.activeTheme,
+                    isPremium: true
+                });
+            } catch (e) {
+                console.error('DB Save Error:', e);
+            }
+        }
+
+        // Auth check
+        onAuthStateChanged(auth, async (user) => {
+            setTimeout(async () => {
+                if (user && user.email) {
+                    const email = user.email.toLowerCase().trim();
+                    const isAuthorized = AUTHORIZED_EMAILS.some(e => e.toLowerCase().trim() === email);
+
+                    if (isAuthorized) {
+                        userState.authenticated = true;
+                        userState.uid = user.uid;
+                        userState.email = user.email;
+
+                        // Load from DB
+                        try {
+                            const snap = await get(ref(db, 'users/' + user.uid));
+                            if (snap.exists()) {
+                                const data = snap.val();
+                                userState.tokens = data.tokens ?? 999;
+                                userState.purchasedThemes = data.purchasedThemes ?? themes.map(t => t.id);
+                                userState.activeTheme = data.activeTheme ?? 'golden';
+                            } else {
+                                // First time premium user
+                                userState.tokens = 999;
+                                userState.purchasedThemes = themes.map(t => t.id);
+                                await saveToDB();
+                            }
+                        } catch (e) {
+                            console.error('DB Load Error:', e);
+                        }
+
+                        showDashboard(user);
+                    } else {
+                        showDenied(user.email);
+                    }
+                } else {
+                    showDenied(null);
+                }
+            }, 1500);
+        });
+
+        // Navigation
+        window.navigate = (viewId, el) => {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(`view-${viewId}`).classList.add('active');
+            el.classList.add('active');
+        };
+
+        // Portal transition
+        window.portalTo = (url) => {
+            document.body.classList.add('launching');
+            setTimeout(() => {
+                document.getElementById('portal-overlay').classList.add('active');
+            }, 300);
+            setTimeout(() => {
+                window.location.href = url;
+            }, 1100);
+        };
+
+        // Add token
+        window.addFreeToken = () => {
+            if (userState.tokens < 999) {
+                userState.tokens += 10;
+                if (userState.tokens > 999) userState.tokens = 999;
+            }
+            updateTokenDisplay();
+            saveToDB();
+        };
+
+        // Logout
+        window.logoutUser = () => {
+            signOut(auth).then(() => {
+                window.location.href = 'index.html';
+            });
+        };
+    </script>
+
+</body>
+
+</html>
