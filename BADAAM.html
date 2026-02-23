@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Premium Badam Khatai</title>
+    <style>
+        :root {
+            --amz-nav-bg: #131921;
+            --amz-nav-sub: #232f3e;
+            --amz-btn-yellow: #ffd814;
+            --amz-btn-orange: #ffa41c;
+            --amz-link: #007185;
+            --amz-price: #B12704;
+            --text-dark: #0f1111;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: var(--text-dark);
+        }
+
+        .inline-logo {
+            height: 1.1em;
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+
+        header {
+            background-color: var(--amz-nav-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            gap: 20px;
+        }
+
+        .logo-container img {
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .delivery-location {
+            display: flex;
+            flex-direction: column;
+            font-size: 12px;
+        }
+
+        .delivery-location span:last-child {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            display: flex;
+            height: 40px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .search-bar input {
+            flex-grow: 1;
+            padding: 0 10px;
+            border: none;
+            outline: none;
+        }
+
+        .search-bar button {
+            background-color: #febd69;
+            border: none;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+
+        .cart {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .sub-nav {
+            background-color: var(--amz-nav-sub);
+            color: white;
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .image-col {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .image-col img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-col {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+
+        .brand-link {
+            color: var(--amz-link);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .ratings {
+            color: #ffa41c;
+            margin: 10px 0;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .price {
+            font-size: 28px;
+            color: var(--amz-price);
+            font-weight: 500;
+        }
+
+        .buy-box {
+            flex: 1;
+            max-width: 300px;
+            border: 1px solid #d5d9d9;
+            border-radius: 8px;
+            padding: 18px;
+            height: fit-content;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 20px;
+            border: 1px solid;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .btn-add-cart {
+            background-color: var(--amz-btn-yellow);
+            border-color: #fcd200;
+        }
+
+        .btn-buy-now {
+            background-color: var(--amz-btn-orange);
+            border-color: #ff8f00;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="Photo from Muhammad Amir Butt.jpg" alt="Logo">
+        </div>
+        <div class="delivery-location">
+            <span>Deliver to</span>
+            <span>🇵🇰 Pakistan Only</span>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search our bakery...">
+            <button>🔍</button>
+        </div>
+        <div class="cart">
+            <span>🛒 Cart (<span id="cart-count">0</span>)</span>
+        </div>
+    </header>
+
+    <div class="sub-nav">
+        <span>☰ All Categories</span>
+    </div>
+
+    <div class="container">
+        <div class="image-col">
+            <img src="BADAAMKAAAAAATAI.png" alt="Badam Khatai">
+        </div>
+
+        <div class="info-col">
+            <h1 class="product-title">
+                <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo"> Premium Badam Khatai - Traditional
+                Almond Shortbread (500g Box)
+            </h1>
+            <a href="#" class="brand-link">Visit the <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo">
+                Store</a>
+
+            <div class="ratings">★★★★☆ <span>(1,245 ratings)</span></div>
+
+            <div class="price-block">
+                <span style="font-size: 14px;">Rs.</span>
+                <span class="price">850.00</span>
+            </div>
+
+            <h3>About this item</h3>
+            <ul style="font-size: 14px; line-height: 1.6;">
+                <li><strong>FRESHLY BAKED:</strong> Made to order for that perfect melt-in-your-mouth texture.</li>
+            </ul>
+        </div>
+
+        <div class="buy-box">
+            <div style="font-size: 24px; font-weight: 500;">Rs. 850.00</div>
+            <div style="color: #007600; font-size: 18px; margin: 10px 0;">In Stock</div>
+
+            <select style="width: 100%; padding: 5px; margin-bottom: 15px; border-radius: 8px;" id="qty-select">
+                <option value="1">Qty: 1</option>
+                <option value="2">Qty: 2</option>
+                <option value="3">Qty: 3</option>
+            </select>
+
+            <button class="btn btn-add-cart" id="add-btn">Add to Cart</button>
+            <button class="btn btn-buy-now" id="buy-btn">Buy Now</button>
+
+            <p style="font-size: 12px; color: #565959;">
+                Ships from: <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo"><br>
+                Sold by: <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo"> Pakistan
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const addBtn = document.getElementById('add-btn');
+        const countSpan = document.getElementById('cart-count');
+        const qtySelect = document.getElementById('qty-select');
+        let total = 0;
+
+        addBtn.onclick = () => {
+            total += parseInt(qtySelect.value);
+            countSpan.innerText = total;
+            alert("Added to your cart!");
+        };
+
+        document.getElementById('buy-btn').onclick = () => {
+            alert("Proceeding to secure Pakistan checkout...");
+        };
+    </script>
+
+</body>
+
+</html>

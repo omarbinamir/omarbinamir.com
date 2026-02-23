@@ -540,6 +540,106 @@
         .vip-input-glow:focus {
             box-shadow: 0 0 15px rgba(255, 77, 0, 0.2);
         }
+
+        /* Fiery Voucher Modal Styles */
+        .voucher-card {
+            background: linear-gradient(135deg, #4b0000 0%, #000000 100%);
+            border: 4px solid #fff;
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            box-shadow: 0 20px 50px rgba(255, 77, 0, 0.4);
+            max-width: 550px;
+            width: 100%;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        .voucher-title {
+            font-size: 36px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            line-height: 0.9;
+        }
+
+        .voucher-subtitle {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .voucher-price-circle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: black;
+            color: white;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            border: 3px solid #333;
+            z-index: 2;
+            transform: rotate(5deg);
+        }
+
+        .voucher-price-circle span:first-child {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        .voucher-price-circle span:last-child {
+            font-size: 28px;
+        }
+
+        .voucher-code-box {
+            background: white;
+            color: #cc0000;
+            padding: 8px 25px;
+            border: 3px solid #cc0000;
+            display: inline-block;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
+        }
+
+        .voucher-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 40px;
+        }
+
+        .voucher-oba-logo {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .voucher-url {
+            font-size: 11px;
+            opacity: 0.6;
+        }
+
+        .voucher-sprungs {
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            width: 250px;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+            pointer-events: none;
+            opacity: 0.4;
+        }
     </style>
 </head>
 
@@ -547,7 +647,8 @@
     class="bg-background-light dark:bg-background-dark font-display smooth-scroll text-text-dark dark:text-white antialiased selection:bg-primary selection:text-text-dark overflow-x-hidden theme-fire-hq">
 
     <!-- VIP Challenge Popup -->
-    <div id="vip-challenge-modal" class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/80 hidden">
+    <div id="vip-challenge-modal" onclick="if(event.target === this) closeVipModal()"
+        class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/80 hidden">
         <div
             class="relative bg-[#151308] border-2 border-primary/50 rounded-3xl p-8 max-w-2xl w-full mx-4 overflow-hidden shadow-2xl modal-animate">
 
@@ -624,6 +725,50 @@
         Ơ̸̧̧̧̛̫͇̣̫̣̗̭͇̼͔͈̲͇̙̪͙̜͇̥͔͎͕̮̘͖͈̂̍̔̓͌̄̆̌̓͆͊͑̑̔͂́͐͋͑̀̋̑̔̊̐̒̊͋̈̏̋̀̈́̓̓̇̇͌̉̚͘͘͜͜͝͝ͅͅͅB̵̢̛̝͓̺͖̯͎̙͔̘̺͚̮̈́̾̀̄͂͂͑̈́̉̈̈́̈̍̆̅͊͒̈͋̏̉̈́̆͗͆̊̈́̀͐͆̓͌̿̾́̓͆͒̽͛͘͘̚̕̕͜͝Ǎ̶̧̨̧̡̙̯̙͎͍̪̠͙͙̗̯̜̞̩͉̣̥̝̺̗̻͔͓̼̦̰̙̤̼̫̼̝̲̝̈́̋̊̈́̈́̽̈́̔̄͆͒͐̆̄͒́̈́̇́̓͂͂̋̈́̓͌̀͂̏̓͆̿̾̓͑͑͂̓̂̆̚͜͜͝͝͝͝͝ͅ
     </div>
     <div id="creepy-banner" class="creepy-banner">CREEPY MODE ACTIVATED: 40% VOID DISCOUNT</div>
+
+    <!-- Fiery Discount Voucher Modal -->
+    <div id="fiery-voucher-modal"
+        class="fixed inset-0 z-[3000] flex items-center justify-center bg-black/95 hidden backdrop-blur-md">
+        <div class="voucher-card modal-animate">
+            <!-- Price Badge -->
+            <div class="voucher-price-circle">
+                <span class="font-black">ONLY IN</span>
+                <span class="text-primary font-black">555</span>
+            </div>
+
+            <div class="relative z-10">
+                <h3 class="voucher-title text-primary italic">FIERY</h3>
+                <h3 class="voucher-title">DISCOUNT VOUCHER</h3>
+                <p class="voucher-subtitle">VALID TILL OCTOBER 23RD</p>
+
+                <div class="flex items-center gap-6 mt-10">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUwzcDIWZD_n0GxCtHBPt_aSSibJiE4F1rWlhHV9qFQ3dAjDyfLDpCnYpgkBpE9vUas1Mo0yOEJH3epWB6GNwhVTW7Cf65T5AWEjnEqhpgZDsC6jwse5qj5lo-AcUYPKkPZlwJNa15OAuYU0gJeZ--9Vj6a30mFERxKZrgJy2FNtujwPlzRHjP0Wt6YshxBZC7YOQJtUyg6qzw-9GA11qjoxuFUUTvqbbqUgihlYGT6Zm-12IojguJiDISTYTopNSd60iXSaV-yhwQ"
+                        class="w-36 h-36 object-contain rotate-12 drop-shadow-2xl" alt="Burger">
+                    <div class="flex flex-col items-center">
+                        <p class="text-[10px] uppercase font-black tracking-widest text-white/40 mb-2">Secret Redeem
+                            Code</p>
+                        <div class="voucher-code-box">1961</div>
+                    </div>
+                </div>
+
+                <div class="voucher-footer">
+                    <div>
+                        <div class="voucher-oba-logo italic">oba</div>
+                        <div class="voucher-url">omarbinamir.com</div>
+                    </div>
+                    <button onclick="closeVoucherModal()"
+                        class="group bg-primary text-black hover:bg-white px-8 py-3 rounded-xl font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3">
+                        Claim Now
+                        <span
+                            class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Background Assets -->
+            <img src="FIERY.png" class="voucher-sprungs" alt="">
+        </div>
+    </div>
     <div id="oba-banner"
         class="bg-primary text-black font-black text-center p-1 text-[10px] hidden uppercase tracking-widest fixed top-0 left-0 right-0 z-[100]">
         OBA MODE ACTIVE: RS. 50 DISCOUNT</div>
@@ -1018,6 +1163,7 @@
         let lavaActive = false;
         let frostActive = false;
         let obatrexActive = false;
+        let voucher1961Active = false;
 
         // SECRET CODES (Only VIP members know these from the Secret Vault!)
         const creepyCode = "creepymodeactivatedantidisistablishmentarisum";
@@ -1195,6 +1341,7 @@
             if (creepyActive) finalTotal *= 0.6;
             if (partyActive) finalTotal *= 0.9; // Party mode: 10% off
             if (obatrexActive) finalTotal *= 0.5; // OBATREX: 50% off
+            if (voucher1961Active) finalTotal = 555; // VOUCHER 1961: Fixed Price 555
 
             document.getElementById('cart-subtotal').innerText = `Rs. ${subtotal.toLocaleString()}`;
             document.getElementById('cart-total').innerText = `Rs. ${Math.max(0, Math.floor(finalTotal)).toLocaleString()}`;
@@ -1443,6 +1590,14 @@
             }
 
             if (inputBuffer.length > 60) inputBuffer = inputBuffer.slice(-60);
+
+            // Voucher 1961
+            if (inputBuffer.includes("1961") && !voucher1961Active) {
+                voucher1961Active = true;
+                showCodeNotification('FIERY VOUCHER 1961', 'Ultimate Deal Unlocked: Total Price Rs. 555!', '#ff4d00');
+                updateCartUI();
+                inputBuffer = "";
+            }
         });
 
         // Code notification popup
@@ -1562,6 +1717,25 @@
             }
         }
 
+        // Voucher Modal Logic
+        function showVoucherModal() {
+            const modal = document.getElementById('fiery-voucher-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeVoucherModal() {
+            const modal = document.getElementById('fiery-voucher-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+        }
+
         document.getElementById('vip-idea-form')?.addEventListener('submit', async function (e) {
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
@@ -1614,6 +1788,9 @@
         // Show VIP Challenge Modal on start
         window.addEventListener('load', () => {
             setTimeout(showVipModal, 2000);
+
+            // Show Fiery Voucher after 10 minutes (600,000 ms)
+            setTimeout(showVoucherModal, 600000);
         });
     </script>
 </body>

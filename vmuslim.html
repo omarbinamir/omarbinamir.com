@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tanzil - Quran Navigator | القرآن الكريم</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    
+    <style>
+        /* --- CSS STYLING --- */
+        :root {
+            --primary-teal: #2c7a7b;
+            --dark-teal: #235e5f;
+            --bg-gray: #f4f7f6;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-gray);
+            color: #333;
+        }
+
+        /* Web Layout */
+        .web { display: flex; min-height: 100vh; }
+        
+        #side-content {
+            width: 300px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            padding: 15px;
+            height: 100vh;
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+        }
+
+        #main-content {
+            flex: 1;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Menu Components */
+        .sub-menu {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .menu-top {
+            background: var(--primary-teal);
+            color: white;
+            padding: 10px 15px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .menu-body { padding: 12px; }
+
+        .menu-row {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Quran Text Area */
+        .quranText {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            min-height: 500px;
+            direction: rtl;
+            font-size: 28px;
+            line-height: 2.2;
+            text-align: center;
+        }
+
+        .quranPageHeader {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--primary-teal);
+        }
+
+        /* Navigation Buttons */
+        .arrow-link {
+            text-decoration: none;
+            color: var(--primary-teal);
+            font-size: 20px;
+            padding: 0 10px;
+        }
+
+        /* Tabs */
+        .ui-tab {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .ui-tab li { padding: 10px 20px; cursor: pointer; }
+        .ui-tab li.selected {
+            border-bottom: 3px solid var(--primary-teal);
+            color: var(--primary-teal);
+            font-weight: bold;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .web { flex-direction: column; }
+            #side-content { width: 100%; height: auto; position: relative; }
+            #main-content { margin-left: 0; }
+        }
+
+        .ui-hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="container"></div>
+
+<script>
+    /* --- JAVASCRIPT LOGIC --- */
+
+    // 1. Determine Device Mode
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    // 2. Simplified HTML Arrays (Cleaned up for the demo)
+    var webLayout = [
+        '<div class="web">',
+        '  <aside id="side-content">',
+        '    <div class="sub-menu">',
+        '      <div class="menu-top">Browse</div>',
+        '      <div class="menu-body">',
+        '        <div class="menu-row"><label>Sura:</label><select id="suraMenu" onchange="updateView()"><option>1. Al-Fatiha</option><option>2. Al-Baqarah</option></select></div>',
+        '        <div class="menu-row"><label>Page:</label><input type="number" id="pageNum" value="1" style="width:50px"></div>',
+        '      </div>',
+        '    </div>',
+        '    <div class="sub-menu">',
+        '      <div class="menu-top">Settings</div>',
+        '      <div class="menu-body">',
+        '        <div class="menu-row"><label>Font Size:</label><select id="fontSize" onchange="changeSize()"><option value="24">Small</option><option value="32" selected>Medium</option><option value="42">Large</option></select></div>',
+        '      </div>',
+        '    </div>',
+        '  </aside>',
+        '  <main id="main-content">',
+        '    <ul class="ui-tab"><li class="selected">Quran</li><li>Translation</li></ul>',
+        '    <div class="quran-tab">',
+        '      <div class="quranPageHeader">',
+        '        <a href="#" onclick="prevPage()" class="arrow-link">◀</a>',
+        '        <span id="pageInfo">Page 1</span>',
+        '        <a href="#" onclick="nextPage()" class="arrow-link">▶</a>',
+        '      </div>',
+        '      <div class="quranText" id="quranDisplay">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>',
+        '    </div>',
+        '  </main>',
+        '</div>'
+    ];
+
+    // 3. Inject Content
+    document.getElementById('container').innerHTML = webLayout.join('');
+
+    // 4. Functional Logic
+    function changeSize() {
+        const size = document.getElementById('fontSize').value;
+        document.getElementById('quranDisplay').style.fontSize = size + 'px';
+    }
+
+    function nextPage() {
+        let p = document.getElementById('pageNum');
+        p.value = parseInt(p.value) + 1;
+        updateView();
+    }
+
+    function prevPage() {
+        let p = document.getElementById('pageNum');
+        if(p.value > 1) p.value = parseInt(p.value) - 1;
+        updateView();
+    }
+
+    function updateView() {
+        const page = document.getElementById('pageNum').value;
+        document.getElementById('pageInfo').innerText = "Page " + page;
+        // In a real app, you would fetch new Quran text here
+        document.getElementById('quranDisplay').innerHTML = "Loading Page " + page + "...<br>القرآن الكريم";
+    }
+
+    // Mocking the Global functions mentioned in your original HTML
+    window.Search = {
+        go: function() { alert("Searching..."); }
+    };
+</script>
+
+</body>
+</html>

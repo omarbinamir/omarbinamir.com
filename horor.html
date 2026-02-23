@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Void Burger: Killer Shift | OBA Kitchen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&family=Space+Grotesk:wght@700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --void-black: #050505;
+            --oba-blue: #007bff;
+            --warning-red: #ff0044;
+            --blood-red: #8a0303;
+            --sludge-green: #2a3d2a;
+            --glass: rgba(0, 0, 0, 0.82);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--void-black);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            perspective: 1000px;
+        }
+
+        /* --- KITCHEN ENVIRONMENT --- */
+        #kitchen-scene {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            z-index: 1;
+        }
+
+        .counter {
+            width: 125%;
+            height: 38vh;
+            background: linear-gradient(135deg, #151515, #050505);
+            border-top: 6px solid #222;
+            transform: rotateX(15deg);
+            box-shadow: 0 -40px 120px rgba(0, 0, 0, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .order-window {
+            position: absolute;
+            top: -55vh;
+            width: 700px;
+            height: 450px;
+            background: #000;
+            border: 12px solid #0a0a0a;
+            box-shadow: inset 0 0 100px #000, 0 0 40px rgba(0, 123, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* --- CHARACTERS --- */
+        .character-container {
+            position: relative;
+            transform: translateY(400px);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .character-container.active {
+            transform: translateY(40px) scale(1.1);
+            opacity: 1;
+        }
+
+        .base-emoji {
+            font-size: 200px;
+            display: block;
+        }
+
+        /* Creepy Shirt Styling */
+        .shirt-entity {
+            position: relative;
+            font-size: 180px;
+        }
+
+        .skull-logo {
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            filter: contrast(2) brightness(0.5);
+        }
+
+        /* --- BURGER ASSEMBLY --- */
+        .assembly-area {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+        }
+
+        .ingredient {
+            width: 200px;
+            height: 45px;
+            border-radius: 50%;
+            margin-bottom: -12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            transition: all 0.3s;
+        }
+
+        .bun_top {
+            background: #d2691e;
+            height: 65px;
+            border-radius: 100px 100px 20px 20px;
+            border: 2px solid #8b4513;
+        }
+
+        .patty {
+            background: #3d1c02;
+            height: 35px;
+            border-radius: 20px;
+            border: 2px solid #1a0f00;
+        }
+
+        .cheese {
+            background: #ffd700;
+            height: 12px;
+            width: 220px;
+            border-radius: 5px;
+        }
+
+        .sludge {
+            background: var(--sludge-green);
+            height: 25px;
+            width: 210px;
+            border-radius: 45%;
+            box-shadow: 0 0 25px var(--sludge-green);
+        }
+
+        .bun_bottom {
+            background: #d2691e;
+            height: 35px;
+            border-radius: 10px 10px 45px 45px;
+        }
+
+        /* --- WEAPONRY --- */
+        #gun-layer {
+            position: fixed;
+            bottom: -300px;
+            right: 50px;
+            z-index: 500;
+            transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+
+        #gun-layer.equipped {
+            bottom: -50px;
+            pointer-events: auto;
+        }
+
+        .gun-model {
+            font-size: 300px;
+            transform: rotate(-10deg);
+            filter: drop-shadow(0 0 20px #000);
+            cursor: crosshair;
+        }
+
+        #blood-splat {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, var(--blood-red) 0%, transparent 70%);
+            z-index: 600;
+            opacity: 0;
+            pointer-events: none;
+            mix-blend-mode: multiply;
+        }
+
+        /* --- UI ELEMENTS --- */
+        .order-bubble {
+            background: #fff;
+            color: #000;
+            padding: 20px 35px;
+            border-radius: 40px 40px 40px 2px;
+            position: absolute;
+            top: -480px;
+            right: 80px;
+            font-weight: 900;
+            font-size: 18px;
+            max-width: 300px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .hud-card {
+            background: var(--glass);
+            padding: 25px 45px;
+            border-radius: 25px;
+            border-left: 6px solid var(--oba-blue);
+            backdrop-filter: blur(15px);
+        }
+
+        .bin-container {
+            position: fixed;
+            bottom: 35px;
+            left: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .bin {
+            width: 110px;
+            height: 110px;
+            background: var(--glass);
+            border: 2px solid rgba(0, 123, 255, 0.3);
+            border-radius: 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .bin:hover {
+            background: var(--oba-blue);
+            transform: translateY(-10px);
+            color: #fff;
+            border-color: #fff;
+        }
+
+        #serve-btn {
+            position: fixed;
+            bottom: 160px;
+            right: 40px;
+            padding: 20px 60px;
+            background: var(--warning-red);
+            border: none;
+            color: #fff;
+            font-weight: 900;
+            border-radius: 50px;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 10px 40px rgba(255, 0, 68, 0.4);
+            z-index: 100;
+        }
+
+        /* --- JUMPSCARE --- */
+        #jumpscare {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scare-face {
+            font-size: 500px;
+            animation: scream 0.05s infinite;
+        }
+
+        @keyframes scream {
+            0% {
+                transform: scale(1) rotate(5deg);
+            }
+
+            50% {
+                transform: scale(1.2) rotate(-5deg);
+            }
+        }
+
+        .fullscreen-msg {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 20000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .blood-drip {
+            position: absolute;
+            width: 5px;
+            background: var(--blood-red);
+            top: 0;
+            animation: drip 2s forwards;
+        }
+
+        @keyframes drip {
+            to {
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="blood-splat"></div>
+    <div id="kitchen-scene">
+        <div class="order-window">
+            <div id="char-mount" class="character-container">
+                <!-- Emoji Content via JS -->
+            </div>
+            <div id="order-bubble" class="order-bubble"></div>
+        </div>
+
+        <div class="counter">
+            <div id="assembly" class="assembly-area"></div>
+        </div>
+    </div>
+
+    <div id="hud-stats" class="fixed-top"
+        style="position:fixed; top:40px; left:40px; right:40px; display:flex; justify-content:space-between; z-index:1000; pointer-events:none;">
+        <div class="hud-card">
+            <span
+                style="font-size:10px; color:var(--oba-blue); font-weight:900; letter-spacing:2px; display:block;">VOID
+                STABILIZATION</span>
+            <span id="score" style="font-family:'Space Grotesk'; font-size:36px;">0 / 10</span>
+        </div>
+        <div class="hud-card" style="text-align:right;">
+            <span
+                style="font-size:10px; color:var(--warning-red); font-weight:900; letter-spacing:2px; display:block;">THREAT
+                LEVEL</span>
+            <span id="threat" style="font-family:'Space Grotesk'; font-size:36px;">LOW</span>
+        </div>
+    </div>
+
+    <div class="bin-container">
+        <div class="bin" onclick="addIngredient('bun_bottom')">🍞<span>Base</span></div>
+        <div class="bin" onclick="addIngredient('patty')">🍖<span>Meat</span></div>
+        <div class="bin" onclick="addIngredient('cheese')">🧀<span>Sulfur</span></div>
+        <div class="bin" onclick="addIngredient('sludge')">🧪<span>Sludge</span></div>
+        <div class="bin" onclick="addIngredient('bun_top')">🍞<span>Lid</span></div>
+    </div>
+
+    <button id="serve-btn" onclick="serveOrder()">SERVE ORDER</button>
+
+    <div id="gun-layer">
+        <div class="gun-model" onclick="shootGun()">🔫</div>
+        <div style="text-align:center; font-weight:900; color:var(--warning-red);">CLICK TO SHOOT</div>
+    </div>
+
+    <!-- Overlays -->
+    <div id="jumpscare">
+        <div class="scare-face" id="scare-face">💀</div>
+    </div>
+
+    <div id="fail-screen" class="fullscreen-msg">
+        <h1 style="font-size:120px; background:var(--warning-red); padding:0 60px;">CONSUMED</h1>
+        <p style="margin-top:20px; font-size:24px;">Sector-7 has fallen. You were delicious.</p>
+        <button class="action-btn"
+            style="margin-top:40px; background:var(--oba-blue); padding:15px 40px; border:none; color:#fff; font-weight:900; cursor:pointer;"
+            onclick="location.reload()">TRY AGAIN</button>
+    </div>
+
+    <div id="win-screen" class="fullscreen-msg">
+        <h1 style="font-size:100px; color:var(--oba-blue);">VICTORY</h1>
+        <p>The Void is sated. Bonus tokens for the ammunition.</p>
+        <button class="action-btn"
+            style="margin-top:40px; background:var(--warning-red); padding:15px 40px; border:none; color:#fff; font-weight:900; cursor:pointer;"
+            onclick="location.reload()">NEXT SHIFT</button>
+    </div>
+
+    <script>
+        const charMount = document.getElementById('char-mount');
+        const bubble = document.getElementById('order-bubble');
+        const assembly = document.getElementById('assembly');
+        const serveBtn = document.getElementById('serve-btn');
+        const gunLayer = document.getElementById('gun-layer');
+        const scoreEl = document.getElementById('score');
+        const threatEl = document.getElementById('threat');
+        const bloodSplat = document.getElementById('blood-splat');
+
+        let currentBurger = [];
+        let currentOrder = [];
+        let score = 0;
+        let gameOver = false;
+        let isKiller = false;
+        let isHuman = false;
+
+        const normals = ["😀", "😎", "🤓", "🤠", "🤖"];
+        const anomalies = ["🐲", "🦖", "👽", "👻", "🧟", "🐙"];
+
+        function spawnCustomer() {
+            if (score >= 10) return endGame(true);
+
+            gameOver = false;
+            isKiller = false;
+            isHuman = false;
+            currentBurger = [];
+            assembly.innerHTML = "";
+            serveBtn.style.display = 'none';
+            gunLayer.classList.remove('equipped');
+            charMount.classList.remove('active');
+            bubble.style.display = 'none';
+
+            setTimeout(() => {
+                const roll = Math.random();
+
+                if (roll < 0.3) { // Normal Human
+                    isHuman = true;
+                    charMount.innerHTML = `<span class="base-emoji">${normals[Math.floor(Math.random() * normals.length)]}</span>`;
+                    threatEl.innerText = "NONE";
+                    threatEl.style.color = "var(--oba-blue)";
+                } else if (roll < 0.5) { // Creepy Shirt Emoji
+                    charMount.innerHTML = `<div class="shirt-entity">👕<span class="skull-logo">💀</span></div>`;
+                    threatEl.innerText = "MEDIUM";
+                    threatEl.style.color = "orange";
+                } else if (roll < 0.8) { // Random Anomaly
+                    charMount.innerHTML = `<span class="base-emoji">${anomalies[Math.floor(Math.random() * anomalies.length)]}</span>`;
+                    threatEl.innerText = "HIGH";
+                    threatEl.style.color = "var(--warning-red)";
+                } else { // KILLER ANOMALY
+                    isKiller = true;
+                    charMount.innerHTML = `<span class="base-emoji" style="filter:grayscale(1) invert(1);">🤡</span>`;
+                    threatEl.innerText = "TERMINAL";
+                    threatEl.style.color = "var(--warning-red)";
+                    gunLayer.classList.add('equipped');
+                }
+
+                charMount.classList.add('active');
+
+                if (!isKiller) {
+                    generateOrder();
+                } else {
+                    // Killer starts timer to kill you
+                    setTimeout(() => {
+                        if (isKiller && !gameOver) triggerJumpscare("🤡");
+                    }, 2500);
+                }
+            }, 800);
+        }
+
+        function generateOrder() {
+            const ingredients = ["bun_bottom", "patty", "cheese", "sludge", "bun_top"];
+            const len = 3 + Math.floor(Math.random() * 3);
+            currentOrder = ["bun_bottom"];
+            for (let i = 0; i < len - 2; i++) {
+                currentOrder.push(ingredients[Math.floor(Math.random() * (ingredients.length - 1)) + 1]);
+            }
+            currentOrder.push("bun_top");
+
+            bubble.innerText = "ORDER: " + currentOrder.join(", ").toUpperCase().replace(/_/g, " ");
+            bubble.style.display = 'block';
+        }
+
+        function addIngredient(type) {
+            if (isKiller || gameOver) return;
+            currentBurger.push(type);
+            const div = document.createElement('div');
+            div.className = `ingredient ${type}`;
+            div.style.transform = `translateY(-${currentBurger.length * 12}px)`;
+            assembly.appendChild(div);
+            serveBtn.style.display = 'block';
+        }
+
+        function serveOrder() {
+            const isCorrect = JSON.stringify(currentBurger) === JSON.stringify(currentOrder);
+            if (isCorrect) {
+                score++;
+                scoreEl.innerText = `${score} / 10`;
+                spawnCustomer();
+            } else {
+                triggerJumpscare();
+            }
+        }
+
+        function shootGun() {
+            if (!isKiller || gameOver) return;
+
+            // Blood Effect
+            bloodSplat.style.opacity = '1';
+            createDrips();
+
+            setTimeout(() => bloodSplat.style.opacity = '0', 500);
+
+            charMount.style.transform = "scale(0) rotate(720deg)";
+            charMount.style.opacity = "0";
+
+            score++;
+            scoreEl.innerText = `${score} / 10`;
+            isKiller = false;
+            gunLayer.classList.remove('equipped');
+
+            setTimeout(spawnCustomer, 1000);
+        }
+
+        function createDrips() {
+            for (let i = 0; i < 5; i++) {
+                const drip = document.createElement('div');
+                drip.className = 'blood-drip';
+                drip.style.left = (Math.random() * 100) + '%';
+                drip.style.animationDelay = (Math.random() * 0.5) + 's';
+                document.body.appendChild(drip);
+                setTimeout(() => drip.remove(), 2500);
+            }
+        }
+
+        function triggerJumpscare(face = "👹") {
+            if (gameOver) return;
+            gameOver = true;
+            document.getElementById('scare-face').innerText = face;
+            document.getElementById('jumpscare').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('jumpscare').style.display = 'none';
+                document.getElementById('fail-screen').style.display = 'flex';
+            }, 1000);
+        }
+
+        function endGame(won) {
+            document.getElementById(won ? 'win-screen' : 'fail-screen').style.display = 'flex';
+        }
+
+        spawnCustomer();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepMind 2.0 | Elite AI Studio</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <!-- React and Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        :root {
+            --bg-deep: #02020a;
+            --bg-card: #050512;
+            --bg-sidebar: #010108;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #00f5d4;
+            /* Default: Genius */
+            --accent-glow: rgba(0, 245, 212, 0.4);
+            --font-ui: 'Syne', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        #root {
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        /* Main Layout */
+        .app-shell {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            background: var(--bg-sidebar);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 20px var(--accent-glow);
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .logo-info h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-info span {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .sidebar-section h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+            opacity: 0.6;
+        }
+
+        .personality-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .p-pill {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .p-pill:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent);
+        }
+
+        .p-pill.active {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .p-pill .icon {
+            font-size: 1.2rem;
+        }
+
+        .p-pill .details b {
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .p-pill .details span {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .model-select,
+        .think-select {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .small-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .small-pill:hover {
+            border-color: var(--accent);
+        }
+
+        .small-pill.active {
+            background: var(--accent);
+            color: var(--bg-deep);
+            border-color: var(--accent);
+        }
+
+        /* Main Chat Space */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at top right, rgba(0, 245, 212, 0.03), transparent);
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 1.5rem 2.5rem;
+            background: rgba(2, 2, 10, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 5;
+        }
+
+        .header-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .header-item b {
+            color: var(--accent);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2.5rem 15% 4rem;
+            /* Wide margins for PC readability */
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) transparent;
+        }
+
+        .message-row {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .message-row.user {
+            align-items: flex-end;
+        }
+
+        .message-row.ai {
+            align-items: flex-start;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .msg-info {
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+        }
+
+        .msg-info span {
+            color: var(--accent);
+        }
+
+        .bubble {
+            max-width: 85%;
+            padding: 1.25rem 1.75rem;
+            border-radius: 24px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .user .bubble {
+            background: linear-gradient(135deg, var(--accent), #00d2b4);
+            color: #000;
+            font-weight: 500;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0, 245, 212, 0.15);
+        }
+
+        .ai .bubble {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+        }
+
+        /* Refined Code Blocks */
+        pre {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 1.5rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        pre::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 0;
+            right: 2rem;
+            background: var(--accent);
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0 0 6px 6px;
+            text-transform: uppercase;
+        }
+
+        code {
+            color: var(--accent);
+            font-weight: 600;
+            padding: 0.2rem 0.4rem;
+            background: rgba(0, 245, 212, 0.1);
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.95em;
+        }
+
+        pre code {
+            color: #fff;
+            background: none;
+            font-weight: 400;
+            padding: 0;
+        }
+
+        /* Thinking Process */
+        .think-block {
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 85%;
+        }
+
+        .think-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .think-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--accent);
+        }
+
+        .think-content {
+            background: #010108;
+            border-left: 3px solid var(--accent);
+            padding: 1.25rem;
+            margin-top: 0.5rem;
+            border-radius: 0 12px 12px 0;
+            color: #64748b;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        /* Input Area PC Optimized */
+        .input-wrapper {
+            padding: 0 15% 2.5rem;
+            background: linear-gradient(to top, var(--bg-deep) 60%, transparent);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+
+        .input-bar {
+            background: rgba(10, 10, 25, 0.7);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: flex-end;
+            gap: 1rem;
+            transition: var(--transition);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-bar:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.1);
+        }
+
+        textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: var(--font-ui);
+            font-size: 1.1rem;
+            padding: 0.6rem 0;
+            outline: none;
+            resize: none;
+            min-height: 28px;
+            max-height: 200px;
+        }
+
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover:not(:disabled) {
+            transform: scale(1.1);
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .icon-btn.active {
+            color: var(--accent);
+            background: rgba(0, 245, 212, 0.1);
+        }
+
+        .send-btn {
+            background: var(--accent);
+            color: #000;
+            font-weight: 800;
+            border-radius: 14px;
+        }
+
+        .send-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        /* Empty State */
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 2rem;
+            opacity: 0.8;
+        }
+
+        .hero-icon {
+            font-size: 5rem;
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        @media (max-width: 1100px) {
+            .app-shell {
+                grid-template-columns: 80px 1fr;
+            }
+
+            .sidebar .details,
+            .sidebar h1,
+            .sidebar span,
+            .sidebar h3,
+            .logo-info {
+                display: none;
+            }
+
+            .chat-messages,
+            .input-wrapper {
+                padding-left: 5%;
+                padding-right: 5%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const PERSONALITIES = {
+            genius: { name: 'Genius', color: '#00f5d4', icon: '◈', tagline: 'Precision & Logic', prompt: 'You are an elite software engineer. Be terse, precise, and highly technical.' },
+            mentor: { name: 'Mentor', color: '#8b5cf6', icon: '⬡', tagline: 'Nurturing & Deep', prompt: 'You are a patient senior mentor. Explain things conceptually with clear analogies.' },
+            savage: { name: 'Savage', color: '#f43f5e', icon: '⚡', tagline: 'Truth & Sarcasm', prompt: 'You are brutally honest AI. Roast the users code or logic sarcastically but fix it.' },
+            professor: { name: 'Professor', color: '#f59e0b', icon: '◉', tagline: 'Theory & Science', prompt: 'You are a CS Professor. Focus on Big-O, algorithms, and deep theory.' },
+            custom: { name: 'Custom', color: '#ec4899', icon: '✦', tagline: 'Your Blueprint', prompt: '' }
+        };
+
+        const THINK_LEVELS = ['Off', 'Quick', 'Deep', 'Ultra'];
+        const MODELS = ['Auto-Logic', 'Deep-Thinker', 'Fast-Prompt', 'Llama-Elite'];
+
+        const Message = ({ msg, personality }) => {
+            const [showThink, setShowThink] = useState(false);
+            const isAI = msg.role === 'assistant';
+
+            return (
+                <div className={`message-row ${msg.role}`}>
+                    <div className="msg-info">
+                        {msg.role === 'user' ? 'You' : `DeepMind 2.0 · <span>${personality.name}</span>`}
+                    </div>
+                    {isAI && msg.think && (
+                        <div className="think-block">
+                            <button className="think-btn" onClick={() => setShowThink(!showThink)}>
+                                🧠 Reasoning Process {showThink ? '▲' : '▼'}
+                            </button>
+                            {showThink && <div className="think-content">{msg.think}</div>}
+                        </div>
+                    )}
+                    <div className="bubble" dangerouslySetInnerHTML={{ __html: formatContent(msg.content) }} />
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [messages, setMessages] = useState([]);
+            const [input, setInput] = useState('');
+            const [pKey, setPKey] = useState('genius');
+            const [model, setModel] = useState('Auto-Logic');
+            const [thinkIdx, setThinkIdx] = useState(0);
+            const [isSearching, setIsSearching] = useState(false);
+            const [loading, setLoading] = useState(false);
+            const [customP, setCustomP] = useState('');
+
+            const chatEnd = useRef(null);
+            const activeP = PERSONALITIES[pKey];
+
+            useEffect(() => {
+                document.documentElement.style.setProperty('--accent', activeP.color);
+                document.documentElement.style.setProperty('--accent-glow', activeP.color + '44');
+            }, [pKey]);
+
+            useEffect(() => {
+                chatEnd.current?.scrollIntoView({ behavior: 'smooth' });
+            }, [messages, loading]);
+
+            const callAI = async (text) => {
+                setLoading(true);
+                const newMsgs = [...messages, { role: 'user', content: text }];
+                setMessages(newMsgs);
+                setInput('');
+
+                let context = "";
+                if (isSearching) {
+                    try {
+                        const search = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(text)}&format=json&origin=*`).then(r => r.json());
+                        const results = search.query?.search?.slice(0, 2) || [];
+                        for (let r of results) {
+                            const detail = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(r.title)}`).then(res => res.json());
+                            context += `[Source: ${r.title}] ${detail.extract}\n`;
+                        }
+                    } catch (e) { console.error(e); }
+                }
+
+                // BACKEND SWITCH: Using a much more stable free endpoint (Nexra/Arya)
+                // This is a reliable POST-based proxy for free models.
+                try {
+                    const sysPrompt = pKey === 'custom' ? customP : activeP.prompt;
+                    const finalSys = `${sysPrompt}\n${context ? '\nContext:\n' + context : ''}\n${thinkIdx > 0 ? 'IMPORTANT: Reason inside <think>...</think> tags before answering.' : ''}`;
+
+                    const response = await fetch('https://nexra.aryahcr.cc/api/chat/gpt', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            messages: [{ role: 'system', content: finalSys }, ...newMsgs],
+                            model: model === 'Llama-Elite' ? 'llama-3' : 'gpt-4',
+                            stream: false
+                        })
+                    });
+
+                    const data = await response.json();
+                    let raw = data.gpt || data.message || "I'm having trouble connecting to my neural core right now.";
+
+                    let think = null;
+                    if (raw.includes('<think>')) {
+                        think = raw.split('<think>')[1].split('</think>')[0].trim();
+                        raw = raw.split('</think>')[1].trim();
+                    }
+
+                    setMessages([...newMsgs, { role: 'assistant', content: raw, think }]);
+                } catch (e) {
+                    setMessages([...newMsgs, { role: 'assistant', content: "CRITICAL ERROR: Neural link severed. Please try again." }]);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <div className="app-shell">
+                    <aside className="sidebar">
+                        <div className="logo-box">
+                            <div className="logo-icon">{activeP.icon}</div>
+                            <div className="logo-info">
+                                <h1>DeepMind</h1>
+                                <span>v2.0 Elite Edition</span>
+                            </div>
+                        </div>
+
+                        <div className="sidebar-section">
+                            <h3>Personality</h3>
+                            <div className="personality-grid">
+                                {Object.entries(PERSONALITIES).map(([k, p]) => (
+                                    <div key={k} className={`p-pill ${pKey === k ? 'active' : ''}`} onClick={() => setPKey(k)}>
+                                        <div className="icon">{p.icon}</div>
+                                        <div className="details">
+                                            <b>{p.name}</b>
+                                            <span>{p.tagline}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            {pKey === 'custom' && (
+                                <textarea
+                                    style={{ width: '100%', marginTop: '1rem', background: '#000', border: '1px solid #333', padding: '0.5rem', color: '#fff', borderRadius: '8px', fontSize: '0.8rem' }}
+                                    placeholder="Enter system prompt..."
+                                    value={customP}
+                                    onChange={e => setCustomP(e.target.value)}
+                                />
+                            )}
+                        </div>
+
+                        <div className="sidebar-section">
+                            <h3>Neural Model</h3>
+                            <div className="model-select">
+                                {MODELS.map(m => (
+                                    <div key={m} className={`small-pill ${model === m ? 'active' : ''}`} onClick={() => setModel(m)}>
+                                        {m.split('-')[0]}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="sidebar-section">
+                            <h3>Thinking Level</h3>
+                            <div className="think-select">
+                                {THINK_LEVELS.map((t, idx) => (
+                                    <div key={t} className={`small-pill ${thinkIdx === idx ? 'active' : ''}`} onClick={() => setThinkIdx(idx)}>
+                                        {t}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </aside>
+
+                    <main className="chat-container">
+                        <header className="chat-header">
+                            <div className="header-item">Neural Core: <b>Online</b></div>
+                            <div className="header-item">Model: <b>{model}</b></div>
+                            <div className="header-item">Latency: <b>14ms</b></div>
+                        </header>
+
+                        <div className="chat-messages">
+                            {messages.length === 0 ? (
+                                <div className="hero">
+                                    <div className="hero-icon">🧠</div>
+                                    <h2>Ready for Intelligence</h2>
+                                    <div className="badge-row">
+                                        <div className="badge">UNLIMITED ACCESS</div>
+                                        <div className="badge">PCI-E ENHANCED UI</div>
+                                        <div className="badge">NO KEY REQ</div>
+                                    </div>
+                                </div>
+                            ) : (
+                                messages.map((m, i) => <Message key={i} msg={m} personality={activeP} />)
+                            )}
+                            {loading && (
+                                <div className="message-row ai">
+                                    <div className="msg-info">DeepMind 2.0 · <span>Analysing...</span></div>
+                                    <div className="bubble" style={{ opacity: 0.5 }}>Synthesizing response...</div>
+                                </div>
+                            )}
+                            <div ref={chatEnd} />
+                        </div>
+
+                        <div className="input-wrapper">
+                            <div className="input-bar">
+                                <button className={`icon-btn ${isSearching ? 'active' : ''}`} onClick={() => setIsSearching(!isSearching)} title="Toggle DeepSearch">
+                                    🌐
+                                </button>
+                                <textarea
+                                    placeholder={`Message in ${activeP.name} mode...`}
+                                    value={input}
+                                    onChange={e => setInput(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), callAI(input))}
+                                />
+                                <button className="icon-btn send-btn" onClick={() => callAI(input)} disabled={!input.trim() || loading}>
+                                    ▶
+                                </button>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        function formatContent(text) {
+            let res = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+            const codeBlocks = res.match(/```(\w+)?\n([\s\S]*?)```/g);
+            if (codeBlocks) {
+                codeBlocks.forEach(block => {
+                    const match = block.match(/```(\w+)?\n([\s\S]*?)```/);
+                    const lang = match[1] || 'code';
+                    const code = match[2].trim();
+                    res = res.replace(block, `<pre data-lang="${lang}"><code>${code}</code></pre>`);
+                });
+            }
+            return res.replace(/\n/g, '<br>');
+        }
+
+        const rootEle = document.getElementById('root');
+        ReactDOM.createRoot(rootEle).render(<App />);
+
+    </script>
+</body>
+
+</html>
