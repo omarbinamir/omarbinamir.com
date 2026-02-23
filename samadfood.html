@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the Official Store</title>
+    <style>
+        :root {
+            --amz-navy: #131921;
+            --amz-orange: #ff9900;
+            --amz-bg: #eaeded;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--amz-bg);
+            color: #0f1111;
+        }
+
+        /* Inline Logo Styling */
+        .inline-logo {
+            height: 1.2em;
+            /* Scales with text size */
+            vertical-align: middle;
+            margin: 0 2px;
+        }
+
+        .header-logo {
+            height: 40px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--amz-navy);
+            padding: 10px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Hero Banner */
+        .hero {
+            height: 80vh;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), var(--amz-bg)),
+                url('BADAAMKAAAAAATAI.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-card {
+            background: white;
+            padding: 40px;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+        }
+
+        .hero-card h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .shop-btn {
+            background-color: var(--amz-orange);
+            color: black;
+            padding: 15px 60px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #a88734;
+            transition: 0.2s;
+            display: inline-block;
+        }
+
+        .shop-btn:hover {
+            background-color: #f7ca00;
+            transform: scale(1.05);
+        }
+
+        .pakistan-only {
+            color: #006600;
+            font-weight: bold;
+            margin-top: 15px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <img src="Photo from Muhammad Amir Butt.jpg" class="header-logo" alt="Logo">
+        <div style="color: white;">Deliver to 🇵🇰 Pakistan</div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-card">
+            <h1>Experience the Royal Taste of <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo"
+                    alt="Logo"></h1>
+            <p>Traditional Badam Khatai, freshly baked and delivered to your doorstep.</p>
+
+            <a href="BADAAM.html" class="shop-btn">SHOP NOW</a>
+
+            <span class="pakistan-only">Exclusively Available in Pakistan 🇵🇰</span>
+        </div>
+    </section>
+
+</body>
+
+</html>
