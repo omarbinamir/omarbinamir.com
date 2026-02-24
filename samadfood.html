@@ -36,16 +36,17 @@
             justify-content: space-between;
         }
 
+        /* --- THE HERO SECTION --- */
         .hero {
             height: 85vh;
+            width: 100%;
+            /* Make sure the image name matches perfectly below */
             background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), var(--amz-bg)),
-                        url('Badam Khatai.jpg') no-repeat center center; /* UPDATED FILENAME */
+                        url('Badam Khatai.jpg') no-repeat center center;
             background-size: cover;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
         }
 
         .hero-card {
@@ -54,6 +55,7 @@
             border-radius: 4px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             max-width: 500px;
+            text-align: center;
         }
 
         .shop-btn {
@@ -66,21 +68,25 @@
             border-radius: 8px;
             border: 1px solid #a88734;
             display: inline-block;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
+
     <header>
         <img src="Photo from Muhammad Amir Butt.jpg" class="header-logo" alt="Logo">
-        <div style="color: white;">Deliver to 🇵🇰 Pakistan</div>
+        <div style="color: white;">Deliver to 🇵🇰 <b>Pakistan</b></div>
     </header>
 
     <section class="hero">
         <div class="hero-card">
             <h1>Experience the Royal Taste of <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo"></h1>
-            <p>Traditional Badam Khatai, freshly baked and delivered by <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo">.</p>
+            <p>Freshly baked and delivered to your doorstep by <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo">.</p>
+            
             <a href="BADAAM.html" class="shop-btn">SHOP NOW</a>
         </div>
     </section>
+
 </body>
 </html>
