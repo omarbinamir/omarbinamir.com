@@ -19,10 +19,9 @@
             color: #0f1111;
         }
 
-        /* Inline Logo Styling */
+        /* The Logo-as-Text style */
         .inline-logo {
             height: 1.2em;
-            /* Scales with text size */
             vertical-align: middle;
             margin: 0 2px;
         }
@@ -31,7 +30,6 @@
             height: 40px;
         }
 
-        /* Header */
         header {
             background-color: var(--amz-navy);
             padding: 10px 5%;
@@ -40,13 +38,15 @@
             justify-content: space-between;
         }
 
-        /* Hero Banner */
+        /* --- THE FIXED HERO SECTION --- */
         .hero {
-            height: 80vh;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), var(--amz-bg)),
-                url('BADAAMKAAAAAATAI.png');
-            background-size: cover;
-            background-position: center;
+            position: relative;
+            height: 85vh; /* Increased height for better visibility */
+            width: 100%;
+            /* This line makes the image work */
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), var(--amz-bg)),
+                        url('BADAAMKAAAAAATAI.png') no-repeat center center;
+            background-size: cover; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -60,6 +60,7 @@
             border-radius: 4px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             max-width: 500px;
+            z-index: 2; /* Ensures it sits above the background */
         }
 
         .hero-card h1 {
@@ -98,14 +99,14 @@
 
     <header>
         <img src="Photo from Muhammad Amir Butt.jpg" class="header-logo" alt="Logo">
-        <div style="color: white;">Deliver to 🇵🇰 Pakistan</div>
+        <div style="color: white; font-size: 14px;">Deliver to 🇵🇰 <b>Pakistan</b></div>
     </header>
 
     <section class="hero">
         <div class="hero-card">
-            <h1>Experience the Royal Taste of <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo"
-                    alt="Logo"></h1>
-            <p>Traditional Badam Khatai, freshly baked and delivered to your doorstep.</p>
+            <h1>Experience the Royal Taste of <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo" alt="Logo"></h1>
+            
+            <p>Traditional Badam Khatai, freshly baked and delivered to your doorstep by <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo" alt="Logo">.</p>
 
             <a href="BADAAM.html" class="shop-btn">SHOP NOW</a>
 
