@@ -18,15 +18,8 @@
             color: #0f1111;
         }
 
-        .inline-logo {
-            height: 1.2em;
-            vertical-align: middle;
-            margin: 0 2px;
-        }
-
-        .header-logo {
-            height: 40px;
-        }
+        .inline-logo { height: 1.2em; vertical-align: middle; margin: 0 2px; }
+        .header-logo { height: 40px; }
 
         header {
             background-color: var(--amz-navy);
@@ -36,17 +29,16 @@
             justify-content: space-between;
         }
 
-        /* --- THE HERO SECTION --- */
         .hero {
-            height: 85vh;
+            height: 90vh;
             width: 100%;
-            /* Make sure the image name matches perfectly below */
             background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), var(--amz-bg)),
                         url('Badam Khatai.jpg') no-repeat center center;
             background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px; /* Added padding so card doesn't touch screen edges */
         }
 
         .hero-card {
@@ -55,13 +47,15 @@
             border-radius: 4px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             max-width: 500px;
+            width: 100%; /* Important for mobile */
             text-align: center;
+            box-sizing: border-box;
         }
 
         .shop-btn {
             background-color: var(--amz-orange);
             color: black;
-            padding: 15px 60px;
+            padding: 15px 10%; /* Responsive padding */
             font-size: 1.2rem;
             font-weight: bold;
             text-decoration: none;
@@ -69,11 +63,18 @@
             border: 1px solid #a88734;
             display: inline-block;
             margin-top: 20px;
+            width: 80%; /* Wider button on mobile */
+        }
+
+        /* --- MOBILE ADJUSTMENTS --- */
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 10px; text-align: center; }
+            .hero-card h1 { font-size: 20px; }
+            .hero-card { padding: 20px; }
         }
     </style>
 </head>
 <body>
-
     <header>
         <img src="Photo from Muhammad Amir Butt.jpg" class="header-logo" alt="Logo">
         <div style="color: white;">Deliver to 🇵🇰 <b>Pakistan</b></div>
@@ -83,10 +84,8 @@
         <div class="hero-card">
             <h1>Experience the Royal Taste of <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo"></h1>
             <p>Freshly baked and delivered to your doorstep by <img src="Photo from Muhammad Amir Butt.jpg" class="inline-logo">.</p>
-            
             <a href="BADAAM.html" class="shop-btn">SHOP NOW</a>
         </div>
     </section>
-
 </body>
 </html>
