@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Buns & Billions: Hardcore Cents</title>
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark: #0a0a0a;
+            --green: #4caf50;
+            --silver: #c0c0c0;
+        }
+
+        body {
+            background: var(--dark);
+            color: #e0e0e0;
+            font-family: 'Georgia', serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        #game-wrapper {
+            display: grid;
+            grid-template-columns: 320px 1fr 350px;
+            width: 100%;
+            max-width: 1400px;
+            background: #111;
+            border: 1px solid #333;
+        }
+
+        .panel {
+            background: var(--dark);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #222;
+            overflow-y: auto;
+        }
+
+        /* THE BURGER */
+        #burger-emoji {
+            font-size: 140px;
+            cursor: pointer;
+            transition: transform 0.05s;
+            margin: 30px auto;
+            display: block;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+        }
+
+        #burger-emoji:active {
+            transform: scale(0.95);
+        }
+
+        .god-active #burger-emoji {
+            filter: drop-shadow(0 0 40px var(--gold));
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* THE LEDGER */
+        .moonah-display {
+            text-align: center;
+            background: #000;
+            padding: 20px;
+            border: 1px solid var(--silver);
+            margin-bottom: 25px;
+        }
+
+        .moonah-display h1 {
+            color: #fff;
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: normal;
+        }
+
+        .moonah-display small {
+            color: var(--silver);
+            letter-spacing: 2px;
+        }
+
+        /* THE SHOP */
+        .item {
+            background: #0f0f0f;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .item:hover {
+            border-color: var(--gold);
+        }
+
+        .buy-btn {
+            background: transparent;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 90px;
+        }
+
+        .buy-btn:hover:not(:disabled) {
+            background: var(--gold);
+            color: black;
+        }
+
+        .buy-btn:disabled {
+            color: #444;
+            border-color: #222;
+            cursor: not-allowed;
+        }
+
+        /* FLOATING PENNIES */
+        .float {
+            position: absolute;
+            color: var(--silver);
+            font-weight: bold;
+            font-size: 20px;
+            pointer-events: none;
+            animation: rise 1s ease-out forwards;
+        }
+
+        @keyframes rise {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-80px);
+            }
+        }
+
+        #god-status {
+            color: var(--gold);
+            font-weight: bold;
+            text-align: center;
+            display: none;
+            margin-top: 15px;
+            border: 1px dashed var(--gold);
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-wrapper">
+        <div class="panel">
+            <div class="moonah-display">
+                <small>ESTATE VALUE</small>
+                <h1 id="money">$0.00</h1>
+            </div>
+            <p>Value per Tap: <strong id="ppc" style="color:var(--silver)">$0.01</strong></p>
+            <p>Passive Gain: <strong id="pps">$0.00</strong>/s</p>
+            <div id="god-status">🏆 BILLIONAIRE GOD ACTIVE<br><small>2x POWER PER TAP</small></div>
+        </div>
+
+        <div id="main-area" class="panel" style="justify-content: center; align-items: center; text-align: center;">
+            <h2 style="color: var(--silver); font-weight: normal; letter-spacing: 4px;">THE MINT</h2>
+            <div id="burger-emoji" onclick="clickBurger(event)">🍔</div>
+            <p style="font-style: italic; color: #666;">Every cent is a struggle. Every dollar is a victory.</p>
+        </div>
+
+        <div class="panel">
+            <h3 style="color: var(--silver); border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 0;">
+                PRESTIGE SHOP</h3>
+            <div id="shop"></div>
+        </div>
+    </div>
+
+    <script>
+        let game = { money: 0, pps: 0, ppc: 0.01, godMode: false, owned: [0, 0, 0, 0, 0, 0, 0] };
+
+        const UPGRADES = [
+            { name: "Copper Polish", cost: 0.10, addPpc: 0.01, desc: "+$0.01/click" },
+            { name: "Silver Spatula", cost: 1.00, addPpc: 0.05, desc: "+$0.05/click" },
+            { name: "Kitchen Hand", cost: 5.00, pps: 0.10, desc: "+$0.10/sec" },
+            { name: "Gourmet Grill", cost: 25.00, pps: 1.00, desc: "+$1.00/sec" },
+            { name: "Executive Chef", cost: 500.00, pps: 25.00, desc: "+$25.00/sec" },
+            { name: "Burger Franchise", cost: 10000.00, pps: 500.00, desc: "+$500/sec" },
+            { name: "BILLIONAIRE GOD", cost: 1000000000.00, isGod: true, desc: "TAP DOUBLES POWER" }
+        ];
+
+        function clickBurger(e) {
+            game.money += game.ppc;
+            if (game.godMode) game.ppc *= 2;
+
+            const float = document.createElement('div');
+            float.className = 'float';
+            float.style.left = e.clientX + 'px';
+            float.style.top = e.clientY + 'px';
+            float.innerText = `+$${game.ppc.toFixed(2)}`;
+            document.body.appendChild(float);
+            setTimeout(() => float.remove(), 1000);
+            updateUI();
+        }
+
+        function buyItem(i) {
+            let up = UPGRADES[i];
+            let currentCost = up.cost * Math.pow(1.5, game.owned[i]);
+
+            if (game.money >= currentCost) {
+                game.money -= currentCost;
+                game.owned[i]++;
+                if (up.addPpc) game.ppc += up.addPpc;
+                if (up.pps) game.pps += up.pps;
+                if (up.isGod) {
+                    game.godMode = true;
+                    document.getElementById('main-area').classList.add('god-active');
+                    document.getElementById('god-status').style.display = 'block';
+                }
+                updateUI();
+            }
+        }
+
+        function format(n) {
+            if (n >= 1e12) return (n / 1e12).toFixed(2) + "T";
+            if (n >= 1e9) return (n / 1e9).toFixed(2) + "B";
+            if (n >= 1e6) return (n / 1e6).toFixed(2) + "M";
+            return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function updateUI() {
+            document.getElementById('money').innerText = "$" + format(game.money);
+            document.getElementById('ppc').innerText = "$" + format(game.ppc);
+            document.getElementById('pps').innerText = "$" + format(game.pps);
+
+            const shop = document.getElementById('shop');
+            shop.innerHTML = "";
+            UPGRADES.forEach((up, i) => {
+                if (up.isGod && game.owned[i] > 0) return;
+                let currentCost = up.cost * Math.pow(1.5, game.owned[i]);
+                shop.innerHTML += `
+                <div class="item">
+                    <div style="max-width: 180px;">
+                        <h4 style="margin:0; font-weight: normal;">${up.name}</h4>
+                        <small style="color:#555">${up.desc}</small><br>
+                        <strong style="color:var(--gold)">$${format(currentCost)}</strong>
+                    </div>
+                    <button class="buy-btn" onclick="buyItem(${i})" ${game.money < currentCost ? 'disabled' : ''}>ACQUIRE</button>
+                </div>`;
+            });
+        }
+
+        setInterval(() => { game.money += game.pps / 10; updateUI(); }, 100);
+        updateUI();
+    </script>
+</body>
+
+</html>
