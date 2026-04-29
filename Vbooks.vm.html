@@ -34,6 +34,41 @@
             /* Soft greenish grey for secondary text */
 
             --glass-border: rgba(198, 168, 124, 0.2);
+
+            /* Reading Settings Defaults */
+            --read-font-size: 1.45rem;
+            --read-line-height: 2.1;
+        }
+
+        /* Reading Themes */
+        body.theme-sepia {
+            --bg-primary: #f4ecd8;
+            --bg-secondary: #e8dcc4;
+            --bg-card: rgba(232, 220, 196, 0.85);
+            --border-gold: #b38b59;
+            --accent-gold: #8c602e;
+            --accent-gold-hover: #5e3b12;
+            --text-light: #433422;
+            --text-muted: #736049;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 15-15 15L15 15z' fill='%238c602e' fill-opacity='0.05'/%3E%3Cpath d='M30 60L45 45 30 30 15 45z' fill='%238c602e' fill-opacity='0.05'/%3E%3Cpath d='M0 30l15 15 15-15L15 15z' fill='%238c602e' fill-opacity='0.05'/%3E%3Cpath d='M60 30L45 45 30 30 45 15z' fill='%238c602e' fill-opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        body.theme-light {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-card: rgba(245, 245, 245, 0.85);
+            --border-gold: #d4af37;
+            --accent-gold: #b8860b;
+            --accent-gold-hover: #daa520;
+            --text-light: #1a1a1a;
+            --text-muted: #555555;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 15-15 15L15 15z' fill='%23b8860b' fill-opacity='0.05'/%3E%3Cpath d='M30 60L45 45 30 30 15 45z' fill='%23b8860b' fill-opacity='0.05'/%3E%3Cpath d='M0 30l15 15 15-15L15 15z' fill='%23b8860b' fill-opacity='0.05'/%3E%3Cpath d='M60 30L45 45 30 30 45 15z' fill='%23b8860b' fill-opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        /* Performance Setting: Disable Animations */
+        body.no-animations * {
+            transition: none !important;
+            animation: none !important;
         }
 
         body {
@@ -503,9 +538,9 @@
 
         .reading-content {
             font-family: 'Amiri', Georgia, serif;
-            font-size: 1.45rem;
+            font-size: var(--read-font-size);
             /* Larger font size typical for Arabic/Islamic literature apps */
-            line-height: 2.1;
+            line-height: var(--read-line-height);
             color: var(--text-light);
             max-width: 800px;
             margin: 0 auto;
@@ -717,12 +752,220 @@
                 padding: 0.5rem 1rem;
             }
         }
+
+        /* Settings Modal & Button */
+        .settings-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(198, 168, 124, 0.1);
+            border: 1px solid var(--border-gold);
+            color: var(--accent-gold);
+            width: 45px;
+            height: 45px;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: var(--border-gold);
+            color: var(--bg-primary);
+            transform: rotate(90deg);
+        }
+
+        .settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .settings-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .settings-content {
+            background-color: var(--bg-primary);
+            border: 2px solid var(--border-gold);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(198, 168, 124, 0.1);
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .settings-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .settings-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .settings-content::-webkit-scrollbar-thumb {
+            background: var(--border-gold);
+            border-radius: 10px;
+        }
+
+        .settings-modal.active .settings-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .settings-title {
+            font-family: 'Cinzel', 'Amiri', serif;
+            color: var(--accent-gold);
+            font-size: 1.8rem;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px dashed var(--border-gold);
+            padding-bottom: 1rem;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Toggle Switch CSS */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-gold);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-muted);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--accent-gold);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+            background-color: var(--bg-primary);
+        }
+
+        .settings-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-light);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .settings-select:hover {
+            border-color: var(--border-gold);
+        }
+
+        .settings-select option {
+            background: var(--bg-secondary);
+            color: var(--text-light);
+        }
+
+        .setting-group-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 1.5rem 0 0.8rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 4px;
+        }
+
+        .settings-range {
+            width: 120px;
+            accent-color: var(--accent-gold);
+            cursor: pointer;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .reset-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid rgba(255, 50, 50, 0.3);
+            color: #ff6b6b;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255, 50, 50, 0.1);
+            border-color: #ff6b6b;
+        }
     </style>
 </head>
 
 <body>
 
     <header>
+        <button class="settings-btn" onclick="openSettings()" title="Settings">⚙</button>
         <p class="bismillah">﷽</p>
         <h1>Islamic Library Collection</h1>
         <p>A professional curation of digital literature. Deepen your faith, expand your knowledge, and read timeless
@@ -792,6 +1035,95 @@
                 </div>
 
             </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="settings-modal">
+        <div class="modal-overlay" onclick="closeSettings()"></div>
+        <div class="settings-content">
+            <button class="close-btn" onclick="closeSettings()">×</button>
+            <h2 class="settings-title">Settings</h2>
+
+            <div class="setting-item">
+                <span>Hover Narration</span>
+                <label class="switch">
+                    <input type="checkbox" id="setting-narration" onchange="updateSettings()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <span>Paragraph Numbers</span>
+                <label class="switch">
+                    <input type="checkbox" id="setting-numbers" checked onchange="updateSettings()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <span>Disable Animations</span>
+                <label class="switch">
+                    <input type="checkbox" id="setting-no-animations" onchange="updateSettings()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-group-title">Appearance</div>
+
+            <div class="setting-item">
+                <span>Reading Theme</span>
+                <select id="setting-theme" class="settings-select" onchange="updateSettings()">
+                    <option value="dark">Emerald Dark</option>
+                    <option value="sepia">Ancient Sepia</option>
+                    <option value="light">Pure White</option>
+                </select>
+            </div>
+
+            <div class="setting-group-title">Typography</div>
+
+            <div class="setting-item">
+                <span>Font Size</span>
+                <select id="setting-font-size" class="settings-select" onchange="updateSettings()">
+                    <option value="1.1rem">Small</option>
+                    <option value="1.45rem" selected>Medium</option>
+                    <option value="1.8rem">Large</option>
+                    <option value="2.2rem">Extra Large</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <span>Font Family</span>
+                <select id="setting-font-family" class="settings-select" onchange="updateSettings()">
+                    <option value="'Amiri', serif">Classic (Amiri)</option>
+                    <option value="'Inter', sans-serif">Modern (Inter)</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <span>Line Spacing</span>
+                <select id="setting-line-height" class="settings-select" onchange="updateSettings()">
+                    <option value="1.6">Compact</option>
+                    <option value="2.1" selected>Normal</option>
+                    <option value="2.6">Relaxed</option>
+                </select>
+            </div>
+
+            <div class="setting-group-title">Narration Fine-Tuning</div>
+
+            <div class="setting-item">
+                <span>Voice Speed</span>
+                <input type="range" id="setting-voice-rate" class="settings-range" min="0.5" max="2" step="0.1"
+                    value="0.85" onchange="updateSettings()">
+            </div>
+
+            <div class="setting-item">
+                <span>Voice Pitch</span>
+                <input type="range" id="setting-voice-pitch" class="settings-range" min="0.5" max="2" step="0.1"
+                    value="0.95" onchange="updateSettings()">
+            </div>
+
+            <button class="reset-btn" onclick="resetSettings()">Reset All Settings</button>
         </div>
     </div>
 
@@ -1063,6 +1395,166 @@
 <p>Umar Lahmi: It is only if you listen calmly to what I say that I will put my questions. The way you have treated us and demonstrated the Christian ethics demand that I should refuse to talk to you. But since I am a seeker of truth, I want to seek the light of guidance through you.</p>
 <p>Head Priest: Gentleman, you should not take offence at my harsh words and if our talk has injured your feelings I seek your pardon on behalf of all. Surely you seem to be a lover of truth and surely our Lord Christ will help and guide you. So you may come to my house sometime tomorrow when your doubts and misunderstandings will be dispassionately set at naught. (To priests:) You, gentlemen, may also come so that you may know answers to the questions of Muslims and in future you may yourselves deal with them.</p>
                 `
+            },
+            {
+                title: "Ch 6: The Third Round",
+                content: `
+<p>Let us see what Isabella had been doing in connection with these discussions and what were her activities in the meantime. In fact, all this time her mind was filled with the subject-matter of these discussions and all other engagements and social entanglements were relegated to the background.</p>
+<p>After ‘the discussion’ between the priests and Umar Lahmi she had come to the conclusion that the priests had no answer to the objections of Muslims and her belief in Christianity had been shaken and no argument could keep her firm on it. During this time she had often secretly met Umar Lahmi and sought information about the Muslim creed. The talk between Umar Lahmi and her father (the head priest) had also concluded at her house and more than a month had passed on it. Nevertheless she continued her enquiry. She had also met several times Ziad b. Umar, the Qazi of Islam in Cordova, through Umar Lahmi and got consolation from him.</p>
+<p>Ziad b. Umar, besides being a profound scholar of Islam, was a Godfearing man of piety. Muslims of Spain revered him as a Wali Allah (Friend of Allah). Isabella’s mind was greatly affected by several visits to him and she became attached to Islam and fully realised that Islam is the true religion while Christianity is a mixture of misguidance and disruptions.</p>
+<p>The head priest had asked Umar Lahmi in the cathedral to come to his house next day and had also invited all the priests. So early next morning Umar Lahmi with some of his associates and divines reached the house of the head priest and was treated with respect and given refreshments in a separate room. Then more than forty Christian divines also arrived and the head priest then addressed Umar Lahmi.</p>
+<p>Head Priest: I know the questions which you will ask, but I do not want to go into details and prolong the talk. I will say just a word or two which may lead to the result in minutes instead of hours. What I mean is that Islam and Christianity may be tested by their basic teachings and whichever teaching is best the religion which taught it will be true. Is it not so?</p>
+<p>Umar Lahmi: I have no objection to anything and I am prepared to discuss on any lines that you choose. Surely it is by the teachings of Christianity and Islam that truth and falsehood can be known.</p>
+<p>Head Priest: Bravo, bravo ! Surely the help of the Holy Ghost is on your side and you will soon come from the wrong path to right guidance. Now that you have agreed to the lines suggested by me, let me proceed. In every religion there are basic principles and matters of detail. I want to put before you the essence of Christianity in just one word and desire that you will also give the essence of your religion in one word. Do you agree?</p>
+<p>Umar Lahmi: Yes, you may proceed. I agree to whatever you say.</p>
+<p>Head Priest (to the priests) : See, this is the way to talk! Just one word decides the issue. (To Umar Lahmi:) Now listen. The essence of Christianity is “Love”. Christianity has been condensed in a single word. Now, you have also to give the essence of Islam in one word.</p>
+<p>Umar Lahmi: I am proud to say that Islam has also condensed the essence of its teachings in a single word which covers all basic principles and details. The root of Islamic principles and teachings is Tauhid (unity).</p>
+<p>Head Priest: If the essence of Islam is Tauhid (unity), then love has been excluded from it. Besides, we also say “unity” to be the essence of our religion.</p>
+<p>Umar Lahmi: If Tauhid were the essence of your religion, you should have said so. Why did you say that love is the essence of your religion? Now, it is quite wrong to say that by accepting “unity” as the essence of religion, “love” is excluded from it. On the other hand, the fact is that “love” comes from “unity”. If “unity” is not taken with all its requisites, love will be a meaningless word. To accept “love” as the essence of religion means total denial of “unity,” cr not to take it as the essence of religion.</p>
+<p>Head Priest: The thing is that “unity” comes from “love” and not “love” from “unity”.</p>
+<p>Umar Lahmi: This is an example of perverted logic. If unity comes from love, then love is quite a meaningless word. Because without unity, that is, want of knowledge of Allah, love of Allah will be excluded from it as love of Allah depends on the knowledge of the divine, and unity is but the true recognition of the divine. Mere love does not prove love of Allah.</p>
+<p>Head Priest: You have started a long discussion. What I mean is that love has no place in Islam.</p>
+<p>Umar Lahmi: If love has no place in Islam, then love does not exist at all in the world. It can, on the other hand, be said that there is not the least trace of love in Christianity. Where love is merely a verbal claim, it has neither any standard nor proof.</p>
+<p>Head Priest: Look here. It is a well-known slogan of our Scriptures that God is love. Is it not the proof of love ?</p>
+<p>Umar Lahmi: It is nothing but merely a verbal claim. Unless there is a standard of love, the prescribed theory of love will not be acceptable.</p>
+<p>Head Priest: Now, you define the standard of love. Have not our Scriptures called God father? Does not father love his children?</p>
+<p>Umar Lahmi: Mere repetition of the word love leads us nowhere unless all its conditions are fulfilled. If anyone loves another, he should prove it by the sacrifice of his life and possessions and then only can he be said to have loved truly. Therefore Islam has prescribed obedience and service as the criterion of love which is another name of sacrifice of life and possessions. The Quran says to the Prophet: “Qul in kuntum tuhibbun Allah fat-tabi’unl yuhbibkum Allah” [Say: If you love Allah, follow me: Allah will love you].* Thus this verse has prescribed a standard of love which has discriminated between true and false love. But in your religion there is no criterion of love. Any pretender can stand up and say that he loves Allah.</p>
+<p>Head Priest: You have again started a long discussion. I want that everything should be comprehensive so that the decision may be arrived at quickly. However, if your Qur’an has also called God father, which is the highest position of love?</p>
+<p>Umar Lahmi: If the Qur’an had used the word father for God, it would have been the greatest proof of its deficiency. Islam never used this misleading word for God but, on the other hand, has used such words as have the most sublime significance as compared to the term father.</p>
+<p>Head Priest: You are very impudent, calling the word “father” misleading. Now, tell me quickly what better word Islam has used instead of father. (The head priest’s neck at this time became stiff and foam came from his mouth in great anger.)</p>
+<p>Umar Lahmi: There is no reason for the loss of temper. I have called the word “father” misleading because it has become the basis of assigning partners to Allah, and people invented a son to Allah. Christians also believe in the divinity of Christ. As to the better word in place of father used by Islam, that word is Rabb (fosterer), which implies a Being who fosters from beginning to end and his fostering care never ends. So by using the word “fosterer” Islam has taught that Allah’s. fostering love is never withdrawn. But the concept of father implies that father will care for his child up to a certain time and will then become indifferent. Besides, a father can care for his child only in optional matters but not in matters beyond his control. If the child falls ill, father cannot cure his illness while the fostering of Allah is. not so; He has power over everything and in nothing is He helpless and His fostering care is everlasting. This proves that, instead of father, fosterer is more suited to the Dignity of Allah and, besides, fosterer is indicative of “Unity of Allah,” while father is the source of assigning partner to Allah in the world.</p>
+<p>Head Priest: The effects of the fosterer as indicated by you find no proof in the world while you cannot shut your eyes to father’s love. So how can one accept a word without meaning which has no proof in the world, while you cannot ignore the effects of father’s love.</p>
+<p>Umar Lahmi: Unfortunately, the creed of Atonement has clouded your vision, otherwise you could not have said so. We see every day that a child is fostered in its mother’s womb and in childhood and youth and old age the fostering care continues. That is, his fostering continues from beginning to end. Is it not he work of the Rabb (fosterer) which we see very day?</p>
+<p>Head Priest: The Holy Bible says that God has such a love with the people of the world that He sacrificed His only child for the sake of men. What better proof can be of love that father secrifices his dearest thing for love.</p>
+<p>Umar Lahmi: This very statement of the Bible refutes your claim. You mean that the father is one who sacrifices his pure and innocent son for the sake of impure and sinful men. That is, father’s love was manifested thus that he killed his innocent son. But the fosterer is one who is not unjust to anyone. On the other hand, He punishes the unjust. The Quran says: “Wa la tuziru waziratun wizra ukhra” [And no burdened soul can bear another’s burden].* But your father killed his own child. If to crucify and kill one’s innocent and sinless child is love we cannot touch such love with a pair of tongs.</p>
+<p>Head Priest (to other priests) : I had thought that this man was inclined to Jesus Christ, but he is a stiff “unbeliever”. Everything that I have said is of high order but how can these people understand them ? (To Umar Lahmi:) Your heart has turned black. Christ does not want to accept you. Now, you go away from here. I have nothing to do with you. You just came to annoy me. (To the priests:) You should also have no concern with these people. You have seen that they are so hot-headed, they would not agree to anything.</p>
+<p>Uinar Lahmi But, sir…</p>
+<p>Head Priest: Shut up, now. I have seen for what purpose you came here and with what object you talk to us.</p>
+<p>So saying the Head Priest, exhibiting his Christian manners, left for his room on the upper storey. Umar Lahmi and other Muslim divines came out raising the cry of “Nasrun min Allah wa fathun qarib” [Help from Allah and victory is at hand].</p>
+<p>Voicing the slogan of victory, Umar Lahmi and other Muslim divines repaired to their respective homes. Isabella had attentively listened to the talk of both sides. With her were her friends and other respectable Christian ladies. In the evening when Isabella’s friends gathered again comments started on the morning talk. Whatever little faith Isabella had in Christianity was shattered and she fully realised that the Christian creed was just a sham which had neither any basis nor any principle. Earlier meetings had left her with the impression that Michael, Peter and others were not well informed, but her father, the head priest, had profound knowledge of the reality of Christianity and, therefore, if these people were unable to meet the questions of Muslims, she had thought, her father would be able to silence them. But after listening this last talk she was thoroughly disappointed and had left no alternative but to conclude that the basis of Christianity was no better than the spider’s web.</p>
+<p>A month had passed and a great revolution had come in the mind of Isabella. She had secretly been meeting Umar Lahmi and, through him, other divines like Ziad b. Umar in Cordova. She was now more devoted to the study of the Holy Quran and the truth of Islam was taking deep root in her mind. She made a comparative study of the Quran and the Bible to find out which of the two had greater truth and which was just a mixture of superstitions. She had given thought according to her lights to the problems of Unity of Allah, Prophethood, the Quran, salutation, atonement, intercession, meaning of sin and human acts and their consequences.</p>
+<p>She was no longer a devotee of Christianity, but had bowed her head to Islam. But often she was perturbed with the idea of giving up a religion she had followed from her birth. What trials and tribulations she might have to face on going over to Islam. She will have to forsake her father, mother, sisters and relatives. How shall be her future life. But immediately it struck her that trials and troubles have to be encountered in the path of truth and if, after recognising the truth, she did not openly declare it she will be guilty in the sight of Allah.</p>
+<p>When Umar Lahmi learnt of her perturbation he secretly sent word to her to recite ten times each morning and evening the verse of the Holy Quran: “Rabbi adkhilni mudkhala sidqin wa akhrijni mukhraja sidqin waj’al-li min-ladunka sultaman nasira” [My Lord! make me enter a truthful entering, and make me go forth a trouthful going forth, and grant me from Thy presence an authority to help (me)].* Allah willing, her anxiety will be relieved.</p>
+<p>So Isabella followed this advice. By reciting this verse morning and evening she felt as if some mysterious power was giving strength to her heart and removing her fears. This prompt effect of the verse further strengthened her faith in Islam and she became more devoted to the Quran and Islam.</p>
+                `
+            },
+            {
+                title: "Ch 7: Meeting of the Men of Allah",
+                content: `
+<p>This was the time when Muslims had started building mosques and schools all over Spain and eminent divines and jurists of Islam had come over to this country. In the capital Cordova the Islamic system of teaching and training had been introduced. Ziad b. Umar was a highly learned traditionist, philosopher and interpreter of the Quran. At the same time he had no equal in offering prayers and, due to his integrity, purity, and unostentatious prayerfulness, he was held in great affection throughout Spain. He would spend his days in teaching and at nights he would attend gatherings of divines and officials of the government. His house was adjacent to the University of Cordova and so after isha prayer those interested in learning gathered at his house.</p>
+<p>One day while this meeting was in progress and eminent divines and men of letters were present, Ziad b. Umar came. All stood up in his respect. After they were seated Ziad enquired after everyone’s health and then addressed Umar Lahmi.</p>
+<p>Ziad b. Umar: May Allah fructify your efforts! You have conveyed the message of truth in the very home of unbelief and humbled unbelievers.</p>
+<p>Umar Lahmi: I am just an ordinary weak Muslim and this has been possible because of your prayers. Isabella has accepted Islam in her heart. She was desirous of meeting you, so she has come here for an audience.</p>
+<p>Ziad b. Umar : Oh! Is Isabella present here? Umar Lahmi: Yes, she has been put up in the adjoining house and if you permit she may be brought to your presence.</p>
+<p>Ziad: Yes, certainly. If she has come to meet me, let her come.</p>
+<p>Asad (one of those present): By Allah, sir, this is very great. There is a great commotion among the Christians of Cordova. But is it Isabella alone who has been attracted to Islam or are there others also with her?</p>
+<p>Umar Lahmi: About this you will hear from Isabella herself.</p>
+<p>Another of the audience: I have heard that Christians intend to kill Isabella.</p>
+<p>Umar Lahmi: So far Isabella has taken great care to keep it secret. No one has found out that she has embraced Islam or intends to do. So the rumour of the intention to kill her is premature.</p>
+<p>Ziad: Now call Isabella here. We shall hear the interesting details from her own lips.</p>
+<p>Shortly after Isabella enters and, seeing Ziad b. Umar sitting at a prominent place, raises her hand to salute him and sits in a corner, while all those present congratulate her on her great courage and firmness.</p>
+<p>Ziad: Daughter Isabella, I congratulate you on your love of truth Allah has taken you out of the darkness of unbelief and granted you the boon of Islam, relieved you from the labrynth of Trinity and put you on to the Straight Path beset with dangers. To remain firm on it is the task of a very brave person. But those in whose hearts Islam has firmly established itself would not mind the greatest trouble of the earth. Allah guides them.</p>
+<p>Isabella: Revered father…</p>
+<p>Ziad: Daughter, you have to give up such words too. There is no papacy in Islam. Islam has not given its divines the position which Christians have given to their priests. There is perfect equality in Islam. The only duty of the divines is to guide Muslims in the light of the Holy Quran and sacred Traditions of the Prophet. It is the duty of Muslims to act on that guidance and not to “deify them or make them masters of all their affairs.</p>
+<p>Isabella (ashamed): Now you will yourself teach me how I should address you and other leaders of Islam.</p>
+<p>Ziad: Address me and other Muslims just as brothers, but if you desire to add anything, just say “Sir”.</p>
+<p>Isabella : Very well, sir, I will obey all your orders in future. Oh sir, it is a great benevolence and grace of God that He showed this humble servant the path of truth and justice and took me out of the course of Trinity and worship of the Cross. The means of my guidance is my spiritual preceptor and benefactor Umar Lah-mi, who preached to all the priests of Cordova in their own homes and, through him, the call of truth reached my ears. I wholeheartedly pray that God grant him all the boons of this world and the next and by your prayer my life and death be on Islam.</p>
+<p>All those present cried: Amin.</p>
+<p>Ziad: Daughter, Allah wants to take from you great service and surely Muslims will be greatly benefited through you. But say if you have converted any one of the other ladies.</p>
+<p>Isabela: Yes, sir, I have four other friends of mine who have lost their faith in Christianity and are inclined to Islam. God willing, I will bring them with me tomorrow or the day after, that they may have grace from you and any doubts that may still lurk in them are removed.</p>
+<p>Umar Lahmi: Sister, who are these friends of yours? By Allah, we have no knowledge of them and you never mentioned them to me.</p>
+<p>Isabela: One of them is the daughter of Michael, my teacher in theology, and there are other three. All these have been listening to all the discussions.</p>
+<p>Umar Lahmi: Have they really become Muslimss and seen through the weaknesses of Christianity ?</p>
+<p>Isabella: The weaknesses of Christianity have become manifest to all of them, and they have recognised the truth of Islam, but they have not yet mustered enough courage to give up their ancestral religion and declare their adherence to Islam.</p>
+<p>Ziad: Well, Allah will give them the necessary courage. We shall also pray for them.</p>
+<p>Umar Lahmi: Bring Michael’s daughter also some day so that her doubts may also be removed.</p>
+<p>Isabella: Tomorrow or day after I will surely bring her with me and if all the four girls do not come, I will bring at least this one (Michael’s daughter) with me.</p>
+<p>Ziad: I tell you, daughter, again that you should accept Islam after clearing all your doubts and never, by any greed or deception, for Allah wants sincerity and the Quran says that a Muslim’s life and death, prayer and devotion, sitting and standing, sleep and walking everything should be for Allah and the pleasure of Allah should be the aim of our life.</p>
+<p>Isabella: Oh sir, I say it and bring God to witness that no lust or greed has brought me to the threshold of Islam, nor the acquisition of wealth and power is my aim. You yourself know the honour my father enjoys in Cordova and throughout Spain.</p>
+<p>Ziad: May Allah reward you, give you firmness and shower His bounties on you.</p>
+<p>Umar Lahmi: Islam is the only religion by accepting which Allah’s bounties are showered on man and all his sins are forgiven.</p>
+<p>Isabella (smiling): All my sins are forgiven every week by the priest of Cordova, who is in charge of the department of inquisition and (bowing her head) I am already sinless and innocent.</p>
+<p>Ziad: What is this department of inquisition and what is the meaning of the priest forgiving sins ? Can any man also forgive sins ?</p>
+<p>Isabella (with a sham humility): Oh sir, this story is most interesting and probably quite novel to you, as you are not aware of the inner working of Christianity.</p>
+<p>Ziad: Will you inform us of these matters? Such interesting facts should certainly be worth knowing and no one can relate them better than you.</p>
+<p>Isabella: Oh sir! Christians go before the altar of the Christ in the presence of the head priest every week and confess their sins which the head priest forgives as, according to Christian creed, the head priest has power to do that as he is considered to be the representative of Saint Peter.</p>
+<p>Ziad: La hawla wala quwwata ilia billah [Allah forgive us! There is no power or authority except with Allah]. Can any man forgive sins except Allah ? This is why the Quran has accused Christians that they have made their priests and elders their Rabb (fosterer) besides Allah. (In surprise) Have the priests the authority to forgive all sins?</p>
+<p>Isabella: Yes, provided the sinner confesses all his open and secret sins before the priest. If he has concealed anything it will not be forgiven.</p>
+                `
+            },
+            {
+                title: "Ch 8: Behind the Curtain",
+                content: `
+<p>In the course of this talk Umar Lahmi addressed Isabella.</p>
+<p>Umar Lahmi: So for securing forgiveness of sins all kinds of dirty acts have to be narrated? But how did you use to seek forgiveness?</p>
+<p>Isabella (lowering her eyes with modesty): On a given date everyone has to go to the great church, the same where you had discussion with Michael and Peter and then…</p>
+<p>Umar Lahmi: Are girls also bound to appear?</p>
+<p>Isabella: Yes, every adult girl and boy is present there and the priest enquires from everyone what sins he had committed the previous week. After stating the sins and making confession, the priest, passing his hand on the head of the sinner, says: Now go. By the blessing of Jesus Christ all your sins are forgiven.</p>
+<p>Umar Lahmi: Are questions put to everyone in seclusion or in the presence of all?</p>
+<p>Isabella: It would not have been so shameful if everyone were asked to confess in seclusion. But everyone is questioned in the presence of all before the certificate of pardon is granted.</p>
+<p>Umar Lahmi: Allah forgive! Even in the presence of unmarried boys and girls?</p>
+<p>Isabella: Yes, and in fact (bowing her head in shame again) unmarried boys and girls have to confess in public and in the hearing of all.</p>
+<p>Umar Lahmi: Allah forgive us! In the confession of sins many shameful things may have to be stated. Supposing one has committed theft, he shall have to confess it before all.</p>
+<p>Isabella: Not only theft, even the most heinous act has to be publicly confessed. If anyone does not confess and conceals something, then the pardon is not granted and the sinner is threatened of Hell.</p>
+<p>Umar Lahmi: This might be having a very bad effect on the morals of unmarried boys and girls.</p>
+<p>Isabella: Certainly. But among the Roman Catholics no importance is attached to sins securing pardon of sins being so easy. This has made people bold in committing sins.</p>
+<p>One of the audience: Are sins of common people forgiven by the priest himself?</p>
+<p>Ziad (smiling): Probably the priest may not be committing any sins.</p>
+<p>At this stage Ziad b. Umar leaves the meeting and goes upstairs to devote himself in prayer and devotion.</p>
+<p>Isabella (lowering eyes in shame and modesty): You cannot conceive what our religious leaders do, particularly our monks, and how full of sins is their life.</p>
+<p>Umar Lahmi: What! Are the lives of religious leaders even worse than common people? What are you talking? It does not mean that by becoming a Muslim you make false allegations against anyone. Punishment of false accusation is very severe according to the Holy Quran.</p>
+<p>Isabella: You must think like that because you are not aware of the black record of the monks’ lives and since you cannot even conceive of these shameful acts, you may not be wrong if you think me lying or disbelieve me.</p>
+<p>Umar Lahmi: Is it a fact? If so, please let us know in detail.</p>
+<p>All those present insisted that Isabella should throw some light on these matters so that they may have an idea of the great boons conferred by Islam.</p>
+<p>Isabella: You know that abandoning the world and the life of a monk have been greatly stressed in Christianity and, therefore, most of our priests have adopted monkery and have forsaken the world. To gain salvation they take great pains and afflict their bodies. In the same way women also become nuns (that is follow in the footsteps of Virgin Mary and lead unmarried lives). But at the same time monks and nuns cannot maintain their chastity. Monks and religious leaders are also corrupt and nuns often completely lose their chastity. Because of confession and pardon monks often find a good opportunity to satisfy their lust. Nuns are mostly involved in this moral depravity while some monks do not spare even their mothers and sisters. [Laski, History of Civilization of Europe, Vol. II].</p>
+<p>(At this stage Isabella is extremely ashamed and perspires.)</p>
+<p>All present: Allah protect us ! Allah forgive us ! All power and authority is with Allah!</p>
+<p>Umar Lahmi: These things happen because Christianity has dignified unmarried life and asceticism which is against Nature and Divine law. A strong argument of the falsity of Christianity is also that it enjoins on men such laws as are against Nature which men cannot follow. It is for this that the Apostle of Islam had declared that La Rahbaniyat fil-Islam. [There is no monkery or giving up the world in Islam.] He also said : An-nikah min sunnati fa-man raghaba an sunnati fa-laisa minni [Marriage is my system and whosoever turns away from my system is not of me]. The Quran says: “And (as for) monkery, they innovated it—We did not prescribe it to them, but they did not observe it with its due observance.” And how can anyone observe a thing which is unnatural and against law?</p>
+<p>Isabella: Has Islam prohibited monkery and abandoning the world?</p>
+<p>Umar Lahmi: Certainly. You have just heard what the Holy Quran and the Prophet of Islam say.</p>
+<p>Isabella was greatly moved on this and the dignity of Islam was further enhanced in her mind.</p>
+<p>A person: So the monks do not discriminate between the permissible and the prohibited, between right and wrong ?</p>
+<p>Isabella: There are many shameful things. When the honour of their mothers and sisters is not safe at their hands, what else they would not be doing!</p>
+<p>Mr Laski in his book, European Morals, has very elaborately exposed the depravities of monks and priests in general and has written that there was no moral crime which they did not commit.</p>
+<p>A person: Are the nuns also so corrupt?</p>
+<p>Isabella: Allah may protect us. Their condition is worse than monks.</p>
+<p>Even European historians have testified that when a tank in a school of nuns was cleaned out several thousand craniums of babies were found there which had been thrown in to conceal corruption of some of them.</p>
+<p>Umar Lahmi: In fact the root of all this corruption is the creed, of Atonement which has given licence to Christians to commit sins.</p>
+<p>Isabella: Surely, you have understood it well. In fact, the creed of Atonement has taken away the fear of sins and everyone is confident that by confessing before the priest all kinds of sias will be forgiven.</p>
+<p>Umar Lahmi: Allah-o-Akbar (Allah is great!). The greatness and truth of Islam is also manifest from the fact (hat while rejecting the creed of Atonement, it has made good conduct the basis of salvation and felicity and at the same time it has propounded the principle that: “He who does an atom’s weight of good will see it. And he who does an atom’s weight of evil will see it.”</p>
+<p>A person (to Isabella): You know that the creed of Atonement has induced Christians to commit sins, but there is also another reason. Christians consider all Prophets to be sinners and think that they have been committing all kinds of sins in their life.</p>
+<p>Isabella: This seems to be wrong. If the holy Prophets are also taken to be sinners, then who will be left to cause aversion from sins and what right shall they have to ask people to refrain from sins ?</p>
+<p>Umar Lahmi: You are right, but what would you say to the Christians regarding holy Apostles (Allah forbid!) as idol-worshippers, adulterers and liars ?</p>
+<p>Isabella: Oh brother! it is really the creed of Christians. They regard Apostles as idol-worshippers and also liars. If this is so, which of the Christian books say so ?</p>
+<p>Umar Lahmi: My sister! you do not know yet the ideas of Christians and, in order to justify their own sins, what serious accusations they have made against Apostles. Since you have not yet carefully studied your sacred books you are surprised at my words. I assure you that if Islam had not come and the Champion of all Goodness, the Chief of Apostles, had not exposed the untruths of Christians and Jews, no one would have found any proof of the chastity of Apostles today.</p>
+<p>Isabella : Are the Christians so shameless that they still believe in Prophets while considering them sinners. Probably you have misunderstood. I have not yet heard from anyone that Apostles worshipped idols and told untruths. Can you prove your allegations from the religious and revealed books of Christians ?</p>
+<p>Umar Lahmi: Certainly from your revealed books…</p>
+<p>Isabella : My religious and revealed books! My religious and revealed book is the Holy Quran.</p>
+<p>Umar Lahmi: I mean the books which you as a Christian regarded religious and revealed. They contain all these things.</p>
+<p>Isabella : Very strange! But kindly give some proof of it.</p>
+<p>Umar Lahmi: I say it again that in the sacred Christian books Prophets (Allah forbid!) have been described as adulterers and idol-worshippers. It is said about Prophet Lut (Lot) (the Old Testament in his hand) had sexual intercourse with his daughters. See Genesis, Chapter 19, verses 32-38. About Prophet David it is said that he had. sexual intercourse with an alien woman. See Samuel 2, Chapter 11, verse 4. Then it is said about Prophet Samson (Shamshun) that he had intercourse with an alien woman and then had a love affair with another. See Judges, chapter 16, verse 1.</p>
+<p>All present: Allah forbid ! Allah may curse the Jews and Christians! Allah forgive us! Allah forgive us!</p>
+<p>Isabella is ashamed and perspires and could not speak.</p>
+<p>Umar Lahmi : Now, listen further. In the Christian sacred books Prophets have also been said to have been liars. First the Prophet Samson (Shamshun) told a lie and taught a wrong thing to a woman thrice. See Judges, chapter 16. Next a Prophet (whose name is not mentioned in the Bible) told a lie. See 2 Kings, chapter 13. Another Prophet also told a lie. See 1 Kings, chapter 20. Christ told a lie. See 1 Kings, chapter 22, verse 15. Apostle Jeremiah also spoke a lot of falsehood. See Jeremiah, chapter 38. (To Isabella:) You know Saint Paul very well. What do the Christians say of him ?</p>
+<p>Isabella : Christians believe Saint Paul to be a prophet and all great priests are regarded as successors of Saint Paul and for this they are authorised to forgive sins.</p>
+<p>Umar Lahmi: Quite right. But is it not said about him in all the four Bibles that when the enemies arrested Jesus Christ and wanted to arrest Saint Paul, he thrice cursed Jesus- Christ and told a lie that he did not know him (Christ)?</p>
+<p>Isabella : Of course, it is so written. I used to take daily lessons of the Bible from my teacher, Michael.</p>
+<p>Umar Lahmi: Now, take the proof of the third thing that, according to Christians, Prophets worshipped idols. It is written in the Book of Exodus (which is the fourth part of Taurat), chapter 32, verse 4, that Prophet Aaron asked his people to make idols and taught them to worship them. In chapter 11 of 1 Kings, it is said that Prophet Solomon at the insistence of his wife worshipped idols in his old age and thus assigned partners to Allah. Allah forbid!</p>
+<p>Isabella : Allah protect us !</p>
+<p>Umar Lahmi: Look, I have the Bible with me and I have marked relevant portions. You may see yourself that I am not telling a lie. (Isabella turns over the pages and reads all the references.) My object in referring to these is that Christians boldly and fearlessly commit all kinds of sins because, according to them, Prophets also committed them (Allah forbid!) and they think that when Prophets were not deprived of their prophethood in spite of their sins, why should common people be condemned on that very account.</p>
+<p>Isabella: Does the Quran call all Prophets innocent ?</p>
+<p>Umar Lahmi: It is the greatest merit of the Quran that it has strongly repudiated all the wrong ideas and allegations of the Jews and Christians and declares that Prophets did not. even think of committing sins, to say the least of actually committing them. The Quran says that what the Prophets prohibited they had never even thought of doing it, and the Quran counts all Prophets among the virtuous.</p>
+<p>Isabella : Is it not written in the Quran that Prophet Adam ate the fruit of the prohibited tree? Is it not disobedience of God’s orders a sin?</p>
+<p>Umar Lahmi: The definition of sin is that it is an act which is committed deliberately. Anything done unintentionally is not a sin. For instance, a man is prohibited from eating or drinking while he is observing fast, but if anyone eats and drinks in forgetfulness the fast is not broken and there is no sin. Prophet Adam also ate the fruit of the prohibited tree in forgetfulness as the Quran says: “We had taken a pledge from Adam but he forgot it and We did not find deliberation in him.”</p>
+<p>Isabella: Glory to God! I know it today that Adam committed no sin, otherwise Christian priests used to allege that Adam is described as a sinner in the Quran. (Suddenly becoming conscious of the time) Oh! I am very much delayed and should go home at once. My father and mother will be anxiously waiting for me, and I have not yet taken my food.</p>
+<p>Umar Lahmi: If you like food can be served to you here. The common food of my master (Ziad b. Umar) will be served to all of us, You may also participate. Will you accept this request of mine?</p>
+<p>Isabella: Thank you very much, but I will prefer to take food at my house, for mother does not eat till I return after walk. She always takes food with me.</p>
+<p>Umar Lahmi: How long will she have your company in taking food! At last one day the secret has to be out.</p>
+<p>Isabella: Leave it to the time when it comes, but just now permit me to leave.</p>
+<p>Umar Lahmi: When will you bring your friends with you?</p>
+<p>Isabella: Tomorrow if possible, otherwise day after tomorrow certainly. And now you should pray that they should also be guided to the right path like me.</p>
+<p>All present : Amin!</p>
+                `
             }
         ];
 
@@ -1084,8 +1576,110 @@
            ======================================================== */
 
         let currentBookId = null;
+        let showParagraphNumbers = true;
+
+        // Default settings
+        const defaultSettings = {
+            narration: false,
+            numbers: true,
+            noAnimations: false,
+            theme: 'dark',
+            fontSize: '1.45rem',
+            fontFamily: "'Amiri', serif",
+            lineHeight: '2.1',
+            voiceRate: 0.85,
+            voicePitch: 0.95
+        };
+
+        let vSettings = { ...defaultSettings };
+
+        function loadSettings() {
+            const saved = localStorage.getItem('vBooksSettings');
+            if (saved) {
+                vSettings = { ...defaultSettings, ...JSON.parse(saved) };
+            }
+            applySettings();
+        }
+
+        function applySettings() {
+            // Apply to UI controls
+            document.getElementById('setting-narration').checked = vSettings.narration;
+            document.getElementById('setting-numbers').checked = vSettings.numbers;
+            document.getElementById('setting-no-animations').checked = vSettings.noAnimations;
+            document.getElementById('setting-theme').value = vSettings.theme;
+            document.getElementById('setting-font-size').value = vSettings.fontSize;
+            document.getElementById('setting-font-family').value = vSettings.fontFamily;
+            document.getElementById('setting-line-height').value = vSettings.lineHeight;
+            document.getElementById('setting-voice-rate').value = vSettings.voiceRate;
+            document.getElementById('setting-voice-pitch').value = vSettings.voicePitch;
+
+            // Apply to Body/Global classes
+            if (vSettings.narration !== hoverNarrationEnabled) {
+                toggleHoverNarration();
+            }
+
+            showParagraphNumbers = vSettings.numbers;
+            document.querySelectorAll('.paragraph-number').forEach(num => {
+                num.style.display = showParagraphNumbers ? 'inline' : 'none';
+            });
+
+            if (vSettings.noAnimations) {
+                document.body.classList.add('no-animations');
+            } else {
+                document.body.classList.remove('no-animations');
+            }
+
+            // Theme
+            document.body.classList.remove('theme-sepia', 'theme-light');
+            if (vSettings.theme === 'sepia') document.body.classList.add('theme-sepia');
+            if (vSettings.theme === 'light') document.body.classList.add('theme-light');
+
+            // CSS Variables
+            const root = document.documentElement;
+            root.style.setProperty('--read-font-size', vSettings.fontSize);
+            root.style.setProperty('--read-line-height', vSettings.lineHeight);
+
+            const readingContent = document.getElementById('r-content');
+            if (readingContent) {
+                readingContent.style.fontFamily = vSettings.fontFamily;
+            }
+        }
+
+        function updateSettings() {
+            vSettings = {
+                narration: document.getElementById('setting-narration').checked,
+                numbers: document.getElementById('setting-numbers').checked,
+                noAnimations: document.getElementById('setting-no-animations').checked,
+                theme: document.getElementById('setting-theme').value,
+                fontSize: document.getElementById('setting-font-size').value,
+                fontFamily: document.getElementById('setting-font-family').value,
+                lineHeight: document.getElementById('setting-line-height').value,
+                voiceRate: parseFloat(document.getElementById('setting-voice-rate').value),
+                voicePitch: parseFloat(document.getElementById('setting-voice-pitch').value)
+            };
+
+            localStorage.setItem('vBooksSettings', JSON.stringify(vSettings));
+            applySettings();
+        }
+
+        function resetSettings() {
+            if (confirm("Are you sure you want to reset all settings to default?")) {
+                vSettings = { ...defaultSettings };
+                localStorage.setItem('vBooksSettings', JSON.stringify(vSettings));
+                applySettings();
+            }
+        }
+
+        function openSettings() {
+            document.getElementById('settings-modal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').classList.remove('active');
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
             const gridEl = document.getElementById('books-grid');
             gridEl.innerHTML = '';
 
@@ -1156,6 +1750,20 @@
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = chapter.content;
 
+            let paragraphCounter = 1;
+            tempDiv.querySelectorAll('p').forEach(p => {
+                const numSpan = document.createElement('span');
+                numSpan.className = 'paragraph-number';
+                numSpan.style.color = 'var(--accent-gold)';
+                numSpan.style.fontSize = '0.75em';
+                numSpan.style.marginLeft = '8px';
+                numSpan.style.opacity = '0.8';
+                numSpan.style.display = showParagraphNumbers ? 'inline' : 'none';
+                numSpan.textContent = `[${paragraphCounter}]`;
+                p.appendChild(numSpan);
+                paragraphCounter++;
+            });
+
             function wrapWords(node) {
                 if (node.nodeType === Node.TEXT_NODE) {
                     const text = node.nodeValue;
@@ -1225,6 +1833,11 @@
                     window.speechSynthesis.cancel();
                 }
             }
+
+            const settingToggle = document.getElementById('setting-narration');
+            if (settingToggle && settingToggle.checked !== hoverNarrationEnabled) {
+                settingToggle.checked = hoverNarrationEnabled;
+            }
         }
 
         let hoverTimer = null;
@@ -1255,8 +1868,8 @@
                             const utterance = new SpeechSynthesisUtterance(text);
 
                             // Enhance tone for better narration
-                            utterance.rate = 0.85; // Slightly slower
-                            utterance.pitch = 0.95; // Slightly lower pitch for a calm voice
+                            utterance.rate = vSettings.voiceRate; // Dynamic from settings
+                            utterance.pitch = vSettings.voicePitch; // Dynamic from settings
 
                             const voices = window.speechSynthesis.getVoices();
                             if (voices.length > 0) {
@@ -1295,8 +1908,8 @@
                     }
 
                     const utterance = new SpeechSynthesisUtterance(selectedText);
-                    utterance.rate = 0.85;
-                    utterance.pitch = 0.95;
+                    utterance.rate = vSettings.voiceRate;
+                    utterance.pitch = vSettings.voicePitch;
                     const voices = window.speechSynthesis.getVoices();
                     if (voices.length > 0) {
                         const preferredVoice = voices.find(v => v.name.includes('Google UK English Male') || v.name.includes('Natural'))
