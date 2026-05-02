@@ -1448,12 +1448,28 @@
                         <div class="book-spine-decor"></div>
                     </div>
                 </div>
-                <div style="flex: 1;">
+                <div style="flex: 1; width: 100%;">
                     <div class="modal-title" id="m-title">Title</div>
                     <div class="modal-author" id="m-author">Author</div>
 
-                    <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 0.8rem; width: 100%;">
-                        <!-- Buttons moved to chapter items -->
+                    <div id="sidebar-controls"
+                        style="margin-top: 2rem; display: none; flex-direction: column; gap: 0.8rem; width: 100%;">
+                        <button class="action-btn" id="full-narrate-btn" onclick="toggleFullNarration()"
+                            title="Listen to Chapter"
+                            style="background: rgba(226, 192, 141, 0.2); color: var(--accent-gold);">
+                            ▶ Listen to Chapter
+                        </button>
+                        <button class="action-btn secondary meaning-btn" onclick="toggleMeaningMode()"
+                            title="Toggle Meaning Mode">
+                            🔍 Meaning: OFF
+                        </button>
+                        <button class="action-btn secondary narrate-btn" onclick="toggleHoverNarration()"
+                            title="Toggle Hover Narration">
+                            🔇 Hover Narration: OFF
+                        </button>
+                        <button class="action-btn secondary" onclick="toggleFullScreen()" title="Toggle Fullscreen">
+                            ⛶ Fullscreen
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1474,24 +1490,6 @@
                         <button class="back-btn" style="margin-bottom: 0;" onclick="showChaptersView()">
                             ← Return to Contents
                         </button>
-                        <div>
-                            <button class="fullscreen-btn" id="full-narrate-btn" onclick="toggleFullNarration()"
-                                title="Listen to Chapter"
-                                style="margin-right: 5px; background: rgba(226, 192, 141, 0.2); font-weight: bold;">
-                                ▶ Listen to Chapter
-                            </button>
-                            <button class="fullscreen-btn meaning-btn" onclick="toggleMeaningMode()"
-                                title="Toggle Meaning Mode" style="margin-right: 5px;">
-                                🔍 Meaning: OFF
-                            </button>
-                            <button class="fullscreen-btn narrate-btn" onclick="toggleHoverNarration()"
-                                title="Toggle Hover Narration" style="margin-right: 5px;">
-                                🔇 Hover Narration: OFF
-                            </button>
-                            <button class="fullscreen-btn" onclick="toggleFullScreen()" title="Toggle Fullscreen">
-                                ⛶ Fullscreen
-                            </button>
-                        </div>
 
                     </div>
                     <h2 class="reading-title" id="r-title">Chapter Title</h2>
@@ -2749,6 +2747,8 @@
             stopNarration();
             document.getElementById('view-chapters').classList.remove('hidden');
             document.getElementById('view-reading').classList.add('hidden');
+            const sidebarControls = document.getElementById('sidebar-controls');
+            if (sidebarControls) sidebarControls.style.display = 'none';
         }
 
         function showReadingView() {
@@ -2756,6 +2756,8 @@
             document.getElementById('view-chapters').classList.add('hidden');
             document.getElementById('view-reading').classList.remove('hidden');
             document.getElementById('view-reading').scrollTop = 0;
+            const sidebarControls = document.getElementById('sidebar-controls');
+            if (sidebarControls) sidebarControls.style.display = 'flex';
         }
 
         // Cleanup Service Workers to fix error count
