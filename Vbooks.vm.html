@@ -2790,7 +2790,7 @@
 
         document.addEventListener('dblclick', (e) => {
             if (!meaningModeEnabled) return;
-            
+
             const target = e.target.closest('.hover-word');
             if (target) {
                 const text = target.innerText.trim();
@@ -2805,6 +2805,36 @@
                     const query = encodeURIComponent(text);
                     window.open(`https://www.google.com/search?q=meaning+of+${query}`, '_blank');
                 }
+            }
+        });
+
+        // ========================================================
+        // ⌨️ GLOBAL HOTKEYS
+        // ========================================================
+        document.addEventListener('keydown', (e) => {
+            // Ignore if user is typing in an input or textarea
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+                return;
+            }
+
+            const key = e.key.toLowerCase();
+
+            switch (key) {
+                case 'm':
+                    toggleMeaningMode();
+                    break;
+                case 'h':
+                    toggleHoverNarration();
+                    break;
+                case 'f':
+                    toggleFullScreen();
+                    break;
+                case 's':
+                    // Only trigger if a book is actually open (modal active)
+                    if (document.getElementById('book-modal').classList.contains('active')) {
+                        toggleFullNarration();
+                    }
+                    break;
             }
         });
     </script>
