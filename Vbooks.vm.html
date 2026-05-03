@@ -285,6 +285,11 @@
             margin-top: 1.5rem;
             text-align: center;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 80px;
+            /* Ensure consistent spacing */
         }
 
         .book-meta h3 {
@@ -296,6 +301,7 @@
             text-overflow: ellipsis;
             color: var(--accent-gold);
             font-family: 'Amiri', serif;
+            width: 100%;
         }
 
         .book-meta p {
@@ -306,6 +312,21 @@
             padding: 3px 12px;
             border-radius: 4px;
             display: inline-block;
+        }
+
+        .progress-container {
+            width: 80%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-gold);
+            transition: width 0.5s ease;
         }
 
         /* ========================================================
@@ -935,7 +956,9 @@
         }
 
 
-        /* Mobile Adjustments */
+        /* ========================================================
+           📱 MOBILE RESPONSIVENESS
+           ======================================================== */
         @media (max-width: 900px) {
             .bismillah {
                 font-size: 3rem;
@@ -943,87 +966,101 @@
             }
 
             header {
-                padding: 3rem 1.5rem 2rem;
+                padding: 3rem 1rem 2rem;
             }
 
             header h1 {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
+                letter-spacing: 1px;
             }
 
             header p {
-                font-size: 0.95rem;
+                font-size: 0.9rem;
+                padding: 0 1rem;
+            }
+
+            .container {
+                padding: 0 1rem 3rem;
             }
 
             .books-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 2rem 1rem;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 2.5rem 1rem;
             }
 
             .book-cover-container {
-                width: 150px;
-                height: 230px;
-            }
-
-            .cover-title {
-                font-size: 1.1rem;
-            }
-
-            .cover-author {
-                font-size: 0.7rem;
+                width: 160px;
+                height: 240px;
             }
 
             .modal-content {
                 flex-direction: column;
-                height: 98vh;
-                width: 98%;
-                border-radius: 8px;
+                height: 96vh;
+                width: 96%;
+                border-radius: 12px;
             }
 
             .modal-left {
                 width: 100%;
                 padding: 1.5rem;
-                flex-direction: column;
+                flex-direction: row;
+                flex-wrap: wrap;
                 align-items: center;
-                justify-content: flex-start;
+                justify-content: center;
                 gap: 1.5rem;
                 border-right: none;
-                border-bottom: 1px solid var(--border-gold);
+                border-bottom: 1px solid var(--glass-border);
                 height: auto;
                 flex-shrink: 0;
             }
 
             .modal-book-cover {
-                width: 70px;
-                height: 100px;
+                width: 60px;
+                height: 90px;
                 margin-bottom: 0;
-                padding: 0;
+                padding: 5px;
             }
 
             .modal-title {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
                 text-align: left;
             }
 
             .modal-author {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
                 text-align: left;
             }
 
+            #sidebar-controls {
+                margin-top: 1rem !important;
+                flex-direction: row !important;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.6rem !important;
+            }
+
+            .action-btn {
+                width: auto !important;
+                padding: 0.6rem 1rem !important;
+                font-size: 0.8rem !important;
+                flex: 1 1 45%;
+            }
+
             .modal-right {
-                width: 100%;
+                height: 100%;
             }
 
             .view-panel {
-                padding: 1.5rem 1rem;
+                padding: 2rem 1.2rem;
             }
 
             .reading-title {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
 
             .reading-content {
-                font-size: 1.15rem;
-                line-height: 1.8;
+                font-size: 1.25rem;
+                line-height: 1.9;
             }
 
             .chapter-item {
@@ -1031,14 +1068,92 @@
                 font-size: 1rem;
             }
 
-            .fullscreen-btn {
-                font-size: 0.8rem;
-                padding: 0.5rem 1rem;
+            .search-input {
+                padding: 1rem 1.2rem;
+                font-size: 1rem;
+            }
+
+            .search-results {
+                padding: 1rem;
+                max-height: 70vh;
+            }
+
+            .settings-search-container {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .bismillah {
+                font-size: 2.5rem;
+            }
+
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+
+            .book-cover-container {
+                width: 140px;
+                height: 210px;
+            }
+
+            .modal-left {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .modal-book-cover {
+                display: none;
+            }
+
+            #sidebar-controls {
+                gap: 0.4rem !important;
+            }
+
+            .action-btn {
+                padding: 0.5rem 0.8rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            .reading-title {
+                font-size: 1.8rem;
             }
 
             .back-btn {
+                padding: 0.4rem 1rem;
                 font-size: 0.8rem;
-                padding: 0.5rem 1rem;
+            }
+
+            .settings-btn {
+                top: 1rem;
+                right: 1rem;
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+
+            .search-book-item {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .search-book-title {
+                font-size: 1.2rem;
+            }
+
+            .search-chapter-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .search-chapter-actions {
+                width: 100%;
+                justify-content: space-between;
             }
         }
 
@@ -1612,14 +1727,6 @@
         </div>
     </div>
 
-    <!-- Achievement Toast -->
-    <div id="achievement-toast" class="achievement-toast">
-        <div class="achievement-icon" id="ach-icon">🏅</div>
-        <div class="achievement-text">
-            <b id="ach-title">Achievement Unlocked!</b>
-            <span id="ach-desc">You've started your first book.</span>
-        </div>
-    </div>
 
 
     <!-- Data and Application Logic -->
@@ -2050,6 +2157,111 @@
 <p>Isabella: Tomorrow if possible, otherwise day after tomorrow certainly. And now you should pray that they should also be guided to the right path like me.</p>
 <p>All present : Amin!</p>
                 `
+            },
+            {
+                title: "Ch 9: Inside the House",
+                content: `
+<p>Leaving the auspicious and glowing meeting at the house of Ziad b. Umar, Isabella took the road straight to her home which ran through the Palace of Martyrs to Suqul Asafir. Isabella’s house was just a few paces away. The meeting had filled her with such joy that, unmindful of everything around, she walked quietly and soberly with downcast eyes. Half an hour later she reached home where her mother was waiting impatiently for her. On enquiry about the cause of her delay Isabella named a friend of her’s, at whose house she was delayed. On her mother’s order the dining table was set and she immediately sat down and began to eat. Soon her father (the head priest) also arrived and the night passed peacefully.</p>
+<p>Early next morning the Muezzins called for the Fajr prayer from all mosques of Cordova. How pleasant is the sound and how, in the salubrious hour of morning, people were being roused for bowing and prostrating for the Fajr prayer with the name of Allah. How enchanting is the sound of Allah-o-Akbar, Allah-o-Akbar, (Allah is great, Allah is great). Now the gongs of churches also began to toll. How jarring and meaningless is the sound. Truly the condition of each community is known from its rites. From mosques devotees began to emerge. Labourers, traders and cultivators took their respective ways to places of work, markets and fields. The chirping of birds had somewhat subsided.</p>
+<p>Hearing the call of prayer Isabella got out of her bed and went to the library room of her house and sitting at a table began to study a book. In the meantime Peter and Michael also came there and Isabella stood up and received them with respect. A little later Isabella’s father also came and took his seat in the room and Isabella’s mother was also called in. Isabella was frightened at this unexpected, uncalled and strange gathering and suspected that these people had assembled on her account and probably her association with Islam had come to their knowledge. Colour went out of her face and her heart began to throb quickly and so, taking the excuse of thirst, she went for water to another room.</p>
+<p>The head priest, addressing Isabella’s mother, Peter and Michael said: Do you know what is the state of Isabella and how is she trying to humiliate and degrade us? It is to think about this matter that I have given you the trouble to come over here.</p>
+<p>Peter: Oh ! What is the matter!</p>
+<p>Head Priest: It is all very serious. I have been hearing for some time that Isabella has given up Christian creed and has secretly embraced Islam.</p>
+<p>Helena (Isabella’s mother): Fie, fie ! What are you talking? Jesus Christ may never do it. What is the matter that you are so enraged today that, without any reason, you have made my daughter a Muslim ?</p>
+<p>Head Priest: What I am saying is quite true. If not today, you will learn it a few days after.</p>
+<p>Peter: Holy father, you have said something strange. Isabella is a very good girl. She has studied theology. She is not ignorant as to accept the bloody religion of Islam.</p>
+<p>Helena: Well, I am just calling the girl. I do not know what caused this suspicion in you.</p>
+<p>So saying Helena went to the room where Isabella was sitting horrified in a corner. Helena at once caught the hand of Isabella and said to her: Listen, daughter, your father calls you. Isabella who had realised the situation rose up and followed her mother to the large room and presented herself to the head priest.</p>
+<p>Isabella’s father beckoned to Michael and asked him to talk to her.</p>
+<p>Michael: Daughter, we have heard that you have revolted from Christianity. Is it true? If anyone has given wrong report about you, you may refute it.</p>
+<p>Isabella heard this and kept quiet and, lowering her eyes, began to weep. Warm tears began to drop on her rosy cheeks.</p>
+<p>Helena: Just see. Did not I tell you that someone has falsely accused my daughter. What refutation could she give! Her tears speak that the allegation of her revolt from Christianity is quite false.</p>
+<p>Head Priest: You just keep quiet for a while and let Isabella herself reply. Yes, daughter, tell me what is this report about you?</p>
+<p>Isabella continued to remain silent with bowed head. But on persistent questioning from Peter and Michael she was compelled to open her lips.</p>
+<p>Isabella: I have not yet accepted Islam but continue to remain Christian.</p>
+<p>Michael: If you have not yet accepted Islam, do you intend to accept it in future?</p>
+<p>Isabella: Why do you ask me about future? I can put the same question to you.</p>
+<p>Michael: Then tell me what is your opinion about Islam?</p>
+<p>Isabella: I do not abuse Islam like others for in the Muslim sacred Books Christ is praised and Muslims speak well of him.</p>
+<p>Michael: Then you love Islam and Muslims?</p>
+<p>Isabella: You may call it love or anything else. Anyway I am not ungrateful. If Muslims respect our Christ, then I also must respect their Prophet and their Sacred Book.</p>
+<p>Peter: So it is clear now that in your heart you have become a Muslim, otherwise you would not have so praised Islam and Muslims. But now tell me what do you think about the religion you have been believing, that is Christianity.</p>
+<p>Isabella: I have faith in the Bible and all revealed books, but I do not accept the flaws which later Christians have introduced in religion.</p>
+<p>Head Priest (addressing Michael, Peter and Isabella’s mother): Now you have known her ideas. There is no other remedy to it except the sword.</p>
+<p>Peter: Please give me time. I will explain to her and she will surely be reformed. I will remove her misunderstandings. Anyway, she has studied books on theology.</p>
+<p>Head Priest: Well, you may try and see, otherwise I will think of some other remedy for her.</p>
+<p>After this talk the meeting dispersed and the head priest, taking Peter and Michael with him, left for the great church as there was a large crowd of Christians of Spain to see the relics (bones, etc.) of Prophets and the head priest. They had come from long distances to participate in the ceremony and the head priest had gone to bless thousands of Christians.</p>
+<p>The priests having left, Isabella went to her room and silently thought about her future. She was now convinced that she was sure to be put to torture and she will have to face severe trials. Yet she found her mind at ease and heart strong and prepared to meet all troubles.</p>
+<p>She took out a paper from her table and wrote a letter to her friend Mirano (daughter of Priest Michael) to the following effect:</p>
+<p>“My dear sister!</p>
+<p>“Last night at nine I attended the meeting of Muslim divines at which my spiritual father Umar Lahmi and other divines were present. How can I describe its atmosphere, my sister ! A wonderful spiritual assembly it was. My participation in it greatly fortified my heart. I wish you were also present there. I have made a promise with their spiritual leader Ziad b. Umar to take you with me tomorrow or day after to them. A strange thing happened today. It appears that I am going to be put to trial. Pray that God may keep me ever on the right path. It so happened that my father got some information about me that I have embraced Islam and so he called your father [Michael] and Peter to his house and many questions were asked from me. Now, just fancy with my father on one side and Michael and Peter on the other, in what difficult position I was placed. But I also gave them stunning replies. Now, Peter has given promise to my father that he will make me understand. If any such occasion comes you must also be present along with other three friends. Other details I will give you verbally.</p>
+<p>“Your sister, Isabella.”</p>
+<p>After finishing the letter she called her maidservant and told her to go to Mirano and bring from her a book. She also gave her the letter which, she said, was lying with her for some time and asked her to deliver it to Mirano. The maid-servant did as she was ordered and, going to Michael’s house, gave the letter to Mirano, who immediately opened and read it and said to the maid-servant that she will herself bring the book in the evening.</p>
+<p>Isabella and her other friends met together in the evening in the same garden in which Isabella had first heard the talk of Umar Lahmi. She informed her friends all that had happened and consulted them. It was also decided that next evening they should all go to attend the meeting of Ziad b. Umar and also inform him of everything. After enjoying the evening walk of the garden all the girls left for their respective homes.</p>
+`
+            },
+            {
+                title: "Ch 10: Inside Knowledge",
+                content: `
+<p>Next morning a maid-servant brought a note from Michael to Isabella which said : Daughter Isabella ! I have to talk to you on something; you should come to me at once leaving all other work. I am waiting for you. Isabella realised that it was in continuation of the previous day’s plan. Informing her mother she left for Michael’s house, where Peter and another well-known monk, highly popular and famous throughout Spain for his ascetic life, were also present. Michael’s daughter Mirano hurriedly dispatched a messenger to call her other friends and very soon all the friends collected there. Michael then addressed Isabella.</p>
+<p>Michael: Yesterday, you put off the matter by giving ambiguous answers to our questions. Today I want to talk to you very frankly. Now say, will you answer my questions correctly?</p>
+<p>Isabella: In the first place, I am not so able as to respond to your questions and, secondly, there is no such matter as to need interrogation. But you may ask and I will try to answer according to my understanding.</p>
+<p>Michael: Have you become a Muslim?</p>
+<p>Isabella: I answered this question yesterday and do not want to say anything more.</p>
+<p>Michael: Well, now say if you believe in the holy divinity and in Jesus Christ being “God” with his necessary existence.</p>
+<p>Isabella: I do believe God as God, not any man as God.</p>
+<p>Michael: So it is clear that you do not believe in the divinity of Lord Jesus Christ. Now what is left there in your being a confirmed Muslim?</p>
+<p>Isabella: I mean that there is no proof anywhere in the Bible that Jesus was God.</p>
+<p>Michael: For God’s sake, do not calumniate the Holy Bible. Have you not read in the Bible that he was the “Son of God”?</p>
+<p>Isabella: There have been other “sons” of God also and so they should also be called “God”.</p>
+<p>Michael: Never. Except Lord Jesus Christ, no other man was a true “son” of God.</p>
+<p>Isabella (holding the Bible in her hand): Well, please explain to me the meaning of this passage : “The Jews again lifted stones to strike Christ who told them: I have shown you many good things from the father; on which of these you are stoning me? The Jews said: We are not stoning you on good acts but on your infidelity that being a man you call yourself God. Christ said: Does not your creed say that you are God ? When it calls those God to whom divine revelations came, then the person whom God sent to the world after glorifying him, how can you say that he talks infidelity. This is why I said that I am son of God.” [ Jonah, chapter 1, verses 31-36,]</p>
+<p>Now the question is what previous Apostles have been called God? Christians believe that these predecessors were called God metaphorically and in love. I say the same. Jesus Christ is also called God in the metaphorical sense and in love, and not because he was really God as alleged.</p>
+<p>Michael: Accursed girl! you have become very talkative. Having studied from me you venture to ask the meaning of these verses from me as if we are ignorant and you are learned. But just see, each of the previous Prophets could not be God in the real sense, because they were not innocent while our Lord Jesus Christ was sinless and innocent and therefore he was also God.</p>
+<p>Isabella: We are not talking of sin or innocence. The question is that Jesus Christ called himself God as other Prophets were called. If Jesus Christ was really God, then we have to admit that every other Prophet was also God. Besides, in these verses Jesus Christ was replying to the accusations of the Jews. If he were really the son of God, he would have accepted the accusations of Jews.</p>
+<p>Michael: Oh! How great! you are such a great scholar that you slight us. It is now clear that you have been well grounded. If Jesus Christ was not God but just a man, how could he constitute atonement for our sins. And is any man free from sins?</p>
+<p>Isabella: I do not understand how you concoct the rule that no one among men can be innocent, although even in the Bible a man says about Malik Sidq Shalem : “He without father, without mother, without genealogy. Neither is there beginning of his life nor its end. but just as kin to the son of God.” [ Ecclesiaites, chapter 7, verse 3]. Then in the Bible it is written about Zacharias and his wife: “And they were both righteous before God, walking in all the commandments and ordinances of the Lord blameless.” [Luke, chapter 1, verse 6.]</p>
+<p>So it is clear that Malik Sidq Shalem, Zacharias and his wife were certainly innocent, otherwise the words “just as kin to God” and “blameless” would be meaningless. So innocence of Christ is not unique but he was innocent like other innocent men. As to the case of Atonement this is also not proved from the Bible, for no man can take the load of other man’s sins and least of all taking the load of men’s sins on his head and dying on the cross. In fact, Jesus has declared in the Bible that salvation will be on the basis of acts and not by atonement, as it is written: “For the Son of man shall come in the glory of his Father, with his angels; then he shall reward every man according to his works”[Matthew, chapter 16, verse 27.]; “And, behold, one came and said unto him: Good what good thing shall I do, that I may have eternal life. Christ said:… If thou wilt enter into life keep the commandments. He saith unto him, Which? Jesus said, Thou shalt do no murder, thou shalt not commit adultery, thou shalt not steal, thou shalt not bear false-witness.” [Ibid., chapter 19. verses 1618. t 2 ]. It is proved from these verses that salvation is by acts alone. Christ did not tell the man that he did not need do anything as he (Christ) would be atonement for him.</p>
+<p>Michael: Girl, you seem to have come to teach me. Do you not trust me? I am your teacher. Whatever I say you must believe. By your own wisdom you cannot comprehend the delicate problems of religious law. The question of atonement comes later. First the question of the divinity of Jesus Christ should be settled. See Christ was taken to heaven in life which Muslims also believe. Is it not the proof of his divinity? Jesus Christ exhibited great miracles. He revived the dead, gave sight to the blind. Do not these things prove his divinity? First you must believe or reject divinity of the Lord and then talk of other things.</p>
+<p>Isabella: It was you who raised the question of Atonement. So I began to discuss it. If Jesus Christ can be God by being raised to heaven alive, then Eli should also be God as he was also, according to the Bible, raised alive to heaven [Kings, chapter 14, verse 12]. As to the Christ reviving the dead and giving sight to the blind, that also does not prove his divinity as other Prophets had also demonstrated miracles as is clearly mentioned in the Bible. If these miracles can make anyone God, then other Prophets were also God.</p>
+<p>Peter: See, how this girl confuses us! O, foolish girl! The miracles shown by other Prophets were not by their own power but by the power of God, while Christ did miracles by his own power, which proves that he was God.</p>
+<p>Isabella: In the first place miracles are not proofs about prophethood, to say the least of divinity. That according to the Christian creed it is not necessary that anyone who does miracles is a prophet and when he cannot be even a prophet, how can he be God? Jesus has said: “… I say unto you, He that believeth on me, the works that I do shall he do also; and greater work than these shall he do.” [2 Kings, chapter 2, verse 12.]</p>
+<p>As to your claim that the miracles of Christ were by his own authority while those of others they were by constraint, this is also wrong for the Bible proves that not only in performing miracles but in everything else Jesus was as powerless as other Prophets. And whenever Jesus performed any miracle he first prayed for the help of God. In his miracle of bread and fish he sought the help of God and at another place he said to the Disciples that taking out of souls depended on prayer. Christ revived a dead by praying to God.[See Matthew, 12 : 16 ; Mark. 9 : 29 ; Jonab, 11 : 41]</p>
+`
+            },
+            {
+                title: "Ch 11: Test of Faith",
+                content: `
+<p>Continuing her talk Isabella said: Christ has no power to perform miracles as it has been proved from the Bible. Now I say that Jesus Christ was as powerless in everything as any other man. If he were God he could not have been so helpless and he would have been free to do anything like the Almighty God and could not have felt the need of seeking the help of others. (Opening the Bible) Jesus Christ says: “Foras the Father has life in himself; so hath he given to the Son to have life in himself; and hath given him authority to exercise judgment also, because he is the Son of man.”[ John, 5 : 26-27.] That is even the life of Jesus Christ was not his own but given by God and it was He Who gave him authority to do justice. Without God’s grace he could not do even justice and the argument given was that Jesus was human and a human being could not do anything without the help of God. Christ also says: “I can of mine own self do nothing: as I hear I judge and my judgment is just.” [Ibid., 5:30] Further he said: “I came down from heaven, not to do my own will, but the will of him that sent me.”[Ibid. 6:38] Thus it is proved that Christ was quite powerless like other men, and who is dependent on others cannot be God, and so Jesus also was not God.</p>
+<p>Peter (to Michael): Do you see how unbending is this girl ? Muslims have taught her well to become so talkative. Now, can you believe that she will come to the right path? I think it is useless to have any further talk with her as she has lost faith and has become very disobedient.</p>
+<p>Michael: I am also convinced that she is wholly under the control of Satan. (To Isabella   All the arguments produced by you have obvious replies and you have also read them in the lessons on theology. There are also other replies which you cannot understand at all. Now, instead of replying to you, I should like to hear your ideas so that we can come to the decision easily about you. You have clearly stated your views about the Divinity of Christ and Atonement. Now what have you to say further?</p>
+<p>Isabella: I have neither denied the Bible nor Jesus Christ. But what I say is that, according to the teaching of the Bible, neither Christ is proved to be God, nor any basis of atonement. All this is the invention of Christians.</p>
+<p>Michael: It means that all Christians are liars and all Christians have united against the Holy Bible. Accursed and hellish girl, if you cannot understand anything, just accept the judgment of your elders. Does your father, who is the head priest and has full authority to pardon sins, also consider these things wrong 7 Are all his popes, monks, Christian divines and savants of Christianity on the wrong path?</p>
+<p>Isabella: Just as the Bible does not prove the Divinity of Christ and Atonement, in the same wav the Christianity of the so-called Christians of today is not established according to the Bible and so their opinions cannot be my guide.</p>
+<p>Michael: Wonderful! That we are unreal and false Christians, and you are a real and true Christian. Unlucky girl, what has become of your senses? You have discarded even your elders. After all what is your proof that we are not true Christians?</p>
+<p>Isabella: There is no reason for losing temper. The matter is quite obvious. If you could prove from the Bible that modern Christians are true Christians, then I will wholeheartedly accept their decision and will not press any argument against them from the Bible. So, you just prove from the Bible that Christians of today are true Christians.</p>
+<p>Michael: There are Christians all over the world, and you say that they are not Christians according to the Bible. What is its proof? Is it not proof enough that we believe in the Bible, in the Divinity of Jesus and his crucifixion?</p>
+<p>Isabella: Do not Muslims believe in the Bible? Can you call them Christians? As to believe in the Divinity of Christ and Atonement, it is not any argument for Christianity. On the other hand, it proves that such persons are not at all Christians as there is no trace of such beliefs in the Bible.</p>
+<p>Peter : O worthless girl, why are you doubting our Christianity? If we are not Christians, then it is for you to give proof of true Christians. Just say where in the world do real and true Christians live.</p>
+<p>Isabella : You may be as much angry as you like, but the truth cannot be concealed. If you want the proof from me, then I declare candidly that Christians of today are not at all followers of Christ, and who can be a true Christian I am prepared to prove from the Bible itself.</p>
+<p>Michael: O accursed girl, why talk and talk? Why not come out with your proof?</p>
+<p>Isabella : Well, then, listen. The signs of the true Christians are mentioned in the Bible as follows: “And these signs shall follow them that believe. In my name shall they cast out devils; they shall speak with new tongues; they shall take up serpents; and if they drink any deadly thing, it shall not hurt them; they shall lay hands on the sick, and they shall recover.” [Mark, 16 : 17-18.] At another place the sign of the believing Christian is stated as follows: “Then came the disciples to Jesus and said, Why could we not cast him [evil spirit] out ? And Jesus said unto them, Because of your unbelief, for verily I say unto you, If ye have faith as a grain of mustard seed, ye shall say upon this mountain, Remove hence to yonder place ; and it shall remove; and nothing shall be impossible unto you.” [Matthew. 17 : 19-20.]</p>
+<p>Now, from these two passages of the Bible, the following six signs of Christians have been established:</p>
+<p>(1) driving out evil spirits</p>
+<p>(2) speaking new languages without learning them</p>
+<p>(3)lifting up poisonous snakes</p>
+<p>(4) taking the cup of poison without injury</p>
+<p>(5) curing the sick by the touch of their hand and</p>
+<p>(6) moving away mountains.</p>
+<p>So, anyone who claims to be a Christian must first prove these six signs in him. You are also a Christian. Leave aside all the six signs and cure a sick man with your touch; mountain, of course, you cannot move. Here is just a stone; move it away only ten or twenty yards, so that your Christianity is proved by the Bible.</p>
+<p>Michael: True, it is all in the Bible, but where is it written that anyone who is unable to do such miracles is not a Christian? Besides, all these signs are peculiar to Disciples and not to Christians in general</p>
+<p>Isabella : Both these statements are wrong. The Bible clearly says that any Christian who has an atom of faith in him will move away the mountain by his bidding. It follows that anyone who has not even an atom of faith in him will not be able to move the mountain. Then it is also wrong to say that these signs are for the Disciples only as it is clearly said in the Bible that these miracles will be among the believers. If these signs are intended for the Disciples only, then belief is also for the Disciples only which means that no true Christian was born after the Disciples.</p>
+<p>Peter: Unlucky girl, that is why I say that you cannot understand the mysteries and inner meanings of the Bible. Foolish girl, these miracles relate to spiritual matters, that is, by Illness is meant spiritual illness, poison means disbelief which means that Christians, even if they are attacked by unbelievers, will not degrade from faith and so on.</p>
+<p>Isabella: Just think before you reply. You call me foolish; the cap may fit on you. Look, Jesus Christ says: “He that believeth on me the works that I do shall he do also.”[ John, 14 : 12.] If by miracles Is meant spiritual matters, then it will follow that Christ neither revived a dead, nor did he give sight to the blind, nor cured a sick, but he just cured spiritually dead, exorcised the evil spirits, and created in them the light of faith. But you people will never admit this interpretation about Christ. Then why do you concoct this new rule for others ? Christ said: “the works that I do,” so whatever he did and in whatever manner, believers should also do and in the same manner, otherwise they will not be believers.</p>
+<p>Peter: It is difficult to make this unbelieving girl understand. Her remedy is not exhortation but the same punishment which the Inquisition decides (after whose decision the guilty is tied to the stock). (To Michael.) You turn her out of the house and tell holy father (the head priest) that she is past remedy and some other device must be adopted.</p>
+<p>Michael and Peter then rose and went to another room and consulted among themselves. Michael’s daughter Mirano told Isabella to leave at once otherwise there might be trouble for her there. But it was agreed that Isabella and her friends must assemble at the famous garden of Cordova in the evening and think about the future. Isabella went out of Michael’s house and took the way to her home. But although she was going to her house her steps faltered and she pondered as to what was she going to meet at her home.</p>
+<p>Anyhow she reached her home and, on the insistence of her mother, also ate something, but in the worried state of her mind she could not decide about her future and, waiting for the evening, she retired to her room. She looked at her library and other things and cast gloomy eyes at every corner of the house fearing that she might have to leave it. Who will use her things and read her books, she thought. So thinking she abruptly alerted and said: Let anyone live in this house and use my things and read my books. I was in search of truth, which I have got. My Allah has guided me. Thousands of thanks to Him Who has granted me the wealth of truth and nothing could be greater than it. Thousands of such houses may be sacrificed for the boon of Islam. So saying she fell down to prostrate and thank the Almighty Allah.</p>
+`
             }
         ];
 
@@ -2388,9 +2600,9 @@
             renderBooks();
 
             if (currentStats.maxChapter === 1 && newProg === 1) {
-                showAchievement("First Steps", "You've started your first chapter!", "📖");
+                // No achievement shown
             } else if (newProg === book.chapters.length) {
-                showAchievement("Master Reader", "You've completed this entire book!", "🏆");
+                // No achievement shown
             }
 
 
@@ -2415,17 +2627,6 @@
         }
 
 
-        function showAchievement(title, desc, icon = "🏅") {
-            const toast = document.getElementById('achievement-toast');
-            document.getElementById('ach-icon').textContent = icon;
-            document.getElementById('ach-title').textContent = title;
-            document.getElementById('ach-desc').textContent = desc;
-
-            toast.classList.add('active');
-            setTimeout(() => {
-                toast.classList.remove('active');
-            }, 5000);
-        }
 
 
         function toggleFullScreen() {
@@ -2781,7 +2982,7 @@
                 btn.style.background = 'var(--accent-gold)';
                 btn.style.color = 'var(--bg-primary)';
                 btn.style.fontWeight = 'bold';
-                showAchievement("Curiosity", "Meaning Mode is ON! Double click any word.", "🔍");
+                // No achievement shown
             } else {
                 btn.innerHTML = '🔍 Meaning: OFF';
                 btn.style.background = 'rgba(198, 168, 124, 0.1)';

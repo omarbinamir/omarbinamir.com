@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponseey | Boom Your Traffic with Teleport</title>
+    <meta name="description"
+        content="Sponseey is a world-class, 100% free digital platform that helps websites get 'booming' traffic using our proprietary tiered Teleport system.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            /* Cyber Dark Theme (Default) */
+            --bg-primary: #050505;
+            --bg-secondary: #0a0a0c;
+            --accent-primary: #8a2be2;
+            /* Violet */
+            --accent-secondary: #00f2ff;
+            /* Cyan */
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --tier-tyzoon: #00f2ff;
+            --tier-typoon: #ff00ff;
+            --tier-tycoon: #ffbd00;
+            --font-main: 'Outfit', sans-serif;
+            --font-accent: 'Space Grotesk', sans-serif;
+            --transition-speed: 0.4s;
+        }
+
+        [data-theme="glass-light"] {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --accent-primary: #6200ee;
+            --accent-secondary: #03dac6;
+            --text-main: #1a1a1a;
+            --text-dim: #666666;
+            --glass-bg: rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="neon-vibe"] {
+            --bg-primary: #000000;
+            --bg-secondary: #050505;
+            --accent-primary: #39ff14;
+            /* Neon Green */
+            --accent-secondary: #ff0055;
+            /* Neon Pink */
+            --glass-bg: rgba(57, 255, 20, 0.05);
+            --glass-border: rgba(57, 255, 20, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color var(--transition-speed);
+        }
+
+        /* Background Effects */
+        .glow-sphere {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--accent-primary) 0%, transparent 70%);
+            filter: blur(100px);
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-family: var(--font-accent);
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-secondary);
+        }
+
+        .theme-toggle {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+        }
+
+        .hero h1 {
+            font-family: var(--font-accent);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            line-height: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            display: block;
+            opacity: 0.5;
+            font-weight: 300;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 1rem;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.5);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            background: var(--glass-bg);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-secondary);
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 8rem 10%;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-family: var(--font-accent);
+            margin-bottom: 1rem;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .category-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: all 0.4s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-card p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* Teleport Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .teleport-content {
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .portal-animation {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            position: relative;
+            background: conic-gradient(from 0deg, var(--accent-primary), var(--accent-secondary), var(--accent-primary));
+            animation: rotate 2s linear infinite;
+        }
+
+        .portal-animation::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .tier-tyzoon {
+            background: rgba(0, 242, 255, 0.2);
+            color: var(--tier-tyzoon);
+        }
+
+        .tier-typoon {
+            background: rgba(255, 0, 255, 0.2);
+            color: var(--tier-typoon);
+        }
+
+        .tier-tycoon {
+            background: rgba(255, 189, 0, 0.2);
+            color: var(--tier-tycoon);
+        }
+
+        /* Footer & LinkedIn */
+        footer {
+            padding: 4rem 10%;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .linkedin-btn {
+            background: #0077b5;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+
+        .linkedin-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Manual Curation Form */
+        .apply-section {
+            padding: 8rem 10%;
+            background: var(--bg-secondary);
+        }
+
+        .apply-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 4rem;
+            border-radius: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1.5rem center;
+            background-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--accent-secondary);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+
+        select option {
+            background: #0a0a0c;
+            color: white;
+            padding: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .apply-card {
+                padding: 2rem;
+            }
+        }
+
+        /* Rank Badges */
+        .rank-container {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rank-info h4 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 0.3rem;
+        }
+
+        .rank-badge {
+            font-size: 1.2rem;
+            font-weight: 800;
+            font-family: var(--font-accent);
+            text-transform: uppercase;
+        }
+
+        .rank-beginner {
+            color: #a0a0a0;
+        }
+
+        .rank-webber {
+            color: #00f2ff;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+
+        .rank-webdinger {
+            color: #8a2be2;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+        }
+
+        .rank-spammer {
+            color: #ff0055;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.05);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glow-sphere" style="top: 10%; left: 10%;"></div>
+    <div class="glow-sphere" style="bottom: 20%; right: 10%;"></div>
+
+    <nav>
+        <div class="logo">Sponseey</div>
+        <div class="nav-links">
+            <a href="#categories">Categories</a>
+            <a href="#how-it-works">How it Works</a>
+            <a href="#apply">Apply</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">Dark Mode</span>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1><span>BOOMING TRAFFIC</span> TELEPORT SYSTEM</h1>
+        <p>The elite digital platform for website growth. Free manual curation. Zero bots. 100% Quality. Send your users
+            through our tiered teleport portals.</p>
+        <div class="cta-group">
+            <a href="#categories" class="btn btn-primary">Start Teleporting</a>
+            <a href="#apply" class="btn btn-outline">Submit Your Site</a>
+        </div>
+    </section>
+
+    <section class="categories" id="categories">
+        <div class="section-header">
+            <h2>Select Category</h2>
+            <p>Choose your destination and let the Teleport system do the rest.</p>
+        </div>
+        <div class="category-grid" id="categoryGrid">
+            <!-- Dynamically Populated -->
+        </div>
+    </section>
+
+    <section class="apply-section" id="apply">
+        <div class="apply-card">
+            <div class="section-header">
+                <h2>Apply for website adding check</h2>
+                <p>We manually approve every website to ensure the highest quality traffic. It's 100% Free.</p>
+            </div>
+
+            <div class="rank-container">
+                <div class="rank-info">
+                    <h4>User Reputation Score</h4>
+                    <div id="userRank" class="rank-badge rank-beginner">Beginner</div>
+                </div>
+                <div style="text-align: right">
+                    <h4 id="submissionCount">0 Requests</h4>
+                    <small style="color: var(--text-dim); font-size: 0.6rem;">Stored Locally</small>
+                </div>
+            </div>
+
+            <form id="applyForm" onsubmit="handleApply(event)">
+                <div class="form-group">
+                    <label>Website Name</label>
+                    <input type="text" id="siteName" required placeholder="e.g. My Awesome Blog">
+                </div>
+                <div class="form-group">
+                    <label>Banner Image URL (Optional)</label>
+                    <input type="url" id="siteBanner" placeholder="https://imgur.com/your-banner.jpg">
+                </div>
+                <div class="form-group">
+                    <label>URL</label>
+                    <input type="url" id="siteUrl" required placeholder="https://yourwebsite.com">
+                </div>
+                <div class="form-group">
+                    <label>Your LinkedIn Profile</label>
+                    <input type="url" id="userLinkedin" required placeholder="https://linkedin.com/in/yourprofile">
+                </div>
+                <div class="form-group">
+                    <label>Category (Theme)</label>
+                    <select id="siteCategory" required>
+                        <option value="Food">Food</option>
+                        <option value="Fun">Fun</option>
+                        <option value="Knowledgeable">Knowledgeable</option>
+                        <option value="Tech">Tech</option>
+                        <option value="Health">Health</option>
+                        <option value="Business">Business</option>
+                        <option value="Art">Art</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Fashion">Fashion</option>
+                        <option value="Gaming">Gaming</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Business Model</label>
+                    <select id="siteModel" required>
+                        <option value="Free">Free</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Combined">Combined (Freemium)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Traffic Goal (Monthly)</label>
+                    <select id="trafficGoal">
+                        <option value="1k-5k">1,000 - 5,000</option>
+                        <option value="5k-20k">5,000 - 20,000</option>
+                        <option value="20k-100k">20,000 - 100,000</option>
+                        <option value="100k+">100,000+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Brief Pitch</label>
+                    <textarea id="sitePitch" rows="4"
+                        placeholder="Tell us why your site deserves booming traffic..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Submit via Gmail for
+                    Approval</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="teleportModal">
+        <div class="teleport-content">
+            <div class="portal-animation"></div>
+            <div id="tierBadge" class="tier-badge"></div>
+            <h2 id="targetSiteName">Teleporting...</h2>
+            <p id="teleportStatus">Calibrating traffic nodes for maximum impact.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="logo">Sponseey</div>
+        <p>© 2026 Sponseey Platform. Manual Curation System.</p>
+        <a href="https://linkedin.com/in/omarbinamir" target="_blank" class="linkedin-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+            </svg>
+            Connect on LinkedIn
+        </a>
+    </footer>
+
+    <script>
+        // Database of Manually Approved Sites
+        // To add a new site, simply add an entry here.
+        const SPONSEEY_DATABASE = {
+            "Food": [
+                { name: "Gourmet Hub", url: "https://example.com/food1", tier: "Tycoon" },
+                { name: "Recipe Master", url: "https://example.com/food2", tier: "Typoon" },
+                { name: "Snack Central", url: "https://example.com/food3", tier: "Tyzoon" }
+            ],
+            "Fun": [
+                { name: "Epic Jokes", url: "https://example.com/fun1", tier: "Tycoon" },
+                { name: "Meme Universe", url: "https://example.com/fun2", tier: "Typoon" }
+            ],
+            "Knowledgeable": [
+                { name: "Wiki Facts", url: "https://example.com/k1", tier: "Tycoon" },
+                { name: "Science Daily", url: "https://example.com/k2", tier: "Typoon" }
+            ],
+            "Tech": [
+                { name: "Dev Pulse", url: "https://example.com/tech1", tier: "Tycoon" }
+            ],
+            "Health": [
+                { name: "Fit Matrix", url: "https://example.com/health1", tier: "Tycoon" }
+            ],
+            "Business": [
+                { name: "Stark Insights", url: "https://example.com/biz1", tier: "Tycoon" }
+            ],
+            "Art": [
+                { name: "Canvas Flow", url: "https://example.com/art1", tier: "Tycoon" }
+            ],
+            "Travel": [
+                { name: "Vagabond Tales", url: "https://example.com/travel1", tier: "Tycoon" }
+            ],
+            "Fashion": [
+                { name: "Style Wave", url: "https://example.com/fashion1", tier: "Tycoon" }
+            ],
+            "Gaming": [
+                { name: "Pixel Quest", url: "https://example.com/game1", tier: "Tycoon" }
+            ]
+        };
+
+        const categories = [
+            { id: "Food", desc: "Taste the best digital recipes." },
+            { id: "Fun", desc: "Entertainment at the speed of light." },
+            { id: "Knowledgeable", desc: "Expand your brain bandwidth." },
+            { id: "Tech", desc: "Cutting edge tools and news." },
+            { id: "Health", desc: "Peak performance for your body." },
+            { id: "Business", desc: "Scaling ideas to the moon." },
+            { id: "Art", desc: "Visual storytelling redefined." },
+            { id: "Travel", desc: "Explore the global grid." },
+            { id: "Fashion", desc: "Couture in the digital age." },
+            { id: "Gaming", desc: "Level up your experience." }
+        ];
+
+        function init() {
+            const grid = document.getElementById('categoryGrid');
+            categories.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.innerHTML = `
+                    <h3>${cat.id}</h3>
+                    <p>${cat.desc}</p>
+                `;
+                card.onclick = () => window.location.href = `sponseey-${cat.id.toLowerCase()}.html`;
+                grid.appendChild(card);
+            });
+        }
+
+        function startTeleport(categoryId) {
+            const sites = SPONSEEY_DATABASE[categoryId];
+            if (!sites || sites.length === 0) {
+                alert("No sites approved in this category yet. Be the first!");
+                return;
+            }
+
+            // Logic: Weight based on tier
+            // Tycoon: 60%, Typoon: 30%, Tyzoon: 10%
+            let selectedSite;
+            const rand = Math.random();
+
+            const tycoonSites = sites.filter(s => s.tier === "Tycoon");
+            const typoonSites = sites.filter(s => s.tier === "Typoon");
+            const tyzoonSites = sites.filter(s => s.tier === "Tyzoon");
+
+            if (rand < 0.6 && tycoonSites.length > 0) {
+                selectedSite = tycoonSites[Math.floor(Math.random() * tycoonSites.length)];
+            } else if (rand < 0.9 && typoonSites.length > 0) {
+                selectedSite = typoonSites[Math.floor(Math.random() * typoonSites.length)];
+            } else if (tyzoonSites.length > 0) {
+                selectedSite = tyzoonSites[Math.floor(Math.random() * tyzoonSites.length)];
+            } else {
+                selectedSite = sites[Math.floor(Math.random() * sites.length)];
+            }
+
+            showModal(selectedSite);
+        }
+
+        function showModal(site) {
+            const modal = document.getElementById('teleportModal');
+            const badge = document.getElementById('tierBadge');
+            const name = document.getElementById('targetSiteName');
+
+            badge.className = `tier-badge tier-${site.tier.toLowerCase()}`;
+            badge.textContent = site.tier;
+            name.textContent = `Teleporting to ${site.name}`;
+
+            modal.classList.add('active');
+
+            setTimeout(() => {
+                window.location.href = site.url;
+            }, 2500);
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+
+            if (body.getAttribute('data-theme') === 'glass-light') {
+                body.removeAttribute('data-theme');
+                icon.textContent = '🌙';
+                text.textContent = 'Dark Mode';
+            } else if (body.getAttribute('data-theme') === 'neon-vibe') {
+                body.setAttribute('data-theme', 'glass-light');
+                icon.textContent = '☀️';
+                text.textContent = 'Light Mode';
+            } else {
+                body.setAttribute('data-theme', 'neon-vibe');
+                icon.textContent = '⚡';
+                text.textContent = 'Neon Mode';
+            }
+        }
+
+        function handleApply(e) {
+            e.preventDefault();
+
+            // Increment Submission Counter
+            let count = parseInt(localStorage.getItem('sponseey_submissions') || '0');
+            count++;
+            localStorage.setItem('sponseey_submissions', count.toString());
+            updateRankDisplay();
+
+            const name = document.getElementById('siteName').value;
+            const banner = document.getElementById('siteBanner').value || "No banner provided";
+            const url = document.getElementById('siteUrl').value;
+            const linkedin = document.getElementById('userLinkedin').value;
+            const cat = document.getElementById('siteCategory').value;
+            const model = document.getElementById('siteModel').value;
+            const goal = document.getElementById('trafficGoal').value;
+            const pitch = document.getElementById('sitePitch').value;
+
+            const mailBody = `Hello Sponseey Team,%0D%0A%0D%0AI would like to apply for website adding check.%0D%0A%0D%0ASite Name: ${name}%0D%0ABanner URL: ${banner}%0D%0AURL: ${url}%0D%0ALinkedIn: ${linkedin}%0D%0ACategory: ${cat}%0D%0ABusiness Model: ${model}%0D%0ATraffic Goal: ${goal}%0D%0APitch: ${pitch}%0D%0A%0D%0AThank you!`;
+
+            window.location.href = `mailto:oforomarbinamir@gmail.com?subject=Website Adding Check: ${name}&body=${mailBody}`;
+        }
+
+        function updateRankDisplay() {
+            const count = parseInt(localStorage.getItem('sponseey_submissions') || '0');
+            const rankEl = document.getElementById('userRank');
+            const countEl = document.getElementById('submissionCount');
+
+            countEl.textContent = `${count} Request${count !== 1 ? 's' : ''}`;
+
+            if (count >= 100) {
+                rankEl.textContent = "SPAMMER ALERT";
+                rankEl.className = "rank-badge rank-spammer";
+            } else if (count >= 30) {
+                rankEl.textContent = "Webdinger";
+                rankEl.className = "rank-badge rank-webdinger";
+            } else if (count >= 10) {
+                rankEl.textContent = "WEBBER";
+                rankEl.className = "rank-badge rank-webber";
+            } else {
+                rankEl.textContent = "Beginner";
+                rankEl.className = "rank-badge rank-beginner";
+            }
+        }
+
+        init();
+        updateRankDisplay();
+    </script>
+</body>
+
+</html>
