@@ -621,8 +621,10 @@
                     <textarea id="sitePitch" rows="4"
                         placeholder="Tell us why your site deserves booming traffic..."></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Submit via Gmail for
-                    Approval</button>
+                <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%;">
+                    <span id="btnText">Submit for Manual Approval</span>
+                    <span id="btnTimer" style="display: none; margin-left: 10px; font-weight: bold;">(5s)</span>
+                </button>
             </form>
         </div>
     </section>
@@ -780,27 +782,75 @@
             }
         }
 
-        function handleApply(e) {
+        async function handleApply(e) {
             e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnTimer = document.getElementById('btnTimer');
+            const count = parseInt(localStorage.getItem('sponseey_submissions') || '0');
+            
+            // Calculate cooldown
+            let cooldown = 5; // default 5s
+            if (count >= 30) cooldown = 60; // 1 minute
+            else if (count >= 10) cooldown = 10; // 5s doubled
 
-            // Increment Submission Counter
-            let count = parseInt(localStorage.getItem('sponseey_submissions') || '0');
-            count++;
-            localStorage.setItem('sponseey_submissions', count.toString());
-            updateRankDisplay();
+            // Disable button
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.style.cursor = 'not-allowed';
+            btnTimer.style.display = 'inline';
+            
+            // Send to Formspree
+            const formData = {
+                name: document.getElementById('siteName').value,
+                banner: document.getElementById('siteBanner').value || "No banner provided",
+                url: document.getElementById('siteUrl').value,
+                linkedin: document.getElementById('userLinkedin').value,
+                category: document.getElementById('siteCategory').value,
+                model: document.getElementById('siteModel').value,
+                goal: document.getElementById('trafficGoal').value,
+                pitch: document.getElementById('sitePitch').value,
+                userRank: document.getElementById('userRank').textContent,
+                totalSubmissions: count + 1
+            };
 
-            const name = document.getElementById('siteName').value;
-            const banner = document.getElementById('siteBanner').value || "No banner provided";
-            const url = document.getElementById('siteUrl').value;
-            const linkedin = document.getElementById('userLinkedin').value;
-            const cat = document.getElementById('siteCategory').value;
-            const model = document.getElementById('siteModel').value;
-            const goal = document.getElementById('trafficGoal').value;
-            const pitch = document.getElementById('sitePitch').value;
+            try {
+                btnText.textContent = "Sending...";
+                const response = await fetch('https://formsubmit.co/ajax/oforomarbinamir@gmail.com', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
 
-            const mailBody = `Hello Sponseey Team,%0D%0A%0D%0AI would like to apply for website adding check.%0D%0A%0D%0ASite Name: ${name}%0D%0ABanner URL: ${banner}%0D%0AURL: ${url}%0D%0ALinkedIn: ${linkedin}%0D%0ACategory: ${cat}%0D%0ABusiness Model: ${model}%0D%0ATraffic Goal: ${goal}%0D%0APitch: ${pitch}%0D%0A%0D%0AThank you!`;
+                // Increment Submission Counter
+                localStorage.setItem('sponseey_submissions', (count + 1).toString());
+                updateRankDisplay();
+                btnText.textContent = "Sent Successfully!";
+                
+                // Start Timer
+                let remaining = cooldown;
+                const timerInt = setInterval(() => {
+                    remaining--;
+                    btnTimer.textContent = `(${remaining}s)`;
+                    if (remaining <= 0) {
+                        clearInterval(timerInt);
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.style.cursor = 'pointer';
+                        btnText.textContent = "Submit for Manual Approval";
+                        btnTimer.style.display = 'none';
+                        btnTimer.textContent = `(${cooldown}s)`;
+                    }
+                }, 1000);
 
-            window.location.href = `mailto:oforomarbinamir@gmail.com?subject=Website Adding Check: ${name}&body=${mailBody}`;
+            } catch (error) {
+                alert("Submission failed. Please check your connection.");
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btnText.textContent = "Submit for Manual Approval";
+                btnTimer.style.display = 'none';
+            }
         }
 
         function updateRankDisplay() {
