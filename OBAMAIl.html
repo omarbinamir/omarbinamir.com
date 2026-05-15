@@ -463,6 +463,11 @@
             color: #1e40af;
         }
 
+        .label-firey_ordersystem {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
         .compose-form {
             padding: 30px;
         }
@@ -739,44 +744,17 @@
 
             <div id="successMessage" class="success-message"></div>
 
-            <!-- Login Form -->
-            <div id="loginForm">
-                <div class="input-group">
-                    <label>Email Address</label>
-                    <input type="email" id="loginEmail" placeholder="you@omarbinamir.com">
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter your password">
-                </div>
-                <button class="btn" onclick="login()">Sign In</button>
-                <div class="toggle-form">
-                    Don't have an account? <a href="#" onclick="toggleForm(); return false;">Sign Up</a>
-                </div>
-            </div>
-
-            <!-- Signup Form -->
-            <div id="signupForm" style="display: none;">
-                <div class="account-type">
-                    <button class="account-type-btn active" onclick="setAccountType('personal')">Personal</button>
-                    <button class="account-type-btn" onclick="setAccountType('business')">Business</button>
-                </div>
-                <div class="input-group">
-                    <label>Full Name</label>
-                    <input type="text" id="signupName" placeholder="Your full name">
-                </div>
-                <div class="input-group">
-                    <label>Email Address</label>
-                    <input type="email" id="signupEmail" placeholder="Choose your email">
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="signupPassword" placeholder="Create a password">
-                </div>
-                <button class="btn" onclick="signup()">Create Account</button>
-                <div class="toggle-form">
-                    Already have an account? <a href="#" onclick="toggleForm(); return false;">Sign In</a>
-                </div>
+            <!-- Google Login -->
+            <div id="loginForm" style="display: flex; flex-direction: column; gap: 15px;">
+                <button class="btn" style="background: #fff; color: #757575; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="loginWithGoogle()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width: 18px; height: 18px;" alt="Google">
+                    Log in with Google
+                </button>
+                <div style="text-align: center; color: #999; font-size: 14px;">OR</div>
+                <button class="btn" style="background: #fff; color: #757575; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="loginWithGoogle()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width: 18px; height: 18px;" alt="Google">
+                    Sign up with Google
+                </button>
             </div>
         </div>
     </div>
@@ -838,6 +816,10 @@
                         <div class="label-color" style="background: #3b82f6;"></div>
                         <span>Personal</span>
                     </div>
+                    <div class="label-item" onclick="filterByLabel('firey_ordersystem')">
+                        <div class="label-color" style="background: #ef4444;"></div>
+                        <span>FIREY orderSYSTEM</span>
+                    </div>
                 </div>
 
                 <div class="nav-item" onclick="showSettings()" style="margin-top: 20px;">
@@ -877,6 +859,7 @@
                                 <option value="">Select Label (Optional)</option>
                                 <option value="work">Work</option>
                                 <option value="personal">Personal</option>
+                                <option value="firey_ordersystem">FIREY orderSYSTEM</option>
                             </select>
                         </div>
                         <div class="form-field">
@@ -1060,11 +1043,13 @@
         }
 
         function logout() {
-            currentUser = null;
-            document.getElementById('loginContainer').style.display = 'flex';
-            document.getElementById('emailContainer').style.display = 'none';
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
+            if (window.firebaseSignOut) {
+                window.firebaseSignOut();
+            } else {
+                currentUser = null;
+                document.getElementById('loginContainer').style.display = 'flex';
+                document.getElementById('emailContainer').style.display = 'none';
+            }
         }
 
         function showSuccess(message) {
@@ -1514,6 +1499,64 @@
                 alert('Business account deleted');
             }
         }
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
+            authDomain: "obalabs-c56ab.firebaseapp.com",
+            databaseURL: "https://obalabs-c56ab-default-rtdb.firebaseio.com",
+            projectId: "obalabs-c56ab",
+            storageBucket: "obalabs-c56ab.firebasestorage.app",
+            messagingSenderId: "415868024118",
+            appId: "1:415868024118:web:4ea58785b6a175c4fbef97",
+            measurementId: "G-31STXB0DGM"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        window.loginWithGoogle = () => {
+            signInWithPopup(auth, provider).catch((error) => {
+                console.error(error);
+                alert("Error signing in: " + error.message);
+            });
+        };
+
+        window.firebaseSignOut = () => {
+            signOut(auth);
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const email = user.email;
+                currentUser = email; // Set global variable
+                if (!users[email]) {
+                    users[email] = { name: user.displayName || 'User', type: 'personal' };
+                }
+                if (!emails[email]) emails[email] = [];
+                if (!sentEmails[email]) sentEmails[email] = [];
+                if (!drafts[email]) drafts[email] = [];
+                if (!starredEmails[email]) starredEmails[email] = [];
+                if (!trash[email]) trash[email] = [];
+                if (!businessEmails[email]) businessEmails[email] = [];
+
+                const initials = (user.displayName || email).charAt(0).toUpperCase();
+                document.getElementById('userAvatar').textContent = initials;
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('emailContainer').style.display = 'block';
+                
+                updateCounts();
+                loadInbox();
+            } else {
+                currentUser = null;
+                document.getElementById('loginContainer').style.display = 'flex';
+                document.getElementById('emailContainer').style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>

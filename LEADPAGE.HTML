@@ -174,7 +174,59 @@
             margin-bottom: 40px;
         }
 
-        /* --- 5. PROJECT CARDS --- */
+        /* --- IFRAME APP VIEWER --- */
+        #app-viewer {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: var(--bg-deep);
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        #app-viewer.active {
+            display: block;
+            opacity: 1;
+        }
+
+        #app-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+            /* Apps assume white bg usually */
+        }
+
+        #close-app-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-glow);
+            color: var(--text-main);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 2010;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #close-app-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        /* --- 5. PROJECT CARDS (HREF STYLES) --- */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -226,24 +278,6 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-
-        /* Pulse Animation for New Badge */
-        @keyframes badgePulse {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            50% {
-                transform: scale(1.05);
-                opacity: 0.9;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
         }
 
         /* --- 6. BUTTONS & TOOLS --- */
@@ -348,6 +382,19 @@
         <div class="loader-ring"></div>
     </div>
 
+    <!-- App Viewer Container -->
+    <div id="app-viewer">
+        <button id="close-app-btn" onclick="closeApp()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Return to Dashboard
+        </button>
+        <iframe id="app-frame" src=""></iframe>
+    </div>
+
     <aside class="sidebar">
         <div class="brand-header">
             <div class="brand-icon"></div>
@@ -371,42 +418,98 @@
         <section id="view-overview" class="view active">
             <header>
                 <h1>My Projects</h1>
-                <p>Select a workspace to enter the development portal.</p>
+                <p>Select a project to load it directly inside the dashboard.</p>
             </header>
             <div class="card-grid">
 
-                <div class="glass-card" onclick="portalTo('pizza-plooza.html')">
-                    <div style="font-size: 1.8rem; margin-bottom: 20px;">🍕</div>
-                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Pizza Plooza</h3>
+                <!-- Media & Creation -->
+                <a href="OBATOONS.HTML" class="glass-card"
+                    style="text-decoration: none; color: inherit; display: block;">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">🎬</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Obatoons</h3>
                     <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
-                        A high-end interactive food customization engine for premium food experiences.
+                        Animation and cartoon platform.
                     </p>
                     <span class="status-badge"
-                        style="color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.2);">ACTIVE</span>
-                </div>
+                        style="color: #f59e0b; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);">ENTERTAINMENT</span>
+                </a>
 
-                <div class="glass-card" onclick="portalTo('ideal-linc.html')">
-                    <div style="font-size: 1.8rem; margin-bottom: 20px;">🔗</div>
-                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Ideal Linc</h3>
+                <!-- Communication -->
+                <a href="skeep.html" class="glass-card" style="text-decoration: none; color: inherit; display: block;">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">💬</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Skeep (Assistfy)</h3>
                     <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
-                        Minimalist performance tool for ultra-fast redirection and architecture.
+                        Enterprise chat suite with admin surveillance and decay.
                     </p>
                     <span class="status-badge"
-                        style="color: #06b6d4; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2);">STABLE</span>
-                </div>
+                        style="color: #06b6d4; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2);">COMMS</span>
+                </a>
 
-                <div class="glass-card" onclick="portalTo('Animateoba.html')"
-                    style="border: 1px solid #d946ef; box-shadow: 0 0 20px rgba(217, 70, 239, 0.15);">
-                    <div style="font-size: 1.8rem; margin-bottom: 20px;">✨</div>
-                    <h3 style="font-size: 1.3rem; margin-bottom: 10px; color: #f5d0fe;">AnimateOBA</h3>
+                <a href="communitytalk2.html" class="glass-card"
+                    style="text-decoration: none; color: inherit; display: block;">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">🌐</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Community Talk 2</h3>
                     <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
-                        The next-gen motion engine. Dash & blast your components into life with high-performance CSS
-                        orchestration.
+                        Forums and discussions for the network.
                     </p>
                     <span class="status-badge"
-                        style="color: #ffffff; background: #d946ef; border: 1px solid #f5d0fe; animation: badgePulse 2s infinite ease-in-out;">NEW
-                        ENGINE</span>
-                </div>
+                        style="color: #8b5cf6; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);">SOCIAL</span>
+                </a>
+
+                <a href="OBAMAIl.html" class="glass-card"
+                    style="text-decoration: none; color: inherit; display: block;">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">📧</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Obamail</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
+                        Premium internal mail and messaging platform.
+                    </p>
+                    <span class="status-badge"
+                        style="color: #ec4899; background: rgba(236,72,153,0.1); border: 1px solid rgba(236,72,153,0.2);">MAIL</span>
+                </a>
+
+                <!-- Utilities -->
+                <a href="terminal two.html" class="glass-card"
+                    style="text-decoration: none; color: inherit; display: block;">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">💻</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Terminal Two</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
+                        Advanced command-line interface web wrapper.
+                    </p>
+                    <span class="status-badge"
+                        style="color: #14b8a6; background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.2);">DEV</span>
+                </a>
+
+                <a href="websitegrader2.0.html" class="glass-card"
+                    style="text-decoration: none; color: inherit; display: block;">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">📊</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Web Grader 2.0</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
+                        Analyze and score website SEO and performance.
+                    </p>
+                    <span class="status-badge"
+                        style="color: #3b82f6; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2);">TOOL</span>
+                </a>
+
+                <a href="Showlio.html" class="glass-card"
+                    style="text-decoration: none; color: inherit; display: block;">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">🌟</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Showlio</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
+                        Portfolio and content presentation system.
+                    </p>
+                    <span class="status-badge"
+                        style="color: #eab308; background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.2);">SHOWCASE</span>
+                </a>
+
+                <a href="learny.html" class="glass-card" style="text-decoration: none; color: inherit; display: block;">
+                    <div style="font-size: 1.8rem; margin-bottom: 20px;">📚</div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 10px;">Learny</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">
+                        Educational and learning module platform.
+                    </p>
+                    <span class="status-badge"
+                        style="color: #ef4444; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);">EDU</span>
+                </a>
 
             </div>
         </section>
@@ -421,7 +524,8 @@
                 <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 30px;">
                     Start the drag-and-drop architect to build next-gen sites.
                 </p>
-                <button class="btn-launch-pro" onclick="portalTo('builder.html')">Launch Builder Engine</button>
+                <a href="builder.html" class="btn-launch-pro"
+                    style="text-decoration: none; display: inline-block;">Launch Builder Engine</a>
             </div>
         </section>
 
@@ -461,15 +565,34 @@
             body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
         }
 
-        // 3. THE HYPER-WARP PORTAL
+        // 3. THE HYPER-WARP PORTAL (IFRAME MODE)
         function portalTo(url) {
             document.body.classList.add('launching');
             setTimeout(() => {
                 document.getElementById('portal-overlay').classList.add('active');
             }, 300);
             setTimeout(() => {
-                window.location.href = url;
+                // Instead of window.location.href, we load it in an iframe to keep it "IN LEADPAGE"
+                // No external href shortcuts!
+                const viewer = document.getElementById('app-viewer');
+                const frame = document.getElementById('app-frame');
+                frame.src = url;
+                viewer.classList.add('active');
+
+                // Reset portal animation immediately so it's ready when they come back
+                document.getElementById('portal-overlay').classList.remove('active');
+                document.body.classList.remove('launching');
             }, 1100);
+        }
+
+        // 4. CLOSE APP AND RETURN
+        function closeApp() {
+            const viewer = document.getElementById('app-viewer');
+            const frame = document.getElementById('app-frame');
+            viewer.classList.remove('active');
+            setTimeout(() => {
+                frame.src = '';
+            }, 400); // clear after fade out
         }
     </script>
 </body>

@@ -1,20 +1,22 @@
 import time
 import threading
 from pynput.mouse import Button, Controller
-from pynput.keyboard import Listener, KeyCode
+from pynput.keyboard import Listener, KeyCode, Key
 
 # --- SETTINGS ---
-TOGGLE_KEY = KeyCode(char='s')  # Press 's' to start/stop clicking
+TOGGLE_KEY = Key.f6             # Press F6 to start/stop clicking
+QUIT_KEY = Key.esc              # Press ESC to quit
 CLICK_DELAY = 0.01              # Time between clicks (0.01 = very fast)
 MOUSE_BUTTON = Button.left      # Button to click (left or right)
 
 # --- GLOBAL VARIABLES ---
 clicking = False
+running = True
 mouse = Controller()
 
 def clicker():
     """The function that performs the clicking in a separate thread."""
-    while True:
+    while running:
         if clicking:
             mouse.click(MOUSE_BUTTON)
             time.sleep(CLICK_DELAY)
@@ -24,19 +26,23 @@ def clicker():
 
 def toggle_event(key):
     """Function to listen for the key press."""
-    global clicking
+    global clicking, running
+    if key == QUIT_KEY:
+        running = False
+        return False
     if key == TOGGLE_KEY:
         clicking = not clicking
         if clicking:
-            print(f"Auto-clicker STARTED. (Press '{TOGGLE_KEY.char}' to stop)")
+            print("Auto-clicker STARTED. (Press F6 to stop)")
         else:
-            print(f"Auto-clicker PAUSED. (Press '{TOGGLE_KEY.char}' to start)")
+            print("Auto-clicker PAUSED. (Press F6 to start)")
 
 # --- MAIN EXECUTION ---
 if __name__ == "__main__":
     print("---------------------------------------")
-    print(f"Program Running. Press '{TOGGLE_KEY.char}' to toggle clicking.")
-    print("Press CTRL+C in this terminal to close the program.")
+    print("Program Running.")
+    print("F6 = toggle clicking")
+    print("ESC = quit")
     print("---------------------------------------")
 
     # Start the clicking thread
