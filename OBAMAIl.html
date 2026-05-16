@@ -777,48 +777,15 @@
 
         <div class="email-body">
             <div class="sidebar">
-                <button class="compose-btn" onclick="showCompose()">
-                    <span>✉️</span> Compose
+                <button class="compose-btn" onclick="showOrderForm()" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);">
+                    <span>🍔</span> New Order
                 </button>
                 
-                <div class="nav-item active" onclick="showInbox()">
-                    <span class="icon">📥</span>
-                    <span>Inbox</span>
-                    <span class="count" id="inboxCount">0</span>
-                </div>
-                <div class="nav-item" onclick="showStarred()">
-                    <span class="icon">⭐</span>
-                    <span>Starred</span>
-                    <span class="count" id="starredCount">0</span>
-                </div>
-                <div class="nav-item" onclick="showSent()">
-                    <span class="icon">📤</span>
-                    <span>Sent</span>
-                    <span class="count" id="sentCount">0</span>
-                </div>
-                <div class="nav-item" onclick="showDrafts()">
-                    <span class="icon">📝</span>
-                    <span>Drafts</span>
-                    <span class="count" id="draftsCount">0</span>
-                </div>
-                <div class="nav-item" onclick="showTrash()">
-                    <span class="icon">🗑️</span>
-                    <span>Trash</span>
-                </div>
-
-                <div class="label-section">
-                    <div style="padding: 15px 10px 10px; color: #999; font-size: 12px; font-weight: 700;">LABELS</div>
-                    <div class="label-item" onclick="filterByLabel('work')">
-                        <div class="label-color" style="background: #fbbf24;"></div>
-                        <span>Work</span>
-                    </div>
-                    <div class="label-item" onclick="filterByLabel('personal')">
-                        <div class="label-color" style="background: #3b82f6;"></div>
-                        <span>Personal</span>
-                    </div>
-                    <div class="label-item" onclick="filterByLabel('firey_ordersystem')">
+                <div class="label-section" style="margin-top: 10px;">
+                    <div style="padding: 15px 10px 10px; color: #999; font-size: 12px; font-weight: 700;">SYSTEM</div>
+                    <div class="label-item active" onclick="showOrderForm()">
                         <div class="label-color" style="background: #ef4444;"></div>
-                        <span>FIREY orderSYSTEM</span>
+                        <span style="font-weight: 700;">Fos firey</span>
                     </div>
                 </div>
 
@@ -829,46 +796,29 @@
             </div>
 
             <div class="main-content" id="mainContent">
-                <!-- Inbox View -->
-                <div id="inboxView">
+                <!-- Order Form View -->
+                <div id="orderFormView">
                     <div class="content-header">
-                        <h3>Inbox</h3>
-                        <div class="header-actions">
-                            <button class="icon-btn" onclick="refreshInbox()" title="Refresh">🔄</button>
-                            <button class="icon-btn" onclick="deleteSelected()" title="Delete">🗑️</button>
-                            <button class="icon-btn" onclick="archiveSelected()" title="Archive">📦</button>
-                        </div>
-                    </div>
-                    <div class="email-list" id="emailList"></div>
-                </div>
-
-                <!-- Compose View -->
-                <div id="composeView" style="display: none;">
-                    <div class="content-header">
-                        <h3>New Message</h3>
+                        <h3>Fos firey Order System</h3>
                     </div>
                     <div class="compose-form">
                         <div class="form-field">
-                            <input type="email" id="composeTo" placeholder="To: recipient@example.com">
-                        </div>
-                        <div class="form-field">
-                            <input type="text" id="composeSubject" placeholder="Subject">
-                        </div>
-                        <div class="form-field">
-                            <select id="composeLabel">
-                                <option value="">Select Label (Optional)</option>
-                                <option value="work">Work</option>
-                                <option value="personal">Personal</option>
-                                <option value="firey_ordersystem">FIREY orderSYSTEM</option>
+                            <label style="display:block; margin-bottom: 8px; font-weight: 600;">Select Item</label>
+                            <select id="orderType" style="border-color: #ef4444;">
+                                <option value="Burger">🍔 Firey Burger</option>
+                                <option value="Biryani">🍛 Firey Biryani</option>
                             </select>
                         </div>
                         <div class="form-field">
-                            <textarea id="composeBody" placeholder="Compose your message..."></textarea>
+                            <label style="display:block; margin-bottom: 8px; font-weight: 600;">Quantity</label>
+                            <input type="number" id="orderQuantity" placeholder="Quantity" min="1" value="1" style="border-color: #ef4444;">
+                        </div>
+                        <div class="form-field">
+                            <label style="display:block; margin-bottom: 8px; font-weight: 600;">Notes</label>
+                            <textarea id="orderNotes" placeholder="Special instructions (e.g., extra spicy)..." style="min-height: 150px; border-color: #ef4444;"></textarea>
                         </div>
                         <div class="form-actions">
-                            <button class="send-btn" onclick="sendEmail()">Send ✈️</button>
-                            <button class="cancel-btn" onclick="saveDraft()">Save Draft</button>
-                            <button class="cancel-btn" onclick="showInbox()">Cancel</button>
+                            <button class="send-btn" onclick="sendOrder()" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); width: 100%;">Send Order via Mailmeteor</button>
                         </div>
                     </div>
                 </div>
@@ -1066,62 +1016,27 @@
             document.getElementById('draftsCount').textContent = (drafts[currentUser] || []).length;
         }
 
-        function showInbox() {
-            currentView = 'inbox';
-            document.getElementById('inboxView').style.display = 'block';
-            document.getElementById('composeView').style.display = 'none';
+        function showOrderForm() {
+            currentView = 'order';
+            document.getElementById('orderFormView').style.display = 'block';
             document.getElementById('settingsView').style.display = 'none';
-            updateActiveNav(0);
-            loadInbox();
-        }
-
-        function showStarred() {
-            currentView = 'starred';
-            updateActiveNav(1);
-            loadStarred();
-        }
-
-        function showSent() {
-            currentView = 'sent';
-            updateActiveNav(2);
-            loadSent();
-        }
-
-        function showDrafts() {
-            currentView = 'drafts';
-            updateActiveNav(3);
-            loadDrafts();
-        }
-
-        function showTrash() {
-            currentView = 'trash';
-            updateActiveNav(4);
-            loadTrash();
-        }
-
-        function showCompose() {
-            document.getElementById('inboxView').style.display = 'none';
-            document.getElementById('composeView').style.display = 'block';
-            document.getElementById('settingsView').style.display = 'none';
-            document.getElementById('composeTo').value = '';
-            document.getElementById('composeSubject').value = '';
-            document.getElementById('composeBody').value = '';
-            document.getElementById('composeLabel').value = '';
         }
 
         function showSettings() {
-            document.getElementById('inboxView').style.display = 'none';
-            document.getElementById('composeView').style.display = 'none';
+            document.getElementById('orderFormView').style.display = 'none';
             document.getElementById('settingsView').style.display = 'block';
-            updateActiveNav(6);
             loadSettings();
         }
 
-        function updateActiveNav(index) {
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach((item, i) => {
-                item.classList.toggle('active', i === index);
-            });
+        function sendOrder() {
+            const type = document.getElementById('orderType').value;
+            const quantity = document.getElementById('orderQuantity').value;
+            const notes = document.getElementById('orderNotes').value;
+            
+            const subject = encodeURIComponent(`New ${type} Order (Qty: ${quantity})`);
+            const body = encodeURIComponent(`Order Details:\n\nItem: ${type}\nQuantity: ${quantity}\nNotes: ${notes}\n\nSent via Mailmeteor`);
+            
+            window.location.href = `mailto:FireyOrder@gmail.com?subject=${subject}&body=${body}`;
         }
 
         function loadInbox() {
@@ -1550,7 +1465,7 @@
                 document.getElementById('emailContainer').style.display = 'block';
                 
                 updateCounts();
-                loadInbox();
+                showOrderForm();
             } else {
                 currentUser = null;
                 document.getElementById('loginContainer').style.display = 'flex';
