@@ -4,576 +4,762 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OmarBinAmir | Pro Dashboard</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <title>OBA Labs | omarbinamir.com</title>
     <style>
-        /* --- 1. CORE THEME & VARIABLES --- */
-        :root {
-            --bg-deep: #000000;
-            --bg-sidebar: #050505;
-            --bg-card: rgba(15, 15, 18, 0.6);
-            --accent: #6366f1;
-            --accent-dim: rgba(99, 102, 241, 0.15);
-            --border-glow: rgba(99, 102, 241, 0.15);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --glass-blur: blur(20px);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="light"] {
-            --bg-deep: #f8fafc;
-            --bg-sidebar: #ffffff;
-            --bg-card: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-glow: #e2e8f0;
-        }
-
-        /* --- 2. LAYOUT & RESET --- */
-        * {
-            box-sizing: border-box;
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
-            outline: none;
+            box-sizing: border-box
         }
 
+        :root {
+            --blue: #4a9eff;
+            --cyan: #00d4ff;
+            --purple: #7c6dfa;
+            --white: #ffffff;
+            --dim: rgba(255, 255, 255, 0.5);
+            --dimmer: rgba(255, 255, 255, 0.28);
+            --glow-blue: rgba(74, 158, 255, 0.55);
+            --glow-cyan: rgba(0, 212, 255, 0.45);
+            --glow-purple: rgba(124, 109, 250, 0.4);
+        }
+
+        html,
         body {
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            height: 100vh;
-            display: flex;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
-            transition: background 0.4s ease;
+            background: #050508;
+            font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+            color: #fff
         }
 
-        /* --- 3. SIDEBAR (EMPIRELY STYLE) --- */
-        .sidebar {
-            width: 270px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border-glow);
-            display: flex;
-            flex-direction: column;
-            padding: 30px 20px;
-            z-index: 100;
+        #bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0
         }
 
-        .brand-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            font-size: 1.3rem;
-            margin-bottom: 40px;
-            padding-left: 10px;
-            letter-spacing: -0.5px;
+        #grid {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            background-image:
+                linear-gradient(rgba(74, 158, 255, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(74, 158, 255, 0.045) 1px, transparent 1px);
+            background-size: 70px 70px;
+            animation: gp 9s ease-in-out infinite;
         }
 
-        .brand-icon {
-            width: 38px;
-            height: 38px;
-            background: linear-gradient(135deg, #6366f1, #06b6d4, #8b5cf6);
-            background-size: 200% 200%;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            animation: gradientGlow 3s ease infinite;
-        }
+        @keyframes gp {
 
-        .brand-icon svg {
-            width: 22px;
-            height: 22px;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-        }
-
-        @keyframes gradientGlow {
-            0% {
-                background-position: 0% 50%;
-                box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-                transform: scale(1);
+            0%,
+            100% {
+                opacity: .35
             }
 
             50% {
-                background-position: 100% 50%;
-                box-shadow: 0 0 30px rgba(6, 182, 212, 0.8);
-                transform: scale(1.05);
+                opacity: .9
+            }
+        }
+
+        #centerGlow {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            background: radial-gradient(ellipse 70% 55% at 50% 50%,
+                    rgba(74, 158, 255, 0.06) 0%,
+                    rgba(124, 109, 250, 0.04) 40%,
+                    transparent 70%);
+            animation: cg 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes cg {
+            0% {
+                opacity: .6
             }
 
             100% {
-                background-position: 0% 50%;
-                box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-                transform: scale(1);
+                opacity: 1
             }
         }
 
-        .nav-section {
-            margin-bottom: 25px;
+        #vignette {
+            position: fixed;
+            inset: 0;
+            z-index: 3;
+            background: radial-gradient(ellipse at center, transparent 35%, rgba(5, 5, 8, 0.92) 100%);
         }
 
-        .nav-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            padding-left: 10px;
-            font-weight: 600;
-            opacity: 0.6;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: var(--transition);
-            cursor: pointer;
-            margin-bottom: 4px;
-        }
-
-        .nav-link:hover {
-            background: var(--accent-dim);
-            color: var(--text-main);
-            transform: translateX(5px);
-        }
-
-        .nav-link.active {
-            background: var(--accent-dim);
-            color: var(--accent);
-            box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.3);
-        }
-
-        .sidebar-bottom {
-            margin-top: auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
-        }
-
-        /* --- 4. MAIN WORKSPACE --- */
-        .workspace {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .view {
-            display: none;
-            max-width: 1000px;
-            margin: 0 auto;
-            animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .view.active {
-            display: block;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        header h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -0.8px;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            margin-bottom: 40px;
-        }
-
-        /* --- 5. COMPONENT: CARDS & GRIDS --- */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .glass-card {
-            background: var(--bg-card);
-            backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border-glow);
-            border-radius: 20px;
-            padding: 24px;
-            transition: var(--transition);
-        }
-
-        .glass-card:hover {
-            border-color: rgba(99, 102, 241, 0.4);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
-        }
-
-        /* --- 6. COMPONENT: ANALYTICS OPTIONS --- */
-        .analytics-nav {
-            display: flex;
-            gap: 20px;
-            border-bottom: 1px solid var(--border-glow);
-            margin-bottom: 30px;
-        }
-
-        .a-nav-item {
-            padding: 12px 4px;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            position: relative;
-        }
-
-        .a-nav-item.active {
-            color: var(--accent);
-        }
-
-        .a-nav-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
+        #scan {
+            position: fixed;
             left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--accent);
+            right: 0;
+            height: 1px;
+            z-index: 4;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.25), transparent);
+            animation: scanMove 8s linear infinite;
         }
 
-        .analytics-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
+        @keyframes scanMove {
+            0% {
+                top: -1px
+            }
+
+            100% {
+                top: 100vh
+            }
         }
 
-        .analytics-content.active {
-            display: block;
+        .streak {
+            position: fixed;
+            z-index: 2;
+            height: 1px;
+            opacity: 0;
+            animation: streakFly var(--d) linear var(--dl) infinite;
         }
 
-        @keyframes fadeIn {
-            from {
+        @keyframes streakFly {
+            0% {
                 opacity: 0;
+                transform: translateX(-120vw)
             }
 
-            to {
-                opacity: 1;
+            8% {
+                opacity: .8
+            }
+
+            90% {
+                opacity: .4
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(120vw)
             }
         }
 
-        /* --- 7. COMPONENT: SETTINGS UI --- */
-        .setting-row {
+        #topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 20;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border-glow);
-        }
-
-        .share-field {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-glow);
-            padding: 10px 15px;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .share-field input {
-            background: transparent;
-            border: none;
-            color: #06b6d4;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            flex: 1;
-        }
-
-        .btn-action {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        /* --- 8. THEME TOGGLE --- */
-        .toggle {
-            width: 48px;
-            height: 24px;
-            background: #222;
-            border-radius: 20px;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .toggle-dot {
-            width: 18px;
-            height: 18px;
-            background: #fff;
-            border-radius: 50%;
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        [data-theme="light"] .toggle {
-            background: var(--accent);
-        }
-
-        [data-theme="light"] .toggle-dot {
-            transform: translateX(24px);
-        }
-
-        /* --- 9. COMING SOON SPLASH --- */
-        .coming-soon {
-            height: 60vh;
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
+            padding: .9rem 2rem;
+            background: rgba(5, 5, 8, 0.55);
+            border-bottom: 1px solid rgba(74, 158, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
-        .coming-soon h2 {
-            font-size: 3rem;
-            font-weight: 900;
-            background: linear-gradient(to right, #6366f1, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .badge {
-            background: var(--accent-dim);
-            color: var(--accent);
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        /* Statistics Styling */
-        .stat-huge {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--accent);
-            font-family: 'JetBrains Mono';
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        #topbar .tbl {
+            font-size: .75rem;
+            font-weight: 400;
+            letter-spacing: .28em;
             text-transform: uppercase;
-            margin-top: 5px;
-            display: block;
+            color: rgba(255, 255, 255, .38);
+        }
+
+        #topbar .tbl span {
+            color: var(--blue);
+            text-shadow: 0 0 10px var(--blue);
+            font-weight: 500;
+        }
+
+        @keyframes dp {
+
+            0%,
+            100% {
+                opacity: .4;
+                transform: scale(.8)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.3)
+            }
+        }
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            padding-top: 48px;
+        }
+
+        .screen.active {
+            pointer-events: auto
+        }
+
+        #s1 .tagline-top {
+            font-size: clamp(.65rem, 1.4vw, .78rem);
+            letter-spacing: .32em;
+            text-transform: uppercase;
+            color: var(--blue);
+            text-shadow: 0 0 14px var(--blue);
+            margin-bottom: 1.4rem;
+            opacity: 0;
+            will-change: opacity, transform;
+        }
+
+        #s1 .hero-title {
+            font-size: clamp(3.2rem, 11vw, 9.5rem);
+            font-weight: 800;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            line-height: 1;
+            text-align: center;
+            background: linear-gradient(160deg, #ffffff 25%, #a8d4ff 55%, var(--blue) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 40px rgba(74, 158, 255, .45)) drop-shadow(0 0 90px rgba(74, 158, 255, .2));
+            will-change: transform, opacity, filter;
+        }
+
+        #s1 .tagline-bot {
+            font-size: clamp(.85rem, 2vw, 1.15rem);
+            font-weight: 300;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .45);
+            margin-top: 1.2rem;
+            opacity: 0;
+            will-change: opacity;
+        }
+
+        #s1 .hero-line {
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan), var(--purple), transparent);
+            margin: 1.8rem auto 0;
+            box-shadow: 0 0 16px var(--cyan);
+            will-change: width;
+        }
+
+        #s2 .glass {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(74, 158, 255, 0.18);
+            border-radius: 20px;
+            padding: clamp(2rem, 5vw, 3.8rem) clamp(2rem, 7vw, 5rem);
+            backdrop-filter: blur(48px);
+            -webkit-backdrop-filter: blur(48px);
+            box-shadow: 0 0 80px rgba(74, 158, 255, 0.07),
+                0 0 1px rgba(255, 255, 255, 0.08) inset;
+            max-width: min(740px, 92vw);
+            text-align: center;
+            will-change: transform, opacity;
+        }
+
+        #s2 .s2-logo {
+            font-size: clamp(1.9rem, 5vw, 3.4rem);
+            font-weight: 800;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #fff 30%, var(--blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 24px rgba(74, 158, 255, .5));
+            margin-bottom: .15em;
+        }
+
+        #s2 .s2-going {
+            font-size: clamp(.75rem, 1.8vw, 1rem);
+            font-weight: 300;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .42);
+            margin-bottom: .3em;
+        }
+
+        #s2 .s2-series {
+            font-size: clamp(1.3rem, 3.5vw, 2.4rem);
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            background: linear-gradient(120deg, var(--blue), var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 28px rgba(0, 212, 255, .55));
+            margin-bottom: 1.6rem;
+        }
+
+        #s2 .s2-div {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(74, 158, 255, .3), rgba(124, 109, 250, .3), transparent);
+            margin-bottom: 1.5rem;
+        }
+
+        #s2 .s2-body {
+            font-size: clamp(.82rem, 1.7vw, 1rem);
+            line-height: 1.9;
+            color: rgba(255, 255, 255, .38);
+            font-weight: 300;
+            letter-spacing: .025em;
+        }
+
+        #s3 .glass3 {
+            background: rgba(255, 255, 255, 0.022);
+            border: 1px solid rgba(0, 212, 255, 0.16);
+            border-radius: 20px;
+            padding: clamp(2.5rem, 5.5vw, 4.5rem) clamp(2rem, 8vw, 6rem);
+            backdrop-filter: blur(56px);
+            -webkit-backdrop-filter: blur(56px);
+            box-shadow: 0 0 100px rgba(0, 212, 255, 0.06),
+                0 0 1px rgba(255, 255, 255, 0.06) inset;
+            max-width: min(860px, 94vw);
+            text-align: center;
+            position: relative;
+            will-change: transform, opacity;
+        }
+
+        .brk {
+            position: absolute;
+            width: 18px;
+            height: 18px
+        }
+
+        .brk.tl {
+            top: -1px;
+            left: -1px;
+            border-top: 2px solid var(--cyan);
+            border-left: 2px solid var(--cyan);
+            border-radius: 4px 0 0 0;
+            box-shadow: -3px -3px 12px rgba(0, 212, 255, .35)
+        }
+
+        .brk.tr {
+            top: -1px;
+            right: -1px;
+            border-top: 2px solid var(--cyan);
+            border-right: 2px solid var(--cyan);
+            border-radius: 0 4px 0 0;
+            box-shadow: 3px -3px 12px rgba(0, 212, 255, .35)
+        }
+
+        .brk.bl {
+            bottom: -1px;
+            left: -1px;
+            border-bottom: 2px solid var(--cyan);
+            border-left: 2px solid var(--cyan);
+            border-radius: 0 0 0 4px;
+            box-shadow: -3px 3px 12px rgba(0, 212, 255, .35)
+        }
+
+        .brk.br {
+            bottom: -1px;
+            right: -1px;
+            border-bottom: 2px solid var(--cyan);
+            border-right: 2px solid var(--cyan);
+            border-radius: 0 0 4px 0;
+            box-shadow: 3px 3px 12px rgba(0, 212, 255, .35)
+        }
+
+        #s3 .s3-logo {
+            font-size: clamp(.72rem, 1.5vw, .85rem);
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .35);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .8rem;
+        }
+
+        #s3 .s3-logo::before,
+        #s3 .s3-logo::after {
+            content: '';
+            flex: 1;
+            max-width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(74, 158, 255, .35));
+        }
+
+        #s3 .s3-logo::after {
+            background: linear-gradient(90deg, rgba(74, 158, 255, .35), transparent);
+        }
+
+        #s3 .s3-est {
+            font-size: clamp(.7rem, 1.5vw, .85rem);
+            letter-spacing: .26em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            text-shadow: 0 0 14px var(--cyan);
+            margin-bottom: 1.8rem;
+        }
+
+        #s3 .date-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(.5rem, 2.5vw, 2rem);
+            margin-bottom: 1.8rem;
+        }
+
+        #s3 .dseg {
+            display: flex;
+            flex-direction: column;
+            align-items: center
+        }
+
+        #s3 .dnum {
+            font-size: clamp(3.8rem, 14vw, 10rem);
+            font-weight: 800;
+            letter-spacing: -.02em;
+            line-height: 1;
+            background: linear-gradient(180deg, #ffffff 0%, rgba(180, 220, 255, .7) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(0, 212, 255, .6)) drop-shadow(0 0 70px rgba(74, 158, 255, .3));
+            font-variant-numeric: tabular-nums;
+            will-change: opacity, transform;
+        }
+
+        #s3 .dlbl {
+            font-size: clamp(.52rem, 1.1vw, .68rem);
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: rgba(0, 212, 255, .55);
+            margin-top: .5rem;
+            font-weight: 400;
+        }
+
+        #s3 .dsep {
+            font-size: clamp(2.5rem, 8vw, 6.5rem);
+            font-weight: 100;
+            color: rgba(0, 212, 255, .28);
+            line-height: 1;
+            align-self: flex-start;
+            padding-top: .2em;
+        }
+
+        #s3 .s3-sub {
+            font-size: clamp(.7rem, 1.4vw, .82rem);
+            color: rgba(255, 255, 255, .25);
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .6rem;
+        }
+
+        #s3 .s3-sub::before,
+        #s3 .s3-sub::after {
+            content: '';
+            width: 28px;
+            height: 1px;
+            background: rgba(74, 158, 255, .25);
+        }
+
+        #s3 .dots {
+            display: flex;
+            gap: 7px;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        #s3 .dots span {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--blue);
+            box-shadow: 0 0 7px var(--blue);
+            animation: dp 1.8s ease-in-out infinite;
+        }
+
+        #s3 .dots span:nth-child(2) {
+            animation-delay: .18s
+        }
+
+        #s3 .dots span:nth-child(3) {
+            animation-delay: .36s
+        }
+
+        #s3 .dots span:nth-child(4) {
+            animation-delay: .54s
+        }
+
+        #s3 .dots span:nth-child(5) {
+            animation-delay: .72s
         }
     </style>
 </head>
 
-<body data-theme="dark">
+<body>
 
-    <aside class="sidebar">
-        <div class="brand-header">
-            <div class="brand-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
+    <canvas id="bg"></canvas>
+    <div id="grid"></div>
+    <div id="centerGlow"></div>
+    <div id="vignette"></div>
+    <div id="scan"></div>
+
+    <div id="topbar">
+        <div class="tbl"><span>omarbinamir</span>.com</div>
+    </div>
+
+    <div class="screen" id="s1">
+        <div class="tagline-top" id="tt">omarbinamir.com</div>
+        <div class="hero-title" id="ht">OBA LABS</div>
+        <div class="hero-line" id="hl"></div>
+        <div class="tagline-bot" id="tb">Innovation Beyond Imagination</div>
+    </div>
+
+    <div class="screen" id="s2">
+        <div class="glass" id="s2g">
+            <div class="s2-logo">OBA Labs</div>
+            <div class="s2-going">Is Going Through a</div>
+            <div class="s2-series">Series of Updates</div>
+            <div class="s2-div"></div>
+            <div class="s2-body">
+                The website is currently undergoing major improvements.<br>
+                We're adding new systems, features, and optimizations.<br>
+                Please check back soon.
             </div>
-            <span>omarbinamir</span>
         </div>
+    </div>
 
-        <div class="nav-section">
-            <div class="nav-link active" onclick="navigate('overview', this)">Overview</div>
+    <div class="screen" id="s3">
+        <div class="glass3" id="s3g">
+            <div class="brk tl"></div>
+            <div class="brk tr"></div>
+            <div class="brk bl"></div>
+            <div class="brk br"></div>
+            <div class="s3-logo">omarbinamir.com</div>
+            <div class="s3-est">Estimated Website Opening Time</div>
+            <div class="date-row">
+                <div class="dseg">
+                    <div class="dnum" id="d1">26</div>
+                    <div class="dlbl">Day</div>
+                </div>
+                <div class="dsep">/</div>
+                <div class="dseg">
+                    <div class="dnum" id="d2">10</div>
+                    <div class="dlbl">Month</div>
+                </div>
+                <div class="dsep">/</div>
+                <div class="dseg">
+                    <div class="dnum" id="d3">1</div>
+                    <div class="dlbl">Year</div>
+                </div>
+            </div>
+            <div class="s3-sub">Systems coming online</div>
+            <div class="dots">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
         </div>
-    </aside>
-
-    <main class="workspace">
-
-        <section id="view-overview" class="view active">
-            <header>
-                <h1>My Projects</h1>
-                <p>Manage and deploy your creative builds.</p>
-            </header>
-            <div class="card-grid">
-                <a href="skeepskype.html" class="glass-card" style="text-decoration: none; display: block;">
-                    <div style="font-size: 1.5rem; margin-bottom: 15px;">📱</div>
-                    <h3 style="color: var(--text-main);">Skeep</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Advanced application
-                        and portal.</p>
-                    <div style="display: flex; gap: 8px;">
-                        <span
-                            style="font-size: 0.7rem; color: var(--accent); background: var(--accent-dim); padding: 4px 8px; border-radius: 4px;">ACTIVE</span>
-                    </div>
-                </a>
-                <a href="Vbooks.vm.html" class="glass-card" style="text-decoration: none; display: block;">
-                    <div style="font-size: 1.5rem; margin-bottom: 15px;">📚</div>
-                    <h3 style="color: var(--text-main);">VBooks</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Virtual library and
-                        learning platform.</p>
-                    <div style="display: flex; gap: 8px;">
-                        <span
-                            style="font-size: 0.7rem; color: #06b6d4; background: rgba(6,182,212,0.1); padding: 4px 8px; border-radius: 4px;">STABLE</span>
-                    </div>
-                </a>
-            </div>
-        </section>
-
-        <section id="view-analytics" class="view">
-            <header>
-                <h1>Analytics Center</h1>
-                <p>Usage statistics and application tools.</p>
-            </header>
-
-            <div class="analytics-nav">
-                <div class="a-nav-item active" onclick="switchAnalytics('usage', this)">My Analytics</div>
-                <div class="a-nav-item" onclick="switchAnalytics('builder', this)">Website Builder</div>
-            </div>
-
-            <div id="usage-content" class="analytics-content active">
-                <div class="card-grid">
-                    <div class="glass-card">
-                        <span class="stat-label">Total Usage Time</span>
-                        <div class="stat-huge" id="usage-clock">128:42:15</div>
-                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Hours : Minutes :
-                            Seconds</p>
-                    </div>
-                    <div class="glass-card">
-                        <span class="stat-label">Subscription Tier</span>
-                        <div class="stat-huge" style="color: #06b6d4;">PRO</div>
-                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Active until Jan 2027
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="builder-content" class="analytics-content">
-                <div class="coming-soon">
-                    <span class="badge">BETA v0.1</span>
-                    <h2>Website Builder</h2>
-                    <p style="color: var(--text-muted); max-width: 400px; margin-top: 15px;">Craft professional landing
-                        pages with our drag-and-drop AI interface.</p>
-                    <div style="margin-top: 30px; font-weight: 700; color: var(--accent); letter-spacing: 2px;">COMING
-                        SOON</div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-settings" class="view">
-            <header>
-                <h1>System Settings</h1>
-                <p>Adjust your interface and profile sharing.</p>
-            </header>
-            <div class="glass-card" style="padding: 0 30px;">
-                <div class="setting-row">
-                    <div>
-                        <h4 style="font-weight: 600;">Theme Mode</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Toggle between dark and light themes.
-                        </p>
-                    </div>
-                    <div class="toggle" onclick="toggleTheme()">
-                        <div class="toggle-dot"></div>
-                    </div>
-                </div>
-                <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
-                    <h4 style="font-weight: 600;">Short Sharing Link</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Share your unique dashboard profile with
-                        others.</p>
-                    <div class="share-field">
-                        <input type="text" readonly value="https://clickly.net/short-shareing-link" id="share-input">
-                        <button class="btn-action" onclick="copyLink(this)">Copy</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-security" class="view">
-            <header>
-                <h1>Security</h1>
-                <p>Manage your account authentication and security protocols.</p>
-            </header>
-            <div class="glass-card">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                    <div style="color: #10b981; font-size: 1.5rem;">🛡️</div>
-                    <h4 style="font-weight: 600;">Account Protection Active</h4>
-                </div>
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 30px;">Two-factor authentication
-                    is enabled for your Google login.</p>
-                <button class="btn-action" style="background: transparent; border: 1px solid var(--border-glow);">View
-                    Access Logs</button>
-            </div>
-        </section>
-
-    </main>
+    </div>
 
     <script>
-        // 1. Navigation Controller
-        function navigate(viewId, el) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        (function () {
+            const cols = ['rgba(74,158,255,.65)', 'rgba(0,212,255,.55)', 'rgba(124,109,250,.5)', 'rgba(255,255,255,.35)'];
+            for (let i = 0; i < 7; i++) {
+                const el = document.createElement('div');
+                el.className = 'streak';
+                const w = 60 + Math.random() * 220;
+                const c = cols[i % cols.length];
+                el.style.cssText = `width:${w}px;top:${Math.random() * 100}vh;
+      background:linear-gradient(90deg,transparent,${c},transparent);
+      --d:${3.5 + Math.random() * 6}s;--dl:${Math.random() * 9}s;`;
+                document.body.appendChild(el);
+            }
+        })();
+    </script>
 
-            document.getElementById(`view-${viewId}`).classList.add('active');
-            el.classList.add('active');
+    <script>
+        const canvas = document.getElementById('bg');
+        const ctx = canvas.getContext('2d');
+        let W, H, pts = [];
+
+        function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight }
+
+        function Pt() {
+            this.x = Math.random() * W;
+            this.y = Math.random() * H;
+            this.r = .3 + Math.random() * .9;
+            this.vx = (Math.random() - .5) * .14;
+            this.vy = (Math.random() - .5) * .14;
+            this.a = .08 + Math.random() * .4;
+            this.c = Math.random() > .4 ? '#4a9eff' : Math.random() > .5 ? '#00d4ff' : '#7c6dfa';
         }
 
-        // 2. Analytics Sub-navigation
-        function switchAnalytics(contentId, el) {
-            document.querySelectorAll('.analytics-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.a-nav-item').forEach(i => i.classList.remove('active'));
+        Pt.prototype.tick = function () {
+            this.x += this.vx; this.y += this.vy;
+            if (this.x < 0 || this.x > W || this.y < 0 || this.y > H)
+                Object.assign(this, new Pt());
+        };
 
-            document.getElementById(`${contentId}-content`).classList.add('active');
-            el.classList.add('active');
+        function initPts() {
+            pts = [];
+            const n = Math.floor(W * H / 8000);
+            for (let i = 0; i < n; i++)pts.push(new Pt());
         }
 
-        // 3. Theme Management
-        function toggleTheme() {
-            const body = document.body;
-            const current = body.getAttribute('data-theme');
-            body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+        function drawLinks() {
+            const D = 100;
+            for (let i = 0; i < pts.length; i++) {
+                for (let j = i + 1; j < pts.length; j++) {
+                    const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+                    const d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < D) {
+                        ctx.beginPath();
+                        ctx.moveTo(pts[i].x, pts[i].y);
+                        ctx.lineTo(pts[j].x, pts[j].y);
+                        ctx.strokeStyle = `rgba(74,158,255,${.05 * (1 - d / D)})`;
+                        ctx.lineWidth = .4; ctx.stroke();
+                    }
+                }
+            }
         }
 
-        // 4. Utility: Copy Link
-        function copyLink(btn) {
-            const input = document.getElementById('share-input');
-            input.select();
-            navigator.clipboard.writeText(input.value);
-            const origText = btn.innerText;
-            btn.innerText = "COPIED";
-            btn.style.background = "#10b981";
-            setTimeout(() => { btn.innerText = origText; btn.style.background = ""; }, 2000);
+        function frame() {
+            ctx.clearRect(0, 0, W, H);
+            for (const p of pts) {
+                p.tick();
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = p.c; ctx.globalAlpha = p.a; ctx.fill(); ctx.globalAlpha = 1;
+            }
+            drawLinks();
+            requestAnimationFrame(frame);
         }
 
-        // 5. Analytics Clock: Fake Real-time Usage Update
-        let totalSeconds = 463335; // Approx 128 hours
-        setInterval(() => {
-            totalSeconds++;
-            const hrs = Math.floor(totalSeconds / 3600);
-            const mins = Math.floor((totalSeconds % 3600) / 60);
-            const secs = totalSeconds % 60;
-            document.getElementById('usage-clock').innerText =
-                `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }, 1000);
+        window.addEventListener('resize', () => { resize(); initPts() });
+        resize(); initPts(); frame();
+
+        function eio(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2 }
+
+        function tween(dur, fn) {
+            return new Promise(res => {
+                const s = performance.now();
+                (function step(now) {
+                    const r = Math.min((now - s) / dur, 1);
+                    fn(eio(r), r);
+                    r < 1 ? requestAnimationFrame(step) : res();
+                })(s);
+            });
+        }
+
+        function wait(ms) { return new Promise(r => setTimeout(r, ms)) }
+
+        const s1 = document.getElementById('s1');
+        const tt = document.getElementById('tt');
+        const ht = document.getElementById('ht');
+        const hl = document.getElementById('hl');
+        const tb = document.getElementById('tb');
+        const s2 = document.getElementById('s2');
+        const s2g = document.getElementById('s2g');
+        const s3 = document.getElementById('s3');
+        const s3g = document.getElementById('s3g');
+
+        async function run() {
+            await wait(500);
+
+            s1.style.opacity = '1'; s1.classList.add('active');
+            ht.style.opacity = '0'; ht.style.transform = 'scale(.85)'; ht.style.filter = 'blur(10px)';
+
+            await wait(100);
+            tt.style.transition = 'opacity .8s ease, transform .8s ease';
+            tt.style.opacity = '1';
+            tt.style.transform = 'translateY(-4px)';
+            setTimeout(() => { tt.style.transform = 'translateY(0)' }, 800);
+
+            await wait(300);
+
+            await tween(1200, t => {
+                ht.style.opacity = t;
+                ht.style.transform = `scale(${.85 + .15 * t})`;
+                ht.style.filter = `blur(${(1 - t) * 10}px)`;
+            });
+
+            await tween(700, t => {
+                hl.style.width = `${t * 220}px`;
+            });
+
+            tb.style.transition = 'opacity .9s ease';
+            tb.style.opacity = '1';
+
+            await wait(3000);
+
+            await tween(850, t => {
+                s1.style.transform = `translateX(${-t * 115}vw)`;
+                s1.style.filter = `blur(${t * 16}px)`;
+                s1.style.opacity = `${1 - t}`;
+            });
+            s1.style.opacity = '0'; s1.classList.remove('active');
+            s1.style.transform = ''; s1.style.filter = '';
+            await wait(100);
+
+            s2.style.opacity = '1'; s2.classList.add('active');
+            s2g.style.transform = 'scale(.68)';
+            s2g.style.opacity = '0'; s2g.style.filter = 'blur(14px)';
+
+            await tween(750, (t, r) => {
+                const ov = r < .75 ? Math.sin(r * Math.PI / .75) * .04 * (1 - r / .75) : 0;
+                s2g.style.transform = `scale(${.68 + .32 * t + ov})`;
+                s2g.style.opacity = t;
+                s2g.style.filter = `blur(${(1 - t) * 14}px)`;
+            });
+
+            await wait(4000);
+
+            await tween(850, t => {
+                s2g.style.transform = `scale(${1 + t * .03}) translateX(${-t * 115}vw)`;
+                s2g.style.filter = `blur(${t * 16}px)`;
+                s2g.style.opacity = `${1 - t}`;
+            });
+            s2.style.opacity = '0'; s2.classList.remove('active');
+            await wait(100);
+
+            s3.style.opacity = '1'; s3.classList.add('active');
+            s3g.style.transform = 'scale(.62)';
+            s3g.style.opacity = '0'; s3g.style.filter = 'blur(18px)';
+
+            await tween(900, (t, r) => {
+                const ov = r < .7 ? Math.sin(r * Math.PI / .7) * .06 * (1 - r / .7) : 0;
+                s3g.style.transform = `scale(${.62 + .38 * t + ov})`;
+                s3g.style.opacity = t;
+                s3g.style.filter = `blur(${(1 - t) * 18}px)`;
+            });
+
+            ['d1', 'd2', 'd3'].forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.style.opacity = '0'; el.style.transform = 'translateY(28px)';
+                setTimeout(() => {
+                    el.style.transition = 'opacity .55s ease, transform .55s cubic-bezier(.18,1.4,.4,1)';
+                    el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+                }, 180 + i * 160);
+            });
+
+            function flicker() {
+                ['d1', 'd2', 'd3'].forEach(id => {
+                    const el = document.getElementById(id);
+                    const f = .75 + Math.random() * .25;
+                    el.style.filter = `drop-shadow(0 0 ${28 * f}px rgba(0,212,255,${.65 * f}))
+                       drop-shadow(0 0 ${65 * f}px rgba(74,158,255,${.35 * f}))`;
+                });
+                setTimeout(flicker, 1600 + Math.random() * 2000);
+            }
+            setTimeout(flicker, 1000);
+        }
+
+        run();
     </script>
 </body>
 
