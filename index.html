@@ -1,160 +1,580 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OBA Labs | omarbinamir.com</title>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-    // ---------------- FIREBASE CONFIG ----------------
-    const firebaseConfig = {
-      apiKey: "AIzaSyDKjRSYZVcV_pJFlqu0h1hmyPshYKyNE7I",
-      authDomain: "obalabs-c56ab.firebaseapp.com",
-      projectId: "obalabs-c56ab",
-      appId: "1:415868024118:web:4ea58785b6a175c4fbef97"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
-    window.loginWithGoogle = async () => {
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (err) {
-        console.error("Auth error:", err);
-        alert("Login failed");
-      }
-    };
-
-    // ---------------- AUTH STATE & TELEPORT ----------------
-    onAuthStateChanged(auth, (user) => {
-      const greeting = document.getElementById("greeting");
-      const button = document.getElementById("loginBtn");
-
-      if (!greeting || !button) return;
-
-      if (user) {
-        const name = user.displayName || "Builder";
-        greeting.textContent = `Welcome back, ${name}! 🚀`;
-        button.style.display = "none";
-
-        // START TELEPORT SEQUENCE AFTER 5 SECONDS
-        setTimeout(() => {
-            const blackout = document.getElementById("blackout-overlay");
-            blackout.style.opacity = "1"; // Go Black
-            
-            setTimeout(() => {
-                window.location.href = "LEADPAGE.HTML"; // Teleport
-            }, 1000); 
-        }, 5000);
-
-      } else {
-        greeting.textContent = "Sign in please.";
-        button.style.display = "inline-block";
-      }
-    });
-  </script>
-
+  <title>OmarBinAmir | Pro Dashboard</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <style>
-    /* ---------- GLOBAL ---------- */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: system-ui, sans-serif; background: #000; color: #fff; overflow-x: hidden; }
+    /* --- 1. CORE THEME & VARIABLES --- */
+    :root {
+      --bg-deep: #000000;
+      --bg-sidebar: #050505;
+      --bg-card: rgba(15, 15, 18, 0.6);
+      --accent: #6366f1;
+      --accent-dim: rgba(99, 102, 241, 0.15);
+      --border-glow: rgba(99, 102, 241, 0.15);
+      --text-main: #ffffff;
+      --text-muted: #94a3b8;
+      --glass-blur: blur(20px);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-    /* ---------- BLACKOUT OVERLAY ---------- */
-    #blackout-overlay {
-        position: fixed;
-        inset: 0;
-        background: black;
+    [data-theme="light"] {
+      --bg-deep: #f8fafc;
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-glow: #e2e8f0;
+    }
+
+    /* --- 2. LAYOUT & RESET --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+      transition: background 0.4s ease;
+    }
+
+    /* --- 3. SIDEBAR (EMPIRELY STYLE) --- */
+    .sidebar {
+      width: 270px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-glow);
+      display: flex;
+      flex-direction: column;
+      padding: 30px 20px;
+      z-index: 100;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.3rem;
+      margin-bottom: 40px;
+      padding-left: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #6366f1, #06b6d4, #8b5cf6);
+      background-size: 200% 200%;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      animation: gradientGlow 3s ease infinite;
+    }
+
+    .brand-icon svg {
+      width: 22px;
+      height: 22px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    @keyframes gradientGlow {
+      0% {
+        background-position: 0% 50%;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        transform: scale(1);
+      }
+
+      50% {
+        background-position: 100% 50%;
+        box-shadow: 0 0 30px rgba(6, 182, 212, 0.8);
+        transform: scale(1.05);
+      }
+
+      100% {
+        background-position: 0% 50%;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        transform: scale(1);
+      }
+    }
+
+    .nav-section {
+      margin-bottom: 25px;
+    }
+
+    .nav-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-left: 10px;
+      font-weight: 600;
+      opacity: 0.6;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+      cursor: pointer;
+      margin-bottom: 4px;
+    }
+
+    .nav-link:hover {
+      background: var(--accent-dim);
+      color: var(--text-main);
+      transform: translateX(5px);
+    }
+
+    .nav-link.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.3);
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-glow);
+      border-radius: 16px;
+    }
+
+    /* --- 4. MAIN WORKSPACE --- */
+    .workspace {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .view {
+      display: none;
+      max-width: 1000px;
+      margin: 0 auto;
+      animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from {
         opacity: 0;
-        pointer-events: none;
-        z-index: 99999;
-        transition: opacity 1s ease-in-out;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    /* ---------- CURSOR ---------- */
-    .cursor {
-      width: 20px; height: 20px; border: 2px solid #00d4ff; border-radius: 50%;
-      position: fixed; pointer-events: none; z-index: 9999;
-      box-shadow: 0 0 20px #00d4ff; transition: transform 0.1s ease;
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 10px;
     }
 
-    nav {
-      position: fixed; width: 100%; padding: 1.5rem 5%; display: flex;
-      justify-content: space-between; align-items: center; backdrop-filter: blur(10px);
-      background: rgba(0,0,0,.6); border-bottom: 1px solid rgba(0,212,255,.2); z-index: 1000;
+    header p {
+      color: var(--text-muted);
+      margin-bottom: 40px;
     }
 
-    .logo {
-      font-size: 2rem; font-weight: 700; color: #00d4ff;
-      background: linear-gradient(135deg, #00d4ff, #0077ff);
-      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    /* --- 5. COMPONENT: CARDS & GRIDS --- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
     }
 
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { color: #fff; text-decoration: none; transition: color 0.3s ease; }
-    .nav-links a:hover { color: #00d4ff; }
-
-    .hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; }
-    .grid-bg {
-      position: absolute; inset: 0;
-      background: linear-gradient(rgba(0,212,255,.1) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(0,212,255,.1) 1px, transparent 1px);
-      background-size: 50px 50px; transform: rotateX(60deg);
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border-glow);
+      border-radius: 20px;
+      padding: 24px;
+      transition: var(--transition);
     }
 
-    .hero-content { z-index: 2; }
-    h1 {
-      font-size: 4.5rem; letter-spacing: 5px; color: #00d4ff;
-      background: linear-gradient(135deg, #00d4ff, #0077ff);
-      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
     }
 
-    .subtitle { color: #00d4ff; margin-bottom: 2rem; font-size: 1.5rem; }
-
-    .cta-button {
-      padding: 1rem 3rem; border: 2px solid #00d4ff; background: transparent;
-      color: #00d4ff; cursor: pointer; font-size: 1.1rem; transition: all 0.3s ease;
+    /* --- 6. COMPONENT: ANALYTICS OPTIONS --- */
+    .analytics-nav {
+      display: flex;
+      gap: 20px;
+      border-bottom: 1px solid var(--border-glow);
+      margin-bottom: 30px;
     }
-    .cta-button:hover { background: #00d4ff; color: #000; box-shadow: 0 0 30px #00d4ff; }
 
-    #greeting { margin-top: 1.5rem; font-size: 1.8rem; color: #00d4ff; }
+    .a-nav-item {
+      padding: 12px 4px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      position: relative;
+    }
+
+    .a-nav-item.active {
+      color: var(--accent);
+    }
+
+    .a-nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .analytics-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .analytics-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* --- 7. COMPONENT: SETTINGS UI --- */
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-glow);
+    }
+
+    .share-field {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-glow);
+      padding: 10px 15px;
+      border-radius: 10px;
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .share-field input {
+      background: transparent;
+      border: none;
+      color: #06b6d4;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      flex: 1;
+    }
+
+    .btn-action {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    /* --- 8. THEME TOGGLE --- */
+    .toggle {
+      width: 48px;
+      height: 24px;
+      background: #222;
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .toggle-dot {
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    [data-theme="light"] .toggle {
+      background: var(--accent);
+    }
+
+    [data-theme="light"] .toggle-dot {
+      transform: translateX(24px);
+    }
+
+    /* --- 9. COMING SOON SPLASH --- */
+    .coming-soon {
+      height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .coming-soon h2 {
+      font-size: 3rem;
+      font-weight: 900;
+      background: linear-gradient(to right, #6366f1, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge {
+      background: var(--accent-dim);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    /* Statistics Styling */
+    .stat-huge {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: 'JetBrains Mono';
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 5px;
+      display: block;
+    }
   </style>
 </head>
 
-<body>
-  <div id="blackout-overlay"></div>
+<body data-theme="dark">
 
-  <div class="cursor"></div>
-
-  <nav>
-    <div class="logo">OBA LABS</div>
-    <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#">Features</a></li>
-      <li><a href="#">About</a></li>
-    </ul>
-  </nav>
-
-  <section class="hero" id="home">
-    <div class="grid-bg"></div>
-    <div class="hero-content">
-      <h1>OBA LABS</h1>
-      <p class="subtitle">Innovation Beyond Imagination</p>
-      <button id="loginBtn" class="cta-button" onclick="loginWithGoogle()">Sign in with Google</button>
-      <div id="greeting">Loading…</div>
+  <aside class="sidebar">
+    <div class="brand-header">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+        </svg>
+      </div>
+      <span>omarbinamir</span>
     </div>
-  </section>
+
+    <div class="nav-section">
+      <div class="nav-link active" onclick="navigate('overview', this)">Overview</div>
+    </div>
+  </aside>
+
+  <main class="workspace">
+
+    <section id="view-overview" class="view active">
+      <header>
+        <h1>My Projects</h1>
+        <p>Manage and deploy your creative builds.</p>
+      </header>
+      <div class="card-grid">
+        <a href="skeepskype.html" class="glass-card" style="text-decoration: none; display: block;">
+          <div style="font-size: 1.5rem; margin-bottom: 15px;">📱</div>
+          <h3 style="color: var(--text-main);">Skeep</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Advanced application
+            and portal.</p>
+          <div style="display: flex; gap: 8px;">
+            <span
+              style="font-size: 0.7rem; color: var(--accent); background: var(--accent-dim); padding: 4px 8px; border-radius: 4px;">ACTIVE</span>
+          </div>
+        </a>
+        <a href="Vbooks.vm.html" class="glass-card" style="text-decoration: none; display: block;">
+          <div style="font-size: 1.5rem; margin-bottom: 15px;">📚</div>
+          <h3 style="color: var(--text-main);">VBooks</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Virtual library and
+            learning platform.</p>
+          <div style="display: flex; gap: 8px;">
+            <span
+              style="font-size: 0.7rem; color: #06b6d4; background: rgba(6,182,212,0.1); padding: 4px 8px; border-radius: 4px;">STABLE</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section id="view-analytics" class="view">
+      <header>
+        <h1>Analytics Center</h1>
+        <p>Usage statistics and application tools.</p>
+      </header>
+
+      <div class="analytics-nav">
+        <div class="a-nav-item active" onclick="switchAnalytics('usage', this)">My Analytics</div>
+        <div class="a-nav-item" onclick="switchAnalytics('builder', this)">Website Builder</div>
+      </div>
+
+      <div id="usage-content" class="analytics-content active">
+        <div class="card-grid">
+          <div class="glass-card">
+            <span class="stat-label">Total Usage Time</span>
+            <div class="stat-huge" id="usage-clock">128:42:15</div>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Hours : Minutes :
+              Seconds</p>
+          </div>
+          <div class="glass-card">
+            <span class="stat-label">Subscription Tier</span>
+            <div class="stat-huge" style="color: #06b6d4;">PRO</div>
+            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Active until Jan 2027
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div id="builder-content" class="analytics-content">
+        <div class="coming-soon">
+          <span class="badge">BETA v0.1</span>
+          <h2>Website Builder</h2>
+          <p style="color: var(--text-muted); max-width: 400px; margin-top: 15px;">Craft professional landing
+            pages with our drag-and-drop AI interface.</p>
+          <div style="margin-top: 30px; font-weight: 700; color: var(--accent); letter-spacing: 2px;">COMING
+            SOON</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-settings" class="view">
+      <header>
+        <h1>System Settings</h1>
+        <p>Adjust your interface and profile sharing.</p>
+      </header>
+      <div class="glass-card" style="padding: 0 30px;">
+        <div class="setting-row">
+          <div>
+            <h4 style="font-weight: 600;">Theme Mode</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Toggle between dark and light themes.
+            </p>
+          </div>
+          <div class="toggle" onclick="toggleTheme()">
+            <div class="toggle-dot"></div>
+          </div>
+        </div>
+        <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
+          <h4 style="font-weight: 600;">Short Sharing Link</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Share your unique dashboard profile with
+            others.</p>
+          <div class="share-field">
+            <input type="text" readonly value="https://clickly.net/short-shareing-link" id="share-input">
+            <button class="btn-action" onclick="copyLink(this)">Copy</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-security" class="view">
+      <header>
+        <h1>Security</h1>
+        <p>Manage your account authentication and security protocols.</p>
+      </header>
+      <div class="glass-card">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+          <div style="color: #10b981; font-size: 1.5rem;">🛡️</div>
+          <h4 style="font-weight: 600;">Account Protection Active</h4>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 30px;">Two-factor authentication
+          is enabled for your Google login.</p>
+        <button class="btn-action" style="background: transparent; border: 1px solid var(--border-glow);">View
+          Access Logs</button>
+      </div>
+    </section>
+
+  </main>
 
   <script>
-    const cursor = document.querySelector(".cursor");
-    document.addEventListener("mousemove", e => {
-      cursor.style.left = e.clientX - 10 + "px";
-      cursor.style.top = e.clientY - 10 + "px";
-    });
+    // 1. Navigation Controller
+    function navigate(viewId, el) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+      document.getElementById(`view-${viewId}`).classList.add('active');
+      el.classList.add('active');
+    }
+
+    // 2. Analytics Sub-navigation
+    function switchAnalytics(contentId, el) {
+      document.querySelectorAll('.analytics-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.a-nav-item').forEach(i => i.classList.remove('active'));
+
+      document.getElementById(`${contentId}-content`).classList.add('active');
+      el.classList.add('active');
+    }
+
+    // 3. Theme Management
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme');
+      body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+
+    // 4. Utility: Copy Link
+    function copyLink(btn) {
+      const input = document.getElementById('share-input');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      const origText = btn.innerText;
+      btn.innerText = "COPIED";
+      btn.style.background = "#10b981";
+      setTimeout(() => { btn.innerText = origText; btn.style.background = ""; }, 2000);
+    }
+
+    // 5. Analytics Clock: Fake Real-time Usage Update
+    let totalSeconds = 463335; // Approx 128 hours
+    setInterval(() => {
+      totalSeconds++;
+      const hrs = Math.floor(totalSeconds / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      const secs = totalSeconds % 60;
+      document.getElementById('usage-clock').innerText =
+        `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }, 1000);
   </script>
 </body>
+
 </html>
