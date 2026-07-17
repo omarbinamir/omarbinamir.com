@@ -1431,6 +1431,7 @@
         document.getElementById('checkout-btn').onclick = async () => {
             if (cart.length === 0) return;
             alert("Order Dispatched. Thermal Load cleared. +1 Token earned.");
+            localStorage.setItem('oba_firePoints', (parseInt(localStorage.getItem('oba_firePoints')) || 0) + 1);
             if (userState.authenticated) {
                 userState.tokens += 1;
                 await saveToDB();
