@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Aligns content starting from the top */
+    align-items: center;
+    /* Centers everything horizontally */
+    text-align: center;
+    padding: 60px 20px;
+    /* Generous spacing at the top of the page */
+}
+
+.Start {
+    margin-bottom: 8rem;
+    /* Pushes the buttons down so they rest comfortably in the center */
+}
+
+.Start h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    color: #38bdf8;
+    margin-bottom: 0.5rem;
+}
+
+.Start p {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+.website-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 600px;
+}
+
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    min-width: 180px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+}
+
+.btn .text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f8fafc;
+    letter-spacing: 0.025em;
+}
+
+.btn:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(129, 140, 248, 0.3);
+}
+
+.btn:hover .text {
+    color: #0f172a;
+}
+
+.btn:active {
+    transform: translateY(0);
+}

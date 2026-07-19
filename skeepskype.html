@@ -1,182 +1,1463 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Skeep Talk – Conference Mode (Fixed)</title>
+  <title>Skeep Talk – Conference Mode</title>
   <style>
+    :root {
+      --brand: #0078d7;
+      --brand-dark: #005fa8;
+      --brand-light: #00aff0;
+      --bg: #f0f8ff;
+      --panel-bg: #ffffff;
+      --text: #1a1a1a;
+      --chat-bubble: #f1f4f8;
+      --chat-bubble-mine: #e6f4ff;
+      --gray: #9aa0a6;
+      --danger: #ff5b5b;
+      --success: #51cf66;
+    }
+
+    body.dark {
+      --bg: #10141a;
+      --panel-bg: #1b2129;
+      --text: #eef2f6;
+      --chat-bubble: #262e38;
+      --chat-bubble-mine: #16374d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       display: flex;
       height: 100vh;
-      background: #f0f8ff;
-      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      overflow: hidden;
+      transition: background 0.25s ease, color 0.25s ease;
     }
 
+    /* ---------------- Sidebar ---------------- */
+
     .left {
-      width: 250px;
-      background: #0078d7;
+      width: 270px;
+      background: linear-gradient(160deg, var(--brand), var(--brand-dark) 140%);
+      background-size: 200% 200%;
+      animation: gradientShift 14s ease infinite;
       color: white;
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 14px;
+      flex-shrink: 0;
+      overflow-y: auto;
     }
+
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 0%;
+      }
+
+      50% {
+        background-position: 100% 100%;
+      }
+
+      100% {
+        background-position: 0% 0%;
+      }
+    }
+
+    .left h3 {
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      opacity: 0.85;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .left-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #theme-toggle {
+      background: rgba(255, 255, 255, 0.18);
+      padding: 6px 8px;
+      font-size: 14px;
+      border-radius: 6px;
+    }
+
+    #my-id {
+      font-family: 'Consolas', monospace;
+      font-size: 15px;
+      background: rgba(0, 0, 0, 0.18);
+      padding: 8px 10px;
+      border-radius: 6px;
+      word-break: break-all;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-spinner {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .my-profile-box {
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.2s ease;
+    }
+
+    .my-profile-box:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .my-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      flex-shrink: 0;
+      background: var(--gray);
+      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    }
+
+    .my-avatar.speaking {
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35);
+      transform: scale(1.08);
+    }
+
+    #my-name-display {
+      font-weight: bold;
+    }
+
+    .edit-link {
+      color: #dff0ff;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      opacity: 0.85;
+      transition: opacity 0.15s ease;
+    }
+
+    .edit-link:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    input {
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      width: 100%;
+      outline: none;
+      transition: box-shadow 0.15s ease;
+    }
+
+    input:focus {
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+    }
+
+    button {
+      padding: 10px;
+      background: var(--brand-light);
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .left button {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .left button:hover {
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .spacer {
+      flex: 1;
+    }
+
+    .mic-cam-row,
+    .extra-controls-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .toggle-btn.off {
+      background: var(--danger);
+    }
+
+    .toggle-btn.active {
+      background: var(--success);
+      color: #063;
+    }
+
+    .participant-count {
+      font-size: 12px;
+      opacity: 0.85;
+      text-align: center;
+    }
+
+    .shortcuts-hint {
+      font-size: 11px;
+      opacity: 0.65;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* ---------------- Main area ---------------- */
 
     .right {
       flex: 1;
-      padding: 20px;  
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      min-width: 0;
+      position: relative;
     }
 
     #videos {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
+      align-content: flex-start;
+    }
+
+    .video-tile {
+      position: relative;
+      width: 200px;
+      height: 150px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      animation: tileIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      transition: box-shadow 0.15s ease, width 0.25s ease, height 0.25s ease;
+      cursor: pointer;
+      resize: both;
+      min-width: 160px;
+      min-height: 120px;
+      max-width: 900px;
+      max-height: 700px;
+    }
+
+    .video-tile.pinned {
+      width: 480px;
+      height: 360px;
+      order: -1;
+    }
+
+    .video-tile:fullscreen,
+    .video-tile.is-fullscreen {
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none;
+      max-height: none;
+      resize: none;
+    }
+
+    .video-tile:fullscreen video,
+    .video-tile.is-fullscreen video {
+      object-fit: contain;
+      background: black;
+    }
+
+    .video-tile:fullscreen .name-tag,
+    .video-tile.is-fullscreen .name-tag {
+      font-size: 16px;
+      padding: 8px 14px;
+      bottom: 20px;
+      left: 20px;
+    }
+
+    @keyframes tileIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.85) translateY(10px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .video-tile.speaking-ring {
+      box-shadow: 0 0 0 3px var(--ring-color, var(--success)), 0 4px 14px rgba(0, 0, 0, 0.2);
     }
 
     video {
-      width: 200px;
-      height: 150px;
-      background: black;
-      border-radius: 10px;
+      width: 100%;
+      height: 100%;
+      background: #14181c;
+      display: block;
+      object-fit: cover;
     }
+
+    video.mirrored {
+      transform: scaleX(-1);
+    }
+
+    .name-tag {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 180px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      backdrop-filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .name-tag .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--gray);
+      transition: background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .name-tag .dot.speaking {
+      box-shadow: 0 0 6px 1px currentColor;
+    }
+
+    .waiting-text {
+      opacity: 0.75;
+      font-style: italic;
+    }
+
+    .leave-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 13px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      opacity: 0;
+      transition: opacity 0.15s ease, background 0.15s ease;
+    }
+
+    .video-tile:hover .leave-btn {
+      opacity: 1;
+    }
+
+    .leave-btn:hover {
+      background: var(--danger);
+    }
+
+    .fullscreen-btn {
+      position: absolute;
+      top: 6px;
+      right: 34px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 12px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      opacity: 0;
+      transition: opacity 0.15s ease, background 0.15s ease;
+    }
+
+    .video-tile:hover .fullscreen-btn {
+      opacity: 1;
+    }
+
+    .fullscreen-btn:hover {
+      background: var(--brand-light);
+    }
+
+    .video-tile.is-fullscreen .fullscreen-btn,
+    .video-tile:fullscreen .fullscreen-btn {
+      opacity: 1;
+      top: 16px;
+      right: 50px;
+    }
+
+    .pin-hint {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .video-tile:hover .pin-hint {
+      opacity: 1;
+    }
+
+    /* ---------------- Reactions ---------------- */
+
+    .reaction-bar {
+      display: flex;
+      gap: 6px;
+    }
+
+    .reaction-btn {
+      background: var(--panel-bg);
+      color: var(--text);
+      font-size: 18px;
+      padding: 6px 10px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .reaction-btn:hover {
+      background: var(--chat-bubble);
+    }
+
+    .floating-reaction {
+      position: absolute;
+      bottom: 40px;
+      font-size: 28px;
+      pointer-events: none;
+      animation: floatUp 1.6s ease-out forwards;
+      z-index: 50;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(0.6);
+      }
+
+      15% {
+        transform: translateY(-10px) scale(1.1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-140px) scale(1);
+      }
+    }
+
+    /* ---------------- Chat ---------------- */
 
     #chat-log {
       flex: 1;
-      background: white;
-      padding: 10px;
+      background: var(--panel-bg);
+      padding: 12px;
       overflow-y: auto;
-      border-radius: 6px;
+      border-radius: 10px;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: background 0.25s ease;
+    }
+
+    .chat-line {
+      animation: chatIn 0.25s ease;
+      max-width: 80%;
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: var(--chat-bubble);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .chat-line.mine {
+      align-self: flex-end;
+      background: var(--chat-bubble-mine);
+    }
+
+    @keyframes chatIn {
+      0% {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-name {
+      font-weight: bold;
+      margin-right: 4px;
+    }
+
+    .chat-time {
+      font-size: 11px;
+      opacity: 0.55;
+      margin-left: 6px;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
     }
 
     #chat-input {
-      padding: 10px;
-      width: 100%;
+      flex: 1;
+      background: var(--panel-bg);
+      color: var(--text);
     }
 
-    button {
-      padding: 10px;
-      background: #00aff0;
-      color: white;
-      border: none;
+    /* ---------------- Profile modal ---------------- */
+
+    #profile-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 30, 60, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: overlayIn 0.2s ease;
+    }
+
+    @keyframes overlayIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    #profile-modal {
+      background: white;
+      color: #1a1a1a;
+      width: 340px;
+      max-width: 90vw;
+      padding: 26px;
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: modalIn 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    }
+
+    @keyframes modalIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(14px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    #profile-modal h2 {
+      margin: 0 0 4px 0;
+      color: var(--brand);
+    }
+
+    #profile-modal p {
+      margin: 0 0 8px 0;
+      color: #555;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .color-picker {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
       cursor: pointer;
-      border-radius: 5px;
+      border: 3px solid transparent;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.15);
+    }
+
+    .color-swatch.selected {
+      border-color: #222;
+      transform: scale(1.15);
+    }
+
+    #profile-modal button {
+      margin-top: 8px;
+      background: var(--brand);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ---------------- Toasts ---------------- */
+
+    #toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 2000;
+    }
+
+    .toast {
+      background: #222;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+      animation: toastIn 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2), toastOut 0.25s ease 2.6s forwards;
+      max-width: 280px;
+    }
+
+    .toast.error {
+      background: var(--danger);
+    }
+
+    .toast.success {
+      background: var(--success);
+    }
+
+    @keyframes toastIn {
+      0% {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes toastOut {
+      to {
+        opacity: 0;
+        transform: translateX(40px);
+      }
     }
   </style>
 </head>
+
 <body>
+
+  <!-- Profile setup modal shown at start -->
+  <div id="profile-modal-overlay">
+    <div id="profile-modal">
+      <h2>Create your profile</h2>
+      <p>Set up your profile before joining the call — your name and color will be shown to everyone you talk to on
+        Skeep.</p>
+      <input id="profile-name-input" placeholder="Your name" maxlength="20" />
+      <div>
+        <p style="margin-bottom:6px;">Pick a color</p>
+        <div class="color-picker" id="color-picker"></div>
+      </div>
+      <button onclick="saveProfile()">Start Talking</button>
+    </div>
+  </div>
+
   <div class="left">
-    <h3>Skeep ID:</h3>
-    <div id="my-id">loading...</div>
+    <div class="left-header-row">
+      <h3>Skeep ID</h3>
+      <button id="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
+    </div>
+    <div id="my-id"><span class="status-spinner"></span> loading...</div>
+
+    <div class="my-profile-box">
+      <div class="my-avatar" id="my-avatar-preview">?</div>
+      <div>
+        <div id="my-name-display">Not set</div>
+        <a class="edit-link" onclick="editProfile(); return false;">Edit profile</a>
+      </div>
+    </div>
+
     <button onclick="copyMyId()">Copy ID</button>
     <input id="target-id" placeholder="Friend ID" />
     <button onclick="addParticipant()">Add Friend</button>
+
+    <div class="participant-count" id="participant-count">Just you in the call</div>
+
+    <div class="spacer"></div>
+
+    <div class="mic-cam-row">
+      <button class="toggle-btn" id="mic-toggle" onclick="toggleMic()">🎤 Mic</button>
+      <button class="toggle-btn" id="cam-toggle" onclick="toggleCam()">📷 Cam</button>
+    </div>
+    <div class="extra-controls-row">
+      <button class="toggle-btn" id="share-toggle" onclick="toggleScreenShare()">🖥️ Share</button>
+      <button class="toggle-btn" id="mirror-toggle" onclick="toggleMirror()">🪞 Mirror</button>
+    </div>
+
+    <div class="shortcuts-hint">Shortcuts: M mute · C camera · S share</div>
   </div>
+
   <div class="right">
     <div id="videos">
-      <video id="my-video" autoplay muted></video>
+      <div class="video-tile" id="tile-self">
+        <video id="my-video" autoplay muted class="mirrored"></video>
+        <div class="name-tag" id="my-name-tag">
+          <span class="dot" id="my-dot"></span>
+          <span id="my-tag-text">You</span>
+        </div>
+        <button class="fullscreen-btn" onclick="event.stopPropagation(); toggleFullscreen('self');"
+          title="Fullscreen">⛶</button>
+        <div class="pin-hint">Click to pin · drag corner to resize</div>
+      </div>
     </div>
+
+    <div class="reaction-bar" id="reaction-bar">
+      <button class="reaction-btn" data-emoji="👍">👍</button>
+      <button class="reaction-btn" data-emoji="❤️">❤️</button>
+      <button class="reaction-btn" data-emoji="🎉">🎉</button>
+      <button class="reaction-btn" data-emoji="😂">😂</button>
+      <button class="reaction-btn" data-emoji="👏">👏</button>
+    </div>
+
     <div id="chat-log"></div>
-    <input id="chat-input" placeholder="Type here..." onkeydown="if(event.key==='Enter') sendMessage()" />
-    <button onclick="sendMessage()">Send</button>
+    <div class="chat-input-row">
+      <input id="chat-input" placeholder="Type here..." onkeydown="if(event.key==='Enter') sendMessage()" />
+      <button onclick="sendMessage()">Send</button>
+    </div>
   </div>
+
+  <div id="toast-container"></div>
 
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <script>
+    /* =========================================================
+       Skeep Talk
+       - PeerJS-based video/data mesh
+       - Skeep ID = slug(name) + 5 random digits
+       - Each peer gets exactly ONE tile, tracked in a Map so
+         duplicate/late events can never create a stray tile or
+         leave one stuck on "Waiting for profile…"
+       - Extras: screen share, reactions, pin/fullscreen tiles,
+         dark mode, keyboard shortcuts, mirror toggle, sound cues
+       ========================================================= */
+
     const myIdDisplay = document.getElementById('my-id');
     const myVideo = document.getElementById('my-video');
     const videosContainer = document.getElementById('videos');
     const chatLog = document.getElementById('chat-log');
+    const participantCountEl = document.getElementById('participant-count');
 
-    let peer = new Peer();
-    let localStream;
-    let connectedIds = new Set();
-    let connections = [];
+    let peer = null;
+    let localStream = null;
+    let screenStream = null;
+    let micOn = true;
+    let camOn = true;
+    let mirrorOn = true;
+    let pinnedPeerId = null; // null means the tile is unpinned; 'self' is allowed too
+
+    // One authoritative record per remote peer id. This is the single
+    // source of truth for "have we already got a tile / connection for
+    // this person" — nothing else is allowed to duplicate it.
+    const peers = new Map();
+
+    function getOrCreatePeerRecord(peerId) {
+      if (!peers.has(peerId)) {
+        peers.set(peerId, {
+          tile: null,
+          videoEl: null,
+          dotEl: null,
+          tagTextEl: null,
+          profile: null,
+          call: null,
+          conn: null,
+          gotStream: false,
+          gotProfile: false
+        });
+      }
+      return peers.get(peerId);
+    }
+
+    function updateParticipantCount() {
+      const n = peers.size;
+      participantCountEl.textContent = n === 0
+        ? 'Just you in the call'
+        : n === 1
+          ? 'You + 1 other'
+          : `You + ${n} others`;
+    }
+
+    // ---------------- Toasts ----------------
+
+    function showToast(message, kind) {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = 'toast' + (kind ? ' ' + kind : '');
+      el.textContent = message;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+
+    // ---------------- Sound cues ----------------
+    // Small synthesized beeps so join/leave events are noticeable even if
+    // you're not looking at the screen — no external audio files needed.
+
+    const sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playTone(freq, duration, volume) {
+      try {
+        const osc = sharedAudioCtx.createOscillator();
+        const gain = sharedAudioCtx.createGain();
+        osc.frequency.value = freq;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(volume || 0.08, sharedAudioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, sharedAudioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(sharedAudioCtx.destination);
+        osc.start();
+        osc.stop(sharedAudioCtx.currentTime + duration);
+      } catch (e) { /* audio not available — silently skip */ }
+    }
+
+    function playJoinSound() { playTone(660, 0.18); setTimeout(() => playTone(880, 0.18), 90); }
+    function playLeaveSound() { playTone(440, 0.2); setTimeout(() => playTone(300, 0.25), 90); }
+
+    // ---------------- Skeep ID generation ----------------
+    // Turns a display name into a unique-ish Skeep ID by appending 5 random
+    // digits, e.g. "Claude" -> "claude48213". Retries with a fresh suffix
+    // if that exact id is somehow already taken on the signaling server.
+
+    function slugifyName(name) {
+      return name.trim().toLowerCase().replace(/[^a-z0-9]/g, '') || 'user';
+    }
+
+    function randomDigits(count) {
+      let digits = '';
+      for (let i = 0; i < count; i++) digits += Math.floor(Math.random() * 10);
+      return digits;
+    }
+
+    function generateSkeepId(name) {
+      return slugifyName(name) + randomDigits(5);
+    }
+
+    function initPeer(customId) {
+      peer = new Peer(customId);
+
+      peer.on('open', id => {
+        myIdDisplay.textContent = id;
+      });
+
+      peer.on('error', err => {
+        if (err.type === 'unavailable-id') {
+          initPeer(generateSkeepId(myProfile.name));
+        } else {
+          console.error('Peer error:', err);
+          showToast('Connection error: ' + err.type, 'error');
+        }
+      });
+
+      peer.on('call', call => {
+        const rec = getOrCreatePeerRecord(call.peer);
+        if (rec.call) {
+          // Already have a call with this peer — just answer so media keeps
+          // flowing, but never set up a second tile for the same person.
+          call.answer(localStream);
+          return;
+        }
+        rec.call = call;
+        call.answer(localStream);
+        wireUpCall(call.peer, call);
+      });
+
+      peer.on('connection', conn => {
+        const rec = getOrCreatePeerRecord(conn.peer);
+        if (rec.conn) return;
+        rec.conn = conn;
+        wireUpConnection(conn.peer, conn);
+      });
+    }
+
+    // ---------------- Profile state ----------------
+
+    const PROFILE_COLORS = ['#00aff0', '#ff6b6b', '#51cf66', '#f7b731', '#a55eea', '#ff8fab', '#20c997', '#fd7e14'];
+    let myProfile = { name: '', color: PROFILE_COLORS[0] };
+
+    function buildColorPicker() {
+      const picker = document.getElementById('color-picker');
+      picker.innerHTML = '';
+      PROFILE_COLORS.forEach((color, i) => {
+        const swatch = document.createElement('div');
+        swatch.className = 'color-swatch' + (i === 0 ? ' selected' : '');
+        swatch.style.background = color;
+        swatch.dataset.color = color;
+        swatch.onclick = () => {
+          document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+          swatch.classList.add('selected');
+          myProfile.color = color;
+        };
+        picker.appendChild(swatch);
+      });
+    }
+    buildColorPicker();
+
+    function saveProfile() {
+      const nameInput = document.getElementById('profile-name-input');
+      const name = nameInput.value.trim();
+      if (!name) {
+        showToast('Enter a name first!', 'error');
+        return;
+      }
+      myProfile.name = name;
+      document.getElementById('profile-modal-overlay').classList.add('hidden');
+      updateMyProfileUI();
+
+      if (sharedAudioCtx.state === 'suspended') {
+        sharedAudioCtx.resume();
+      }
+
+      if (!peer) {
+        const skeepId = generateSkeepId(myProfile.name);
+        myIdDisplay.innerHTML = '<span class="status-spinner"></span> connecting...';
+        initPeer(skeepId);
+      } else {
+        broadcastProfile();
+      }
+    }
+
+    function editProfile() {
+      document.getElementById('profile-name-input').value = myProfile.name;
+      document.querySelectorAll('.color-swatch').forEach(s => {
+        s.classList.toggle('selected', s.dataset.color === myProfile.color);
+      });
+      document.getElementById('profile-modal-overlay').classList.remove('hidden');
+    }
+
+    function updateMyProfileUI() {
+      document.getElementById('my-name-display').textContent = myProfile.name;
+      document.getElementById('my-avatar-preview').textContent = initials(myProfile.name);
+      document.getElementById('my-tag-text').textContent = myProfile.name + ' (You)';
+    }
+
+    function initials(name) {
+      if (!name) return '?';
+      return name.trim().split(/\s+/).map(w => w[0].toUpperCase()).slice(0, 2).join('');
+    }
+
+    function broadcastProfile() {
+      peers.forEach(rec => {
+        if (rec.conn && rec.conn.open) {
+          rec.conn.send({ type: 'profile', name: myProfile.name, color: myProfile.color });
+        }
+      });
+    }
+
+    // ---------------- Local media ----------------
 
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
       localStream = stream;
       myVideo.srcObject = stream;
+      attachVoiceActivity(
+        stream,
+        [document.getElementById('my-dot'), document.getElementById('my-avatar-preview')],
+        document.getElementById('tile-self'),
+        () => myProfile.color
+      );
+    }).catch(() => {
+      showToast('Could not access camera/microphone', 'error');
     });
 
-    peer.on('open', id => {
-      myIdDisplay.textContent = id;
-    });
+    function toggleMic() {
+      if (!localStream) return;
+      micOn = !micOn;
+      localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+      const btn = document.getElementById('mic-toggle');
+      btn.textContent = micOn ? '🎤 Mic' : '🔇 Muted';
+      btn.classList.toggle('off', !micOn);
+    }
 
-    peer.on('call', call => {
-      if (connectedIds.has(call.peer)) {
-        call.answer(localStream);
+    function toggleCam() {
+      if (!localStream) return;
+      camOn = !camOn;
+      localStream.getVideoTracks().forEach(t => t.enabled = camOn);
+      const btn = document.getElementById('cam-toggle');
+      btn.textContent = camOn ? '📷 Cam' : '🚫 Cam off';
+      btn.classList.toggle('off', !camOn);
+    }
+
+    function toggleMirror() {
+      mirrorOn = !mirrorOn;
+      myVideo.classList.toggle('mirrored', mirrorOn);
+      document.getElementById('mirror-toggle').classList.toggle('active', mirrorOn);
+    }
+
+    // ---------------- Screen sharing ----------------
+    // Swaps the outgoing video track on every active call for a screen-share
+    // track, and swaps it back automatically if the user stops sharing from
+    // the browser's own "stop sharing" control.
+
+    function replaceOutgoingVideoTrack(track) {
+      peers.forEach(rec => {
+        if (rec.call && rec.call.peerConnection) {
+          const sender = rec.call.peerConnection.getSenders().find(s => s.track && s.track.kind === 'video');
+          if (sender) sender.replaceTrack(track);
+        }
+      });
+    }
+
+    async function toggleScreenShare() {
+      const btn = document.getElementById('share-toggle');
+
+      if (screenStream) {
+        screenStream.getTracks().forEach(t => t.stop());
+        screenStream = null;
+        if (localStream) {
+          replaceOutgoingVideoTrack(localStream.getVideoTracks()[0]);
+          myVideo.srcObject = localStream;
+        }
+        btn.textContent = '🖥️ Share';
+        btn.classList.remove('active');
         return;
       }
-      connectedIds.add(call.peer);
-      call.answer(localStream);
-      setupCallStream(call);
-      connections.push(call);
-    });
 
-    peer.on('connection', conn => {
-      if (connectedIds.has(conn.peer)) return;
-      connectedIds.add(conn.peer);
-      setupConnection(conn);
-      connections.push(conn);
-    });
+      try {
+        screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        const screenTrack = screenStream.getVideoTracks()[0];
+        replaceOutgoingVideoTrack(screenTrack);
+        myVideo.srcObject = screenStream;
+        btn.textContent = '🖥️ Sharing';
+        btn.classList.add('active');
+
+        // If the user hits the browser's own "Stop sharing" button, revert cleanly.
+        screenTrack.onended = () => {
+          if (screenStream) toggleScreenShare();
+        };
+      } catch (e) {
+        showToast('Screen share cancelled', 'error');
+      }
+    }
+
+    // ---------------- Connecting to a friend ----------------
 
     function addParticipant() {
       const targetId = document.getElementById('target-id').value.trim();
-      if (!targetId) return alert("Enter a friend ID!");
-      if (connectedIds.has(targetId)) return alert("Already connected to this person!");
+      if (!targetId) return showToast('Enter a friend ID!', 'error');
+      if (targetId === (peer && peer.id)) return showToast("That's your own ID!", 'error');
 
-      connectedIds.add(targetId);
+      const rec = getOrCreatePeerRecord(targetId);
+      if (rec.call || rec.conn) {
+        return showToast('Already connected to this person!', 'error');
+      }
 
       const call = peer.call(targetId, localStream);
-      setupCallStream(call);
-      connections.push(call);
+      rec.call = call;
+      wireUpCall(targetId, call);
 
       const conn = peer.connect(targetId);
-      setupConnection(conn);
-      connections.push(conn);
+      rec.conn = conn;
+      wireUpConnection(targetId, conn);
+
+      document.getElementById('target-id').value = '';
     }
 
-    function setupCallStream(call) {
-      call.on('stream', remoteStream => {
-        const vid = document.createElement('video');
-        vid.autoplay = true;
-        vid.srcObject = remoteStream;
-        videosContainer.appendChild(vid);
+    function ensureTile(peerId) {
+      const rec = getOrCreatePeerRecord(peerId);
+      if (rec.tile) return rec; // already built — never build twice for the same peer
+
+      const tile = document.createElement('div');
+      tile.className = 'video-tile';
+      tile.id = 'tile-' + peerId;
+      tile.onclick = () => togglePin(peerId);
+
+      const vid = document.createElement('video');
+      vid.autoplay = true;
+
+      const tag = document.createElement('div');
+      tag.className = 'name-tag';
+      const dot = document.createElement('span');
+      dot.className = 'dot';
+      const tagText = document.createElement('span');
+      tagText.className = 'waiting-text';
+      tagText.textContent = 'Waiting for profile…';
+      tag.appendChild(dot);
+      tag.appendChild(tagText);
+
+      const leaveBtn = document.createElement('button');
+      leaveBtn.className = 'leave-btn';
+      leaveBtn.textContent = '✕';
+      leaveBtn.title = 'Disconnect';
+      leaveBtn.onclick = (e) => { e.stopPropagation(); removePeer(peerId); };
+
+      const fullscreenBtn = document.createElement('button');
+      fullscreenBtn.className = 'fullscreen-btn';
+      fullscreenBtn.textContent = '⛶';
+      fullscreenBtn.title = 'Fullscreen';
+      fullscreenBtn.onclick = (e) => { e.stopPropagation(); toggleFullscreen(peerId); };
+
+      const pinHint = document.createElement('div');
+      pinHint.className = 'pin-hint';
+      pinHint.textContent = 'Click to pin · drag corner to resize';
+
+      tile.appendChild(vid);
+      tile.appendChild(tag);
+      tile.appendChild(leaveBtn);
+      tile.appendChild(fullscreenBtn);
+      tile.appendChild(pinHint);
+      videosContainer.appendChild(tile);
+
+      rec.tile = tile;
+      rec.videoEl = vid;
+      rec.dotEl = dot;
+      rec.tagTextEl = tagText;
+      updateParticipantCount();
+      return rec;
+    }
+
+    function togglePin(peerId) {
+      const selfTile = document.getElementById('tile-self');
+      document.querySelectorAll('.video-tile').forEach(t => t.classList.remove('pinned'));
+
+      if (pinnedPeerId === peerId) {
+        pinnedPeerId = null;
+        return;
+      }
+
+      pinnedPeerId = peerId;
+      const tile = peerId === 'self' ? selfTile : (peers.get(peerId) && peers.get(peerId).tile);
+      if (tile) tile.classList.add('pinned');
+    }
+
+    // True browser fullscreen for any tile — yours or a friend's (including
+    // when they're screen-sharing). Works independently of the manual
+    // pin/drag-resize sizing above.
+    function getTileElement(peerId) {
+      if (peerId === 'self') return document.getElementById('tile-self');
+      const rec = peers.get(peerId);
+      return rec && rec.tile;
+    }
+
+    function toggleFullscreen(peerId) {
+      const tile = getTileElement(peerId);
+      if (!tile) return;
+
+      if (document.fullscreenElement === tile) {
+        document.exitFullscreen();
+        return;
+      }
+
+      if (tile.requestFullscreen) {
+        tile.requestFullscreen().catch(() => {
+          showToast('Fullscreen not available', 'error');
+        });
+      } else {
+        showToast('Fullscreen not supported in this browser', 'error');
+      }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      document.querySelectorAll('.video-tile').forEach(t => {
+        t.classList.toggle('is-fullscreen', document.fullscreenElement === t);
       });
+    });
+
+    function wireUpCall(peerId, call) {
+      call.on('stream', remoteStream => {
+        const rec = ensureTile(peerId);
+        if (rec.gotStream) return; // ignore any duplicate stream event
+        rec.gotStream = true;
+
+        rec.videoEl.srcObject = remoteStream;
+
+        // If their profile already arrived before the video did, apply it now.
+        if (rec.profile) applyProfileToTile(peerId);
+
+        attachVoiceActivity(
+          remoteStream,
+          [rec.dotEl],
+          rec.tile,
+          () => (rec.profile && rec.profile.color) || '#9aa0a6'
+        );
+      });
+
+      call.on('close', () => removePeer(peerId));
+      call.on('error', () => removePeer(peerId));
     }
 
-    function setupConnection(conn) {
+    function wireUpConnection(peerId, conn) {
       conn.on('open', () => {
-        conn.on('data', msg => {
-          addToChat("Friend: " + msg);
+        if (myProfile.name) {
+          conn.send({ type: 'profile', name: myProfile.name, color: myProfile.color });
+        }
+
+        conn.on('data', data => {
+          if (!data) return;
+          if (data.type === 'profile') {
+            const rec = getOrCreatePeerRecord(peerId);
+            const isFirstProfile = !rec.gotProfile;
+            rec.profile = { name: data.name, color: data.color };
+            rec.gotProfile = true;
+            if (rec.tile) applyProfileToTile(peerId);
+            if (isFirstProfile) {
+              showToast((data.name || 'Someone') + ' joined the call', 'success');
+              playJoinSound();
+            }
+          } else if (data.type === 'chat') {
+            const rec = getOrCreatePeerRecord(peerId);
+            const name = (rec.profile && rec.profile.name) || 'Friend';
+            const color = (rec.profile && rec.profile.color) || '#9aa0a6';
+            addToChat(name, data.msg, color, false);
+          } else if (data.type === 'reaction') {
+            const rec = getOrCreatePeerRecord(peerId);
+            spawnReaction(rec.tile, data.emoji);
+          }
         });
       });
+
+      conn.on('close', () => removePeer(peerId));
+    }
+
+    function applyProfileToTile(peerId) {
+      const rec = peers.get(peerId);
+      if (!rec || !rec.tile || !rec.profile) return;
+      rec.tagTextEl.textContent = rec.profile.name || 'Friend';
+      rec.tagTextEl.classList.remove('waiting-text');
+      // The dot's actual color is driven by voice activity — it stays gray
+      // until they're speaking — so we don't touch its background here.
+    }
+
+    function removePeer(peerId) {
+      const rec = peers.get(peerId);
+      if (!rec) return;
+      if (rec.tile) rec.tile.remove();
+      if (rec.call) try { rec.call.close(); } catch (e) { }
+      if (rec.conn) try { rec.conn.close(); } catch (e) { }
+      const name = (rec.profile && rec.profile.name) || 'Friend';
+      peers.delete(peerId);
+      if (pinnedPeerId === peerId) pinnedPeerId = null;
+      updateParticipantCount();
+      showToast(name + ' disconnected');
+      playLeaveSound();
+    }
+
+    // ---------------- Voice activity (speaking indicator) ----------------
+    // Grays out the dot / avatar / tile ring when quiet, and lights each one
+    // up in that person's color the moment their mic actually picks up sound.
+
+    const SPEAK_THRESHOLD = 14;
+    const SPEAK_HANGOVER_MS = 300;
+
+    function attachVoiceActivity(stream, dotEls, tileEl, colorGetter) {
+      if (!stream || !stream.getAudioTracks().length) return;
+      try {
+        const source = sharedAudioCtx.createMediaStreamSource(stream);
+        const analyser = sharedAudioCtx.createAnalyser();
+        analyser.fftSize = 512;
+        analyser.smoothingTimeConstant = 0.8;
+        source.connect(analyser);
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        let silenceTimer = null;
+
+        function setSpeaking(isSpeaking) {
+          const color = isSpeaking ? colorGetter() : '#9aa0a6';
+          dotEls.forEach(el => {
+            if (!el) return;
+            el.style.background = color;
+            el.style.color = color; // for the dot's currentColor glow
+            el.classList.toggle('speaking', isSpeaking);
+          });
+          if (tileEl) {
+            tileEl.style.setProperty('--ring-color', color);
+            tileEl.classList.toggle('speaking-ring', isSpeaking);
+          }
+        }
+
+        function tick() {
+          analyser.getByteFrequencyData(data);
+          let sum = 0;
+          for (let i = 0; i < data.length; i++) sum += data[i];
+          const avg = sum / data.length;
+
+          if (avg > SPEAK_THRESHOLD) {
+            setSpeaking(true);
+            if (silenceTimer) {
+              clearTimeout(silenceTimer);
+              silenceTimer = null;
+            }
+          } else if (!silenceTimer) {
+            silenceTimer = setTimeout(() => {
+              setSpeaking(false);
+              silenceTimer = null;
+            }, SPEAK_HANGOVER_MS);
+          }
+
+          requestAnimationFrame(tick);
+        }
+        tick();
+      } catch (e) {
+        console.error('Voice activity setup failed:', e);
+      }
+    }
+
+    // ---------------- Reactions ----------------
+
+    function spawnReaction(tileEl, emoji) {
+      const host = tileEl || document.getElementById('tile-self');
+      if (!host) return;
+      const el = document.createElement('div');
+      el.className = 'floating-reaction';
+      el.textContent = emoji;
+      el.style.left = (30 + Math.random() * 40) + '%';
+      host.appendChild(el);
+      setTimeout(() => el.remove(), 1700);
+    }
+
+    document.getElementById('reaction-bar').addEventListener('click', e => {
+      const btn = e.target.closest('.reaction-btn');
+      if (!btn) return;
+      const emoji = btn.dataset.emoji;
+      spawnReaction(document.getElementById('tile-self'), emoji);
+      peers.forEach(rec => {
+        if (rec.conn && rec.conn.open) rec.conn.send({ type: 'reaction', emoji });
+      });
+    });
+
+    // ---------------- Chat ----------------
+
+    function formatTime() {
+      const d = new Date();
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
     function sendMessage() {
       const input = document.getElementById('chat-input');
       const msg = input.value.trim();
       if (!msg) return;
-      addToChat("You: " + msg);
-      connections.forEach(c => {
-        if (c.send) c.send(msg);
+      addToChat(myProfile.name || 'You', msg, myProfile.color, true);
+      peers.forEach(rec => {
+        if (rec.conn && rec.conn.open) rec.conn.send({ type: 'chat', msg });
       });
       input.value = '';
     }
 
-    function addToChat(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
+    function addToChat(name, text, color, mine) {
+      const div = document.createElement('div');
+      div.className = 'chat-line' + (mine ? ' mine' : '');
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'chat-name';
+      nameSpan.style.color = color || '#0078d7';
+      nameSpan.textContent = name + ':';
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'chat-time';
+      timeSpan.textContent = formatTime();
+      div.appendChild(nameSpan);
+      div.appendChild(document.createTextNode(' ' + text));
+      div.appendChild(timeSpan);
       chatLog.appendChild(div);
       chatLog.scrollTop = chatLog.scrollHeight;
     }
 
+    // ---------------- Theme ----------------
+
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle('dark');
+      document.getElementById('theme-toggle').textContent = isDark ? '☀️' : '🌙';
+    }
+
+    // ---------------- Keyboard shortcuts ----------------
+    // Ignored while typing in a text field so shortcuts don't hijack normal typing.
+
+    document.addEventListener('keydown', e => {
+      const tag = document.activeElement && document.activeElement.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      if (e.key === 'm' || e.key === 'M') toggleMic();
+      else if (e.key === 'c' || e.key === 'C') toggleCam();
+      else if (e.key === 's' || e.key === 'S') toggleScreenShare();
+    });
+
+    // ---------------- Misc ----------------
+
     function copyMyId() {
-      navigator.clipboard.writeText(myIdDisplay.textContent);
-      alert("Copied!");
+      navigator.clipboard.writeText(myIdDisplay.textContent.trim());
+      showToast('Skeep ID copied!', 'success');
     }
   </script>
 </body>
+
 </html>
