@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>The Last Message — A Phone Mystery</title>
+    <style>
+        :root {
+            --bg-room: #05070b;
+            --bezel1: #3a3a3d;
+            --bezel2: #1c1c1e;
+            --screen: #101216;
+            --screen-alt: #181c24;
+            --screen-alt2: #1e232c;
+            --ink: #EDEAE0;
+            --ink-dim: #8A8F98;
+            --brass: #C9A227;
+            --brass-dim: #7d6620;
+            --blood: #8B2E2E;
+            --gold: #e8c15a;
+            --line: #262b35;
+            --mono: 'Courier New', ui-monospace, monospace;
+            --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            background: var(--bg-room);
+            font-family: var(--sans);
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        body {
+            background: radial-gradient(ellipse at 50% 0%, #10131a 0%, #05070b 60%);
+            min-height: 100vh;
+        }
+
+        .stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 16px;
+        }
+
+        .case-label {
+            font-family: var(--mono);
+            letter-spacing: .14em;
+            font-size: 10.5px;
+            color: var(--brass);
+            text-transform: uppercase;
+            opacity: .85;
+            text-align: center;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .coin-balance {
+            font-family: var(--mono);
+            font-size: 12px;
+            background: var(--screen-alt);
+            border: 1px solid var(--brass-dim);
+            color: var(--gold);
+            padding: 5px 10px;
+            border-radius: 14px;
+        }
+
+        .phone-tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .phone-tab {
+            font-family: var(--mono);
+            font-size: 10px;
+            padding: 5px 9px;
+            border-radius: 12px;
+            cursor: pointer;
+            background: var(--screen-alt);
+            border: 1px solid var(--line);
+            color: var(--ink-dim);
+        }
+
+        .phone-tab.active {
+            background: var(--brass);
+            color: #141414;
+            border-color: var(--brass);
+            font-weight: bold;
+        }
+
+        .case-btn {
+            font-family: var(--mono);
+            font-size: 11px;
+            padding: 6px 12px;
+            border-radius: 14px;
+            cursor: pointer;
+            background: var(--blood);
+            color: #fff;
+            border: none;
+            font-weight: bold;
+        }
+
+        .phone {
+            width: 340px;
+            height: 680px;
+            background: linear-gradient(160deg, var(--bezel1), var(--bezel2));
+            border-radius: 52px;
+            padding: 10px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, .6), inset 0 0 0 2px #46464a;
+            position: relative;
+        }
+
+        .island {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 96px;
+            height: 26px;
+            background: #000;
+            border-radius: 16px;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+        }
+
+        .island .cam {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #1a2733;
+            box-shadow: inset 0 0 2px #3a5a70;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: var(--screen);
+            border-radius: 42px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .crack {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 20;
+            opacity: .16;
+            mix-blend-mode: screen;
+        }
+
+        .lock {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 46px;
+            background: linear-gradient(180deg, #171c26 0%, #0d1015 100%);
+            text-align: center;
+            z-index: 10;
+            transition: transform .5s ease, opacity .5s ease;
+        }
+
+        .lock.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .lock .time {
+            font-family: var(--mono);
+            font-size: 46px;
+            margin-top: 100px;
+            letter-spacing: 1px;
+        }
+
+        .lock .date {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--ink-dim);
+            margin-top: 6px;
+        }
+
+        .lock .found-tag {
+            margin-top: 18px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--brass);
+            border: 1px solid var(--brass-dim);
+            padding: 6px 12px;
+            border-radius: 20px;
+            letter-spacing: .05em;
+            max-width: 230px;
+        }
+
+        .lock .hint {
+            font-size: 11.5px;
+            color: var(--ink-dim);
+            margin-bottom: 8px;
+        }
+
+        .swipe-btn {
+            font-family: var(--mono);
+            background: var(--brass);
+            color: #141414;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 12.5px;
+            letter-spacing: .05em;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .home {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 20px 4px;
+            font-family: var(--mono);
+            font-size: 10.5px;
+            color: var(--ink-dim);
+        }
+
+        .victim-banner {
+            margin: 8px 14px 4px;
+            padding: 9px 12px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--screen-alt);
+        }
+
+        .victim-banner .name {
+            font-weight: 600;
+            font-size: 13.5px;
+        }
+
+        .victim-banner .sub {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--brass);
+            margin-top: 2px;
+        }
+
+        .app-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px 8px;
+            padding: 12px 16px;
+            align-content: start;
+            overflow-y: auto;
+        }
+
+        .app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        .app .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: var(--screen-alt);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            position: relative;
+            transition: transform .15s ease;
+        }
+
+        .app:active .icon {
+            transform: scale(.92);
+        }
+
+        .app .label {
+            font-size: 9px;
+            color: var(--ink);
+            text-align: center;
+        }
+
+        .found-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background: var(--brass);
+            color: #141414;
+            font-size: 9px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .dock {
+            display: flex;
+            justify-content: center;
+            padding: 8px 0 12px;
+        }
+
+        .dock .app .icon {
+            background: var(--brass);
+            color: #141414;
+        }
+
+        .app-screen {
+            position: absolute;
+            inset: 0;
+            background: var(--screen);
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform .3s ease;
+            z-index: 15;
+        }
+
+        .app-screen.active {
+            transform: translateX(0);
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 14px 12px;
+            border-bottom: 1px solid var(--line);
+            background: var(--screen-alt);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--brass);
+            font-size: 19px;
+            cursor: pointer;
+            padding: 0 4px;
+            font-family: var(--mono);
+        }
+
+        .app-title {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .app-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 14px 20px;
+        }
+
+        .thread {
+            display: flex;
+            gap: 10px;
+            padding: 10px 4px;
+            border-bottom: 1px solid var(--line);
+            cursor: pointer;
+            align-items: flex-start;
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--screen-alt2);
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+            color: var(--brass);
+            font-family: var(--mono);
+        }
+
+        .thread .who {
+            font-size: 12.5px;
+            font-weight: 600;
+        }
+
+        .thread .preview {
+            font-size: 11px;
+            color: var(--ink-dim);
+            margin-top: 2px;
+        }
+
+        .thread .meta {
+            margin-left: auto;
+            font-family: var(--mono);
+            font-size: 9.5px;
+            color: var(--ink-dim);
+            text-align: right;
+        }
+
+        .msg-row {
+            display: flex;
+            margin-bottom: 8px;
+            flex-direction: column;
+        }
+
+        .msg-row.in {
+            align-items: flex-start;
+        }
+
+        .msg-row.out {
+            align-items: flex-end;
+        }
+
+        .sender-tag {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--brass);
+            margin: 0 4px 2px;
+        }
+
+        .bubble {
+            max-width: 78%;
+            padding: 8px 11px;
+            border-radius: 14px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .in .bubble {
+            background: var(--screen-alt2);
+            border: 1px solid var(--line);
+            border-bottom-left-radius: 4px;
+        }
+
+        .out .bubble {
+            background: var(--brass-dim);
+            color: #f4ecd8;
+            border-bottom-right-radius: 4px;
+        }
+
+        .timestamp {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--ink-dim);
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .note-card,
+        .vm-card,
+        .photo-card,
+        .hist-card,
+        .contact-card,
+        .bank-row,
+        .video-card {
+            background: var(--screen-alt);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 11px;
+            margin-bottom: 11px;
+        }
+
+        .note-title {
+            font-weight: 600;
+            font-size: 12.5px;
+            margin-bottom: 4px;
+        }
+
+        .note-time {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: var(--ink-dim);
+            margin-bottom: 7px;
+        }
+
+        .note-body {
+            font-size: 11.5px;
+            line-height: 1.5;
+            color: #d8d5cb;
+            white-space: pre-line;
+        }
+
+        .photo-frame {
+            width: 100%;
+            aspect-ratio: 4/3;
+            border-radius: 8px;
+            margin-bottom: 7px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+        }
+
+        .photo-caption {
+            font-size: 11px;
+            color: var(--ink-dim);
+            font-style: italic;
+        }
+
+        .exhibit-tag {
+            display: inline-block;
+            font-family: var(--mono);
+            font-size: 8.5px;
+            letter-spacing: .06em;
+            color: var(--brass);
+            border: 1px solid var(--brass-dim);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+
+        .hist-url {
+            font-family: var(--mono);
+            font-size: 10.5px;
+            color: #7fa8c9;
+            word-break: break-all;
+        }
+
+        .video-thumb {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background: #1c2233;
+            border: 1px solid var(--line);
+        }
+
+        .bank-balance {
+            font-family: var(--mono);
+            font-size: 26px;
+            color: var(--gold);
+            text-align: center;
+            margin: 6px 0 14px;
+        }
+
+        .bank-sub {
+            text-align: center;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink-dim);
+            margin-bottom: 14px;
+        }
+
+        .amt.out {
+            color: #e07070;
+        }
+
+        .amt.in {
+            color: #7fd18a;
+        }
+
+        .suspect-card {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: var(--screen-alt);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .suspect-card.selected {
+            border-color: var(--brass);
+            background: #211c10;
+        }
+
+        .suspect-card .info {
+            flex: 1;
+        }
+
+        .suspect-card .sname {
+            font-weight: 600;
+            font-size: 12.5px;
+        }
+
+        .suspect-card .smotive {
+            font-size: 10.5px;
+            color: var(--ink-dim);
+        }
+
+        .accuse-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: var(--blood);
+            color: #fff;
+            font-weight: bold;
+            font-size: 12.5px;
+            cursor: pointer;
+            letter-spacing: .04em;
+            font-family: var(--mono);
+        }
+
+        .accuse-btn:disabled {
+            background: #3a2323;
+            color: #8a6b6b;
+            cursor: not-allowed;
+        }
+
+        .verdict {
+            text-align: center;
+            padding: 14px 4px;
+        }
+
+        .verdict .verdict-title {
+            font-family: var(--mono);
+            font-size: 16px;
+            letter-spacing: .05em;
+            margin-bottom: 10px;
+        }
+
+        .verdict.correct .verdict-title {
+            color: var(--brass);
+        }
+
+        .verdict.wrong .verdict-title {
+            color: var(--blood);
+        }
+
+        .verdict .verdict-text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #d8d5cb;
+            text-align: left;
+        }
+
+        .verdict .coin-change {
+            font-family: var(--mono);
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        .restart-btn {
+            margin-top: 16px;
+            background: none;
+            border: 1px solid var(--brass-dim);
+            color: var(--brass);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: var(--mono);
+            font-size: 11.5px;
+            cursor: pointer;
+        }
+
+        .hint-box {
+            font-size: 10.5px;
+            color: var(--ink-dim);
+            font-family: var(--mono);
+            margin-bottom: 10px;
+            border-left: 2px solid var(--brass-dim);
+            padding-left: 8px;
+        }
+
+        .chat-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--screen);
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-overlay .app-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-log {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chat-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--line);
+        }
+
+        .choice-btn {
+            background: var(--screen-alt2);
+            border: 1px solid var(--line);
+            color: var(--ink);
+            text-align: left;
+            padding: 9px 11px;
+            border-radius: 10px;
+            font-size: 11.5px;
+            cursor: pointer;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--brass-dim);
+        }
+
+        .continue-btn {
+            margin-top: 6px;
+            width: 100%;
+            padding: 11px;
+            background: var(--brass);
+            color: #141414;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--mono);
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stage">
+        <div class="case-label">CASE FILE — WHITMORE ESTATE · MULTI-DEVICE EXHIBIT</div>
+        <div class="topbar">
+            <div class="coin-balance" id="coinDisplay">COINS: 0</div>
+            <div class="phone-tabs" id="phoneTabs"></div>
+            <button class="case-btn" onclick="openCaseFile()">Case File</button>
+        </div>
+        <div class="phone">
+            <div class="island">
+                <div class="cam"></div>
+            </div>
+            <div class="screen" id="screen">
+                <svg class="crack" viewBox="0 0 340 680" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="#ffffff" stroke-width="1" fill="none">
+                        <path d="M180 40 L160 130 L210 180 L150 260 L190 340 L140 420 L175 500" />
+                        <path d="M160 130 L90 160" />
+                        <path d="M210 180 L270 200" />
+                        <path d="M150 260 L80 280" />
+                        <path d="M190 340 L250 360" />
+                        <path d="M140 420 L70 450" />
+                    </g>
+                </svg>
+
+                <div class="chat-overlay" id="introChat">
+                    <div class="app-header">
+                        <div class="app-title">ChatWave — Jess Ferreira (reported the incident)</div>
+                    </div>
+                    <div class="app-body">
+                        <div class="chat-log" id="introLog"></div>
+                        <div class="chat-choices" id="introChoices"></div>
+                    </div>
+                </div>
+
+                <div class="lock hidden" id="lock">
+                    <div class="time" id="lockTime">9:47</div>
+                    <div class="date">Tuesday, June 3</div>
+                    <div class="found-tag" id="lockTag">DEVICE SECURED — RELEASED FOR REVIEW</div>
+                    <div style="flex:1"></div>
+                    <div class="hint">Tap to open this device</div>
+                    <button class="swipe-btn" onclick="unlockCurrent()">Unlock Device</button>
+                </div>
+
+                <div class="home" id="home" style="display:none;">
+                    <div class="status-bar"><span id="homeTime">9:47</span><span>● ● ●</span></div>
+                    <div class="victim-banner">
+                        <div class="name" id="ownerName">—</div>
+                        <div class="sub" id="ownerTag">—</div>
+                    </div>
+                    <div class="app-grid" id="appGrid"></div>
+                    <div class="dock">
+                        <div class="app" onclick="openCaseFile()">
+                            <div class="icon">📋</div>
+                            <div class="label">Case File</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-screen" id="app-messages">
+                    <div class="app-header"><button class="back-btn" onclick="backToHome()">‹</button>
+                        <div class="app-title" id="msgTitle">ChatWave</div>
+                    </div>
+                    <div class="app-body" id="msgBody"></div>
+                </div>
+                <div class="app-screen" id="app-notes">
+                    <div class="app-header"><button class="back-btn" onclick="backToHome()">‹</button>
+                        <div class="app-title">Notes</div>
+                    </div>
+                    <div class="app-body" id="notesBody"></div>
+                </div>
+                <div class="app-screen" id="app-photos">
+                    <div class="app-header"><button class="back-btn" onclick="backToHome()">‹</button>
+                        <div class="app-title">Photos</div>
+                    </div>
+                    <div class="app-body" id="photosBody"></div>
+                </div>
+                <div class="app-screen" id="app-search">
+                    <div class="app-header"><button class="back-btn" onclick="backToHome()">‹</button>
+                        <div class="app-title">Zoogle History</div>
+                    </div>
+                    <div class="app-body" id="searchBody"></div>
+                </div>
+                <div class="app-screen" id="app-shop">
+                    <div class="app-header"><button class="back-btn" onclick="backToHome()">‹</button>
+                        <div class="app-title">Shop — Purchase History</div>
+                    </div>
+                    <div class="app-body" id="shopBody"></div>
+                </div>
+                <div class="app-screen" id="app-bank">
+                    <div class="app-header"><button class="back-btn" onclick="backToHome()">‹</button>
+                        <div class="app-title">Bank</div>
+                    </div>
+                    <div class="app-body" id="bankBody"></div>
+                </div>
+                <div class="app-screen" id="app-youwatch">
+                    <div class="app-header"><button class="back-btn" onclick="backToHome()">‹</button>
+                        <div class="app-title">YouWatch History</div>
+                    </div>
+                    <div class="app-body" id="ywBody"></div>
+                </div>
+                <div class="app-screen" id="app-case">
+                    <div class="app-header"><button class="back-btn" onclick="backToHome()">‹</button>
+                        <div class="app-title">Case File</div>
+                    </div>
+                    <div class="app-body" id="caseBody"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= ECONOMY ================= */
+        let coins = 0;
+        function fmt(n) { return n.toLocaleString('en-US'); }
+        function renderCoins() { document.getElementById('coinDisplay').textContent = 'COINS: ' + fmt(coins); }
+
+        /* ================= PHONES DATA ================= */
+        const phonesData = {
+            jacob: {
+                label: "Jacob", name: "Jacob Whitmore", tag: "VICTIM · found deceased, home office, 9:15 PM", avatar: "J",
+                lockTag: "📱 FOUND AT SCENE — UNLOCKED BY IT",
+                apps: ["messages", "notes", "photos", "search", "shop", "bank"],
+                threads: {
+                    sue: {
+                        name: "Suspicious Sue", preview: "Let's just call it even and move forward.", time: "3:10 PM",
+                        msgs: [
+                            { dir: "in", text: "That deal fell through because you lowballed me, Jacob." },
+                            { dir: "out", text: "Business is business, Sue. Nothing personal." },
+                            { dir: "in", text: "Fine. Let's just call it even and move forward. Sent flowers to the office, no hard feelings." },
+                            { dir: "out", text: "Appreciate that. Truly." }
+                        ]
+                    },
+                    pele: {
+                        name: "Suspicious Pele", preview: "You'll regret cutting me out of the trust.", time: "1:05 PM",
+                        msgs: [
+                            { dir: "in", text: "Dad's trust review is next month and I heard you're pushing to cut my share." },
+                            { dir: "out", text: "It's not final, Pele. We need to talk numbers first." },
+                            { dir: "in", text: "You'll regret cutting me out of the trust." },
+                            { dir: "in", text: "See you at the family reunion this weekend, guess we'll talk there." }
+                        ]
+                    },
+                    jess: {
+                        name: "Jess Ferreira", preview: "Don't tell anyone yet, found something off in the Ferreira account.", time: "6:40 PM",
+                        msgs: [
+                            { dir: "out", text: "Jess, pull the last 6 months of Ferreira Consulting invoices for me." },
+                            { dir: "in", text: "On it. Everything ok?" },
+                            { dir: "out", text: "Not sure yet. Don't tell anyone yet, but I found something off in the Ferreira account. Can we talk tonight, just us?" },
+                            { dir: "in", text: "Of course. I'll swing by after close." }
+                        ]
+                    }
+                },
+                notes: [
+                    {
+                        title: "Ferreira Account", time: "Today, 4:12 PM",
+                        body: "Something's not adding up with the Ferreira Consulting payments — over $2,000,000 moved out this quarter alone, and I can't find a single deliverable tied to it. Only three people have wire approval: me, Jess, and the old accountant who retired last year.\n\nMeeting Jess tonight to go through it line by line, just the two of us. Hoping it's a clerical error."
+                    },
+                    {
+                        title: "Family trust review", time: "3 days ago",
+                        body: "Pele is furious about the upcoming trust review. I understand the frustration but the numbers are the numbers. Need to sit down properly, not over text."
+                    },
+                    {
+                        title: "Sue — water under the bridge", time: "1 week ago",
+                        body: "Deal fell through but we're on good terms. She sent flowers, appreciated the gesture."
+                    },
+                    {
+                        title: "Security camera", time: "1 week ago",
+                        body: "Had a new camera installed over the office door. Better safe than sorry given everything going on lately."
+                    }
+                ],
+                photos: [
+                    { tag: "EXHIBIT A", kind: "flowers", caption: "Wilted bouquet on the office desk, card reads 'From S. — no hard feelings.'" },
+                    { tag: "EXHIBIT B", kind: "camera", caption: "Receipt for the home security camera installed over the office door last week." },
+                    { tag: "EXHIBIT C", kind: "party", caption: "Office holiday party photo — Jacob and Jess standing together, both smiling." },
+                    { tag: "EXHIBIT D", kind: "ledger", caption: "Screenshot of Ferreira Consulting invoices — several near-identical entries, no deliverables listed." }
+                ],
+                search: [
+                    "how to trace a wire transfer to an LLC",
+                    "signs a trusted employee is stealing from you",
+                    "hire a forensic accountant confidential",
+                    "home security camera keeps disconnecting"
+                ],
+                shop: [
+                    { item: "Home security camera system", amt: "$340" },
+                    { item: "Locking filing cabinet", amt: "$180" }
+                ],
+                bank: {
+                    balance: 94000000,
+                    rows: [
+                        { label: "Ferreira Consulting — wire out (3rd this quarter)", amt: "-$2,000,000", dir: "out" },
+                        { label: "Payroll — routine", amt: "-$48,200", dir: "out" },
+                        { label: "Trust fund distribution — Pele allowance", amt: "-$12,000", dir: "out" },
+                        { label: "Rental income — routine", amt: "+$61,000", dir: "in" }
+                    ]
+                }
+            },
+            sue: {
+                label: "Sue", name: "Suspicious Sue", tag: "Rival business owner", avatar: "S",
+                lockTag: "📱 OBTAINED VOLUNTARILY FOR REVIEW",
+                apps: ["messages", "notes", "photos", "search", "shop"],
+                threads: {
+                    jacob: {
+                        name: "Jacob Whitmore", preview: "Appreciate that. Truly.", time: "3:10 PM",
+                        msgs: [
+                            { dir: "out", text: "That deal fell through because you lowballed me, Jacob." },
+                            { dir: "in", text: "Business is business, Sue. Nothing personal." },
+                            { dir: "out", text: "Fine. Let's just call it even and move forward. Sent flowers to the office, no hard feelings." },
+                            { dir: "in", text: "Appreciate that. Truly." }
+                        ]
+                    }
+                },
+                notes: [
+                    {
+                        title: "Funding round stress", time: "2 days ago",
+                        body: "Series B is dragging and it has nothing to do with Jacob at this point. Need to focus on my own investors, not old grudges."
+                    }
+                ],
+                photos: [
+                    { tag: "EXHIBIT", kind: "receipt", caption: "Flower delivery receipt — sent to Jacob's office the same day as the settlement text." },
+                    { tag: "EXHIBIT", kind: "conference", caption: "Photo from the Industry Summit stage, timestamped 9:00 PM the night of the murder — Sue was on a panel." }
+                ],
+                search: ["how to recover a lost business deal", "conference networking tips", "series B pitch deck examples"],
+                shop: [{ item: "Flower delivery — Jacob's office", amt: "$85" }, { item: "Industry Summit conference ticket", amt: "$450" }]
+            },
+            pele: {
+                label: "Pele", name: "Suspicious Pele", tag: "Estranged family member", avatar: "P",
+                lockTag: "📱 OBTAINED VOLUNTARILY FOR REVIEW",
+                apps: ["messages", "notes", "photos", "search", "shop"],
+                threads: {
+                    jacob: {
+                        name: "Jacob Whitmore", preview: "See you at the reunion this weekend.", time: "1:05 PM",
+                        msgs: [
+                            { dir: "out", text: "Dad's trust review is next month and I heard you're pushing to cut my share." },
+                            { dir: "in", text: "It's not final, Pele. We need to talk numbers first." },
+                            { dir: "out", text: "You'll regret cutting me out of the trust." },
+                            { dir: "out", text: "See you at the family reunion this weekend, guess we'll talk there." }
+                        ]
+                    },
+                    cousin: {
+                        name: "Cousin Riya", preview: "So great seeing you tonight, glad you made it!", time: "9:02 PM",
+                        msgs: [
+                            { dir: "in", text: "So great seeing you tonight, glad you made it to the reunion!" },
+                            { dir: "out", text: "Wouldn't miss it. Needed the distraction honestly." }
+                        ]
+                    }
+                },
+                notes: [
+                    {
+                        title: "Venting", time: "Today, 11:00 AM",
+                        body: "Still angry about the trust conversation but I'm not going to ruin the reunion over it. Will deal with the lawyers next week like an adult."
+                    }
+                ],
+                photos: [
+                    { tag: "EXHIBIT", kind: "reunion", caption: "Family reunion group photo, timestamped 8:47 PM the night of the murder — Pele visible in the front row." }
+                ],
+                search: ["how to contest a family trust", "lawyer for inheritance dispute", "family reunion venues nearby"],
+                shop: [{ item: "Reunion hosting gift", "amt": "$60" }, { item: "Gas station snacks", "amt": "$14" }]
+            },
+            jess: {
+                label: "Jess", name: "Jess Ferreira", tag: "Assistant who reported the incident", avatar: "J",
+                lockTag: "📱 OBTAINED DURING QUESTIONING",
+                apps: ["messages", "notes", "photos", "search", "shop", "bank", "youwatch"],
+                threads: {
+                    jacob: {
+                        name: "Jacob Whitmore", preview: "Of course. I'll swing by after close.", time: "6:40 PM",
+                        msgs: [
+                            { dir: "in", text: "Jess, pull the last 6 months of Ferreira Consulting invoices for me." },
+                            { dir: "out", text: "On it. Everything ok?" },
+                            { dir: "in", text: "Not sure yet. Don't tell anyone yet, but I found something off in the Ferreira account. Can we talk tonight, just us?" },
+                            { dir: "out", text: "Of course. I'll swing by after close." }
+                        ]
+                    },
+                    unknown: {
+                        name: "Unknown Number", preview: "Handle it before he digs more.", time: "7:50 PM",
+                        msgs: [
+                            { dir: "out", text: "He's asking questions about the Ferreira account." },
+                            { dir: "in", text: "Handle it before he digs more." },
+                            { dir: "out", text: "Camera's handled. Don't worry about tonight." }
+                        ]
+                    },
+                    surprise: {
+                        name: "The Surprise 🎉 (7 people)", preview: "Let's give him the surprise of his life.", time: "2:30 PM",
+                        msgs: [
+                            { dir: "in", sender: "Priya", text: "Ok everyone confirmed for Friday? Need all 7 of us there before he walks in." },
+                            { dir: "in", sender: "Derek", text: "Cake's ordered, chocolate like he likes." },
+                            { dir: "in", sender: "Aisha", text: "Decorations are hidden in the supply closet, he won't suspect a thing." },
+                            { dir: "in", sender: "Tom H.", text: "Should we dim the lights so he really doesn't see us until the big reveal?" },
+                            { dir: "in", sender: "Nina", text: "Yes, and someone needs to keep him busy till 6pm sharp so the timing's perfect." },
+                            { dir: "in", sender: "Marcus K.", text: "I'll distract him with a fake end-of-day meeting lol." },
+                            { dir: "out", sender: "Jess", text: "Perfect. Let's give him the surprise of his life for 20 years at the company. He deserves it." }
+                        ]
+                    }
+                },
+                notes: [
+                    {
+                        title: "Reminder to self", time: "Today, 8:55 PM",
+                        body: "If anyone asks: I got there at 9:15 and found him like that. Stick to that timeline, no matter what."
+                    },
+                    {
+                        title: "Ferreira LLC", time: "6 months ago",
+                        body: "Filed the consulting LLC under J. Ferreira — close enough to my own name that no one would think twice reading a bank statement quickly. Keep the paperwork off the shared drive."
+                    },
+                    {
+                        title: "Biscuit", time: "2 weeks ago",
+                        body: "Biscuit passed in his sleep last night, 14 years old. Buried him under the maple tree in the backyard, wrapped in his blanket. Going to miss that dog so much."
+                    }
+                ],
+                photos: [
+                    { tag: "EXHIBIT", kind: "camera-off", caption: "Photo of the office security camera, cable disconnected, timestamped the night of the murder." },
+                    { tag: "EXHIBIT", kind: "llc", caption: "Screenshot of the Ferreira Consulting LLC registration — listed owner: J. Ferreira." },
+                    { tag: "EXHIBIT", kind: "dog", caption: "Photo of a small backyard grave marker under a maple tree — 'Biscuit, good boy, 14 years.'" }
+                ],
+                search: [
+                    "how to remotely disable a wifi security camera",
+                    "untraceable business wire transfer",
+                    "how police estimate time of death",
+                    "how to seem calm when questioned by police"
+                ],
+                shop: [{ item: "Prepaid phone — cash", "amt": "$60" }, { item: "Work gloves — hardware store", "amt": "$12" }],
+                bank: {
+                    balance: 2300000,
+                    rows: [
+                        { label: "Incoming wire — Ferreira Consulting (self-owned)", amt: "+$2,000,000", dir: "in" },
+                        { label: "Rent — routine", amt: "-$2,100", dir: "out" }
+                    ]
+                },
+                youwatch: [
+                    { title: "How to Bury a Dog Properly — A Pet Owner's Guide", meta: "Watched 14 days ago · 92% — grief & pet care channel" },
+                    { title: "Coping With the Loss of a Pet: What Helped Me", meta: "Watched 14 days ago · 88%" },
+                    { title: "How to Plan the PERFECT Surprise Party (Timing Tips!)", meta: "Watched 5 days ago · 100%" },
+                    { title: "Best Surprise Reveal Reactions Compilation", meta: "Watched 5 days ago · 61%" },
+                    { title: "How to Sound Calm When You're Nervous (Public Speaking)", meta: "Watched 3 days ago · 74%" }
+                ]
+            }
+        };
+
+        const foundState = {};
+        Object.keys(phonesData).forEach(p => { foundState[p] = {}; phonesData[p].apps.forEach(a => foundState[p][a] = false); });
+        const unlockedPhones = {}; Object.keys(phonesData).forEach(p => unlockedPhones[p] = false);
+
+        const appMeta = {
+            messages: { icon: "💬", label: "ChatWave" }, notes: { icon: "🗒️", label: "Notes" }, photos: { icon: "🖼️", label: "Photos" },
+            search: { icon: "🔎", label: "Zoogle" }, shop: { icon: "🛍️", label: "Shop" }, bank: { icon: "🏦", label: "Bank" },
+            youwatch: { icon: "📺", label: "YouWatch" }
+        };
+
+        let currentPhone = "jacob";
+
+        /* ================= INTRO CHAT WITH JESS ================= */
+        const introScript = [
+            { q: "How did you find him?", a: "I came by around 9:15 to drop off some paperwork and the office door was already open. I called 911 right away." },
+            { q: "Did he seem worried about anything lately?", a: "Not really, honestly. He seemed pretty normal to me the last few days." },
+            { q: "Can I get access to his devices, and yours?", a: "Of course, anything to help. I'll get you the passcodes — take a look at whatever you need." },
+            { q: "What's your relationship like with Sue and Pele?", a: "Professional with Sue, and Pele's just family drama, nothing serious as far as I know." },
+            { q: "Does the name 'J. Ferreira' mean anything to you, outside of your own name?", a: "...No, should it? I mean, it's basically my name. Weird question." },
+            { q: "Anything unusual on your phone I should know about before I look?", a: "Just... don't judge the pet burial videos. I lost my dog a couple weeks ago. Rough month all around, honestly." }
+        ];
+        let introIdx = 0;
+        function renderIntroLog() {
+            const log = document.getElementById('introLog');
+            log.innerHTML = introScript.slice(0, introIdx).map(entry => `
+    <div class="msg-row out"><div class="bubble">${entry.q}</div></div>
+    <div class="msg-row in"><div class="bubble">${entry.a}</div></div>
+  `).join('') || `<div class="msg-row in"><div class="bubble">Hi... I'm the one who called it in. I'll answer whatever you need before you go through the devices.</div></div>`;
+            const choices = document.getElementById('introChoices');
+            if (introIdx < introScript.length) {
+                choices.innerHTML = `<button class="choice-btn" onclick="askJess()">${introScript[introIdx].q}</button>`;
+            } else {
+                choices.innerHTML = `<button class="continue-btn" onclick="beginInvestigation()">Begin Investigation →</button>`;
+            }
+            log.scrollTop = log.scrollHeight;
+        }
+        function askJess() { introIdx++; renderIntroLog(); }
+        function beginInvestigation() {
+            document.getElementById('introChat').style.display = 'none';
+            renderPhoneTabs();
+            switchPhone('jacob');
+        }
+        renderIntroLog();
+
+        /* ================= PHONE SWITCHING ================= */
+        function renderPhoneTabs() {
+            const tabs = document.getElementById('phoneTabs');
+            tabs.innerHTML = Object.keys(phonesData).map(p =>
+                `<div class="phone-tab ${p === currentPhone ? 'active' : ''}" onclick="switchPhone('${p}')">${phonesData[p].label}</div>`
+            ).join('');
+        }
+        function switchPhone(id) {
+            currentPhone = id;
+            renderPhoneTabs();
+            document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active'));
+            const data = phonesData[id];
+            document.getElementById('lockTag').textContent = data.lockTag;
+            if (unlockedPhones[id]) {
+                document.getElementById('lock').classList.add('hidden');
+                document.getElementById('home').style.display = 'flex';
+                renderAppGrid();
+            } else {
+                document.getElementById('lock').classList.remove('hidden');
+                document.getElementById('home').style.display = 'none';
+            }
+        }
+        function unlockCurrent() {
+            unlockedPhones[currentPhone] = true;
+            document.getElementById('lock').classList.add('hidden');
+            document.getElementById('home').style.display = 'flex';
+            renderAppGrid();
+        }
+        function backToHome() {
+            document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active'));
+            renderAppGrid();
+        }
+        function renderAppGrid() {
+            const data = phonesData[currentPhone];
+            document.getElementById('ownerName').textContent = data.name;
+            document.getElementById('ownerTag').textContent = data.tag;
+            const grid = document.getElementById('appGrid');
+            grid.innerHTML = data.apps.map(a => `
+    <div class="app" onclick="openApp('${a}')">
+      <div class="icon">${appMeta[a].icon}${foundState[currentPhone][a] ? '<div class="found-badge">✓</div>' : ''}</div>
+      <div class="label">${appMeta[a].label}</div>
+    </div>`).join('');
+        }
+        function openApp(app) {
+            document.getElementById('app-' + app).classList.add('active');
+            if (app === 'messages') renderMessagesList();
+            if (app === 'notes') renderNotes();
+            if (app === 'photos') renderPhotos();
+            if (app === 'search') renderSearch();
+            if (app === 'shop') renderShop();
+            if (app === 'bank') renderBank();
+            if (app === 'youwatch') renderYouWatch();
+        }
+
+        /* ================= MESSAGES ================= */
+        function renderMessagesList() {
+            document.getElementById('msgTitle').textContent = 'ChatWave';
+            const threads = phonesData[currentPhone].threads;
+            document.getElementById('msgBody').innerHTML = Object.keys(threads).map(key => {
+                const t = threads[key];
+                return `<div class="thread" onclick="openThread('${key}')">
+      <div class="avatar">${t.name[0]}</div>
+      <div><div class="who">${t.name}</div><div class="preview">${t.preview}</div></div>
+      <div class="meta">${t.time}</div>
+    </div>`;
+            }).join('');
+            foundState[currentPhone].messages = true; renderAppGrid();
+        }
+        function openThread(key) {
+            const t = phonesData[currentPhone].threads[key];
+            document.getElementById('msgTitle').innerHTML = `<button class="back-btn" style="font-size:13px" onclick="renderMessagesList()">‹ threads</button> ${t.name}`;
+            document.getElementById('msgBody').innerHTML = `<div class="timestamp">${t.time}</div>` +
+                t.msgs.map(m => `<div class="msg-row ${m.dir}">${m.sender ? `<div class="sender-tag">${m.sender}</div>` : ''}<div class="bubble">${m.text}</div></div>`).join('');
+        }
+
+        /* ================= NOTES ================= */
+        function renderNotes() {
+            foundState[currentPhone].notes = true; renderAppGrid();
+            document.getElementById('notesBody').innerHTML = phonesData[currentPhone].notes.map(n => `
+    <div class="note-card"><div class="note-title">${n.title}</div><div class="note-time">${n.time}</div><div class="note-body">${n.body}</div></div>
+  `).join('');
+        }
+
+        /* ================= PHOTOS ================= */
+        function svgPhoto(kind) {
+            const map = {
+                flowers: ["#241a1a", `<circle cx="150" cy="90" r="40" fill="#3a2828" stroke="#8B2E2E"/><text x="90" y="150" fill="#c99" font-family="monospace" font-size="9">wilted bouquet — card: "From S."</text>`],
+                camera: ["#1e2420", `<rect x="60" y="30" width="180" height="110" rx="6" fill="#26302a" stroke="#3f5245"/><text x="75" y="90" fill="#9db" font-family="monospace" font-size="9">SECURITY CAMERA — RECEIPT $340</text>`],
+                party: ["#1c2233", `<circle cx="120" cy="80" r="26" fill="#2b3350"/><circle cx="190" cy="80" r="26" fill="#2b3350"/><text x="70" y="145" fill="#9ab" font-family="monospace" font-size="9">office holiday party — J. &amp; Jess</text>`],
+                ledger: ["#1c2233", `<rect x="40" y="20" width="220" height="140" rx="4" fill="#2b3350" stroke="#4a5578"/><text x="55" y="130" fill="#e07070" font-family="monospace" font-size="9">FERREIRA CONSULTING — $2,000,000</text>`],
+                receipt: ["#1e2420", `<rect x="60" y="20" width="180" height="140" rx="3" fill="#e8dfc4" stroke="#a89968"/><text x="75" y="60" fill="#3a3020" font-family="monospace" font-size="9">Flower delivery — Jacob's office</text>`],
+                conference: ["#1c2233", `<rect x="30" y="20" width="240" height="130" rx="4" fill="#2b3350"/><text x="55" y="150" fill="#9ab" font-family="monospace" font-size="9">Industry Summit panel — 9:00 PM</text>`],
+                reunion: ["#1c2233", `<circle cx="90" cy="80" r="20" fill="#2b3350"/><circle cx="150" cy="80" r="20" fill="#2b3350"/><circle cx="210" cy="80" r="20" fill="#2b3350"/><text x="55" y="150" fill="#9ab" font-family="monospace" font-size="9">Reunion group photo — 8:47 PM</text>`],
+                "camera-off": ["#241a1a", `<rect x="60" y="30" width="180" height="110" rx="6" fill="#302626" stroke="#5a3f3f"/><line x1="90" y1="60" x2="130" y2="100" stroke="#e07070" stroke-width="3"/><text x="70" y="150" fill="#e07070" font-family="monospace" font-size="9">cable disconnected — night of murder</text>`],
+                llc: ["#1c2233", `<rect x="45" y="20" width="210" height="140" rx="3" fill="#26302a" stroke="#3f5245"/><text x="60" y="60" fill="#c9d8cd" font-family="monospace" font-size="9">FERREIRA CONSULTING LLC</text><text x="60" y="90" fill="#e0a05a" font-family="monospace" font-size="9">Owner of record: J. FERREIRA</text>`],
+                dog: ["#1e2420", `<rect x="70" y="40" width="160" height="100" rx="4" fill="#2a3a2e" stroke="#4a5f4e"/><text x="85" y="95" fill="#cde" font-family="monospace" font-size="9">Biscuit — good boy, 14 years</text>`]
+            };
+            const [bg, svg] = map[kind];
+            return `<svg viewBox="0 0 300 180" width="100%" height="100%" style="background:${bg}">${svg}</svg>`;
+        }
+        function renderPhotos() {
+            foundState[currentPhone].photos = true; renderAppGrid();
+            document.getElementById('photosBody').innerHTML = phonesData[currentPhone].photos.map(p => `
+    <div class="photo-card"><span class="exhibit-tag">${p.tag}</span>
+      <div class="photo-frame">${svgPhoto(p.kind)}</div>
+      <div class="photo-caption">${p.caption}</div></div>
+  `).join('');
+        }
+
+        /* ================= ZOOGLE SEARCH HISTORY ================= */
+        function renderSearch() {
+            foundState[currentPhone].search = true; renderAppGrid();
+            document.getElementById('searchBody').innerHTML = phonesData[currentPhone].search.map(s => `
+    <div class="hist-card"><div class="hist-url">zoogle.com/search?q=${encodeURIComponent(s)}</div></div>
+  `).join('');
+        }
+
+        /* ================= SHOP ================= */
+        function renderShop() {
+            foundState[currentPhone].shop = true; renderAppGrid();
+            document.getElementById('shopBody').innerHTML = phonesData[currentPhone].shop.map(s => `
+    <div class="hist-card"><div class="note-title" style="margin-bottom:0">${s.item}</div><div class="hist-url">${s.amt}</div></div>
+  `).join('');
+        }
+
+        /* ================= BANK ================= */
+        function renderBank() {
+            foundState[currentPhone].bank = true; renderAppGrid();
+            const b = phonesData[currentPhone].bank;
+            document.getElementById('bankBody').innerHTML = `
+    <div class="bank-balance">$${fmt(b.balance)}</div>
+    <div class="bank-sub">current balance</div>
+    ${b.rows.map(r => `<div class="bank-row" style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:11.5px;">${r.label}</span><span class="amt ${r.dir}">${r.amt}</span></div>`).join('')}
+  `;
+        }
+
+        /* ================= YOUWATCH ================= */
+        function renderYouWatch() {
+            foundState[currentPhone].youwatch = true; renderAppGrid();
+            document.getElementById('ywBody').innerHTML = phonesData[currentPhone].youwatch.map(v => `
+    <div class="video-card">
+      <div class="video-thumb">📺</div>
+      <div class="note-title" style="margin-bottom:2px;">${v.title}</div>
+      <div class="hist-url">${v.meta}</div>
+    </div>
+  `).join('');
+        }
+
+        /* ================= CASE FILE ================= */
+        let selectedSuspect = null;
+        const accusable = {
+            sue: { name: "Suspicious Sue", role: "Rival business owner" },
+            pele: { name: "Suspicious Pele", role: "Estranged family member" },
+            jess: { name: "Jess Ferreira", role: "Assistant who reported the incident" }
+        };
+        function openCaseFile() {
+            document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('app-case').classList.add('active');
+            renderCase();
+        }
+        function allReviewed() {
+            return Object.keys(foundState).every(p => Object.values(foundState[p]).every(v => v));
+        }
+        function reviewedCount() {
+            let done = 0, total = 0;
+            Object.keys(foundState).forEach(p => Object.values(foundState[p]).forEach(v => { total++; if (v) done++; }));
+            return [done, total];
+        }
+        function renderCase() {
+            const [done, total] = reviewedCount();
+            const ready = allReviewed();
+            document.getElementById('caseBody').innerHTML = `
+    <div class="hint-box">EVIDENCE REVIEWED: ${done}/${total} across all four devices. ${ready ? 'All evidence reviewed — you may accuse.' : 'Review every app on every device first. Some of this is noise, not signal — read carefully before you decide what actually points to the killer.'}</div>
+    ${Object.keys(accusable).map(key => {
+                const s = accusable[key];
+                return `<div class="suspect-card ${selectedSuspect === key ? 'selected' : ''}" onclick="selectSuspect('${key}')">
+        <div class="avatar">${s.name[0]}</div>
+        <div class="info"><div class="sname">${s.name}</div><div class="smotive">${s.role}</div></div>
+      </div>`;
+            }).join('')}
+    <button class="accuse-btn" ${(!selectedSuspect || !ready) ? 'disabled' : ''} onclick="submitAccusation()">
+      ${ready ? `Name ${selectedSuspect ? accusable[selectedSuspect].name : 'the Killer'}` : 'Keep Investigating'}
+    </button>
+  `;
+        }
+        function selectSuspect(key) { selectedSuspect = key; renderCase(); }
+
+        function submitAccusation() {
+            const body = document.getElementById('caseBody');
+            if (selectedSuspect === 'jess') {
+                coins += 1000000000;
+                renderCoins();
+                body.innerHTML = `
+      <div class="verdict correct">
+        <div class="verdict-title">CASE CLOSED — REAL KILLER FOUND</div>
+        <div class="coin-change">+1,000,000,000 coins</div>
+        <div class="verdict-text">
+          Jacob's bank shows recurring wires out to "Ferreira Consulting," a shell company with no real deliverables. Jess's own bank shows that exact money landing in her account, and her notes admit she registered the LLC under "J. Ferreira" — close enough to her own name to hide in plain sight.<br><br>
+          Her photos show the office camera disconnected the night of the murder. Her messages to an unknown number — "camera's handled," "handle it before he digs more" — show this was planned, not panic. Jacob's own message to her that evening, asking to meet alone about "something off in the Ferreira account," gave her a deadline.<br><br>
+          Two things in her phone looked worse than they were: the pet-burial videos were about her dog, Biscuit, confirmed by her own note and a backyard grave photo — unrelated to the case. The "Surprise" group chat with six coworkers was planning an actual work anniversary party, not a crime — read closely, it's cake, decorations, and dimmed lights.<br><br>
+          Sue's rivalry was resolved by text and her alibi holds — she was on a conference stage at 9 PM. Pele was angry about the trust but a reunion photo places him elsewhere at 8:47 PM. Only Jess had the motive, the access, and no alibi that survives a second look.
+        </div>
+        <button class="restart-btn" onclick="restartGame()">Investigate Again</button>
+      </div>`;
+            } else {
+                coins -= 500000000;
+                renderCoins();
+                const s = accusable[selectedSuspect];
+                body.innerHTML = `
+      <div class="verdict wrong">
+        <div class="verdict-title">WRONG — YOU FRAMED AN INNOCENT PERSON</div>
+        <div class="coin-change">-500,000,000 coins</div>
+        <div class="verdict-text">
+          You named <b>${s.name}</b>. ${wrongReason(selectedSuspect)}<br><br>
+          The real evidence trail runs through the Ferreira Consulting account — check whose bank statement it lands in, and who registered the LLC. Don't let the pet-burial searches or the "surprise" group chat throw you — read what they're actually about.
+        </div>
+        <button class="restart-btn" onclick="selectedSuspect=null; renderCase();">Try Again</button>
+      </div>`;
+            }
+        }
+        function wrongReason(key) {
+            if (key === 'sue') return "Her rivalry with Jacob was already settled by text, and a timestamped photo places her on a conference stage at 9:00 PM the night of the murder.";
+            if (key === 'pele') return "His anger over the trust was real, but a family reunion photo timestamped 8:47 PM places him across town when Jacob died.";
+            return "";
+        }
+
+        function restartGame() {
+            Object.keys(foundState).forEach(p => Object.keys(foundState[p]).forEach(a => foundState[p][a] = false));
+            Object.keys(unlockedPhones).forEach(p => unlockedPhones[p] = false);
+            selectedSuspect = null; coins = 0; renderCoins();
+            introIdx = 0; renderIntroLog();
+            document.getElementById('introChat').style.display = 'flex';
+            document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active'));
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('lock').classList.add('hidden');
+        }
+
+        renderCoins();
+    </script>
+</body>
+
+</html>
