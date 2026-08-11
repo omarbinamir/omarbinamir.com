@@ -221,6 +221,17 @@
       flex: 1;
     }
 
+    .id-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .id-row button {
+      flex: 1;
+      font-size: 13px;
+      padding: 8px;
+    }
+
     .mic-cam-row,
     .extra-controls-row {
       display: flex;
@@ -293,6 +304,7 @@
       min-height: 120px;
       max-width: 900px;
       max-height: 700px;
+      background: #14181c;
     }
 
     .video-tile.pinned {
@@ -468,6 +480,76 @@
       opacity: 1;
     }
 
+    .hand-badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      animation: handWave 1.4s ease-in-out infinite;
+    }
+
+    .hand-badge.raised {
+      display: flex;
+    }
+
+    @keyframes handWave {
+
+      0%,
+      100% {
+        transform: rotate(-8deg);
+      }
+
+      50% {
+        transform: rotate(14deg);
+      }
+    }
+
+    .rec-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: none;
+      align-items: center;
+      gap: 5px;
+      z-index: 2;
+    }
+
+    .rec-badge.active {
+      display: flex;
+    }
+
+    .rec-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--danger);
+      animation: recBlink 1s ease-in-out infinite;
+    }
+
+    @keyframes recBlink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.25;
+      }
+    }
+
     /* ---------------- Reactions ---------------- */
 
     .reaction-bar {
@@ -527,6 +609,37 @@
       transition: background 0.25s ease;
     }
 
+    .chat-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-header-row h4 {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.7;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    #chat-download-btn {
+      background: transparent;
+      color: var(--text);
+      opacity: 0.6;
+      font-size: 12px;
+      padding: 4px 8px;
+      box-shadow: none;
+    }
+
+    #chat-download-btn:hover {
+      opacity: 1;
+      transform: none;
+      box-shadow: none;
+      background: var(--chat-bubble);
+    }
+
     .chat-line {
       animation: chatIn 0.25s ease;
       max-width: 80%;
@@ -540,6 +653,14 @@
     .chat-line.mine {
       align-self: flex-end;
       background: var(--chat-bubble-mine);
+    }
+
+    .chat-line.system {
+      align-self: center;
+      background: transparent;
+      opacity: 0.6;
+      font-size: 12px;
+      font-style: italic;
     }
 
     @keyframes chatIn {
@@ -574,6 +695,37 @@
       flex: 1;
       background: var(--panel-bg);
       color: var(--text);
+      transition: box-shadow 0.15s ease;
+    }
+
+    #chat-input.throttled {
+      box-shadow: 0 0 0 2px var(--danger);
+      animation: throttlePulse 1s ease-in-out infinite;
+    }
+
+    @keyframes throttlePulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 2px var(--danger);
+      }
+
+      50% {
+        box-shadow: 0 0 0 2px rgba(255, 91, 91, 0.3);
+      }
+    }
+
+    .slow-mode-hint {
+      font-size: 11px;
+      color: var(--danger);
+      text-align: center;
+      opacity: 0;
+      height: 14px;
+      transition: opacity 0.2s ease;
+    }
+
+    .slow-mode-hint.visible {
+      opacity: 1;
     }
 
     /* ---------------- Profile modal ---------------- */
@@ -754,7 +906,10 @@
       </div>
     </div>
 
-    <button onclick="copyMyId()">Copy ID</button>
+    <div class="id-row">
+      <button onclick="copyMyId()">Copy ID</button>
+      <button onclick="copyInviteLink()">Copy Invite Link</button>
+    </div>
     <input id="target-id" placeholder="Friend ID" />
     <button onclick="addParticipant()">Add Friend</button>
 
@@ -770,8 +925,12 @@
       <button class="toggle-btn" id="share-toggle" onclick="toggleScreenShare()">🖥️ Share</button>
       <button class="toggle-btn" id="mirror-toggle" onclick="toggleMirror()">🪞 Mirror</button>
     </div>
+    <div class="extra-controls-row">
+      <button class="toggle-btn" id="hand-toggle" onclick="toggleHand()">✋ Raise</button>
+      <button class="toggle-btn" id="record-toggle" onclick="toggleRecording()">⏺ Record</button>
+    </div>
 
-    <div class="shortcuts-hint">Shortcuts: M mute · C camera · S share</div>
+    <div class="shortcuts-hint">Shortcuts: M mute · C camera · S share · H hand</div>
   </div>
 
   <div class="right">
@@ -782,6 +941,8 @@
           <span class="dot" id="my-dot"></span>
           <span id="my-tag-text">You</span>
         </div>
+        <div class="hand-badge" id="my-hand-badge">✋</div>
+        <div class="rec-badge" id="my-rec-badge"><span class="rec-dot"></span>REC</div>
         <button class="fullscreen-btn" onclick="event.stopPropagation(); toggleFullscreen('self');"
           title="Fullscreen">⛶</button>
         <div class="pin-hint">Click to pin · drag corner to resize</div>
@@ -796,11 +957,16 @@
       <button class="reaction-btn" data-emoji="👏">👏</button>
     </div>
 
+    <div class="chat-header-row">
+      <h4>Chat</h4>
+      <button id="chat-download-btn" onclick="downloadTranscript()">Download transcript</button>
+    </div>
     <div id="chat-log"></div>
     <div class="chat-input-row">
       <input id="chat-input" placeholder="Type here..." onkeydown="if(event.key==='Enter') sendMessage()" />
       <button onclick="sendMessage()">Send</button>
     </div>
+    <div class="slow-mode-hint" id="slow-mode-hint">🐌 Slow down — 1 character per second</div>
   </div>
 
   <div id="toast-container"></div>
@@ -815,7 +981,8 @@
          duplicate/late events can never create a stray tile or
          leave one stuck on "Waiting for profile…"
        - Extras: screen share, reactions, pin/fullscreen tiles,
-         dark mode, keyboard shortcuts, mirror toggle, sound cues
+         dark mode, keyboard shortcuts, mirror toggle, sound cues,
+         invite links, raise hand, local recording, chat transcript
        ========================================================= */
 
     const myIdDisplay = document.getElementById('my-id');
@@ -830,7 +997,11 @@
     let micOn = true;
     let camOn = true;
     let mirrorOn = true;
+    let handRaised = false;
     let pinnedPeerId = null; // null means the tile is unpinned; 'self' is allowed too
+
+    // Plain-text log of everything said in chat, used for transcript downloads.
+    const chatHistory = [];
 
     // One authoritative record per remote peer id. This is the single
     // source of truth for "have we already got a tile / connection for
@@ -844,11 +1015,13 @@
           videoEl: null,
           dotEl: null,
           tagTextEl: null,
+          handBadgeEl: null,
           profile: null,
           call: null,
           conn: null,
           gotStream: false,
-          gotProfile: false
+          gotProfile: false,
+          handRaised: false
         });
       }
       return peers.get(peerId);
@@ -875,8 +1048,8 @@
     }
 
     // ---------------- Sound cues ----------------
-    // Small synthesized beeps so join/leave events are noticeable even if
-    // you're not looking at the screen — no external audio files needed.
+    // Small synthesized beeps so join/leave/chat events are noticeable even
+    // if you're not looking at the screen — no external audio files needed.
 
     const sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -897,6 +1070,8 @@
 
     function playJoinSound() { playTone(660, 0.18); setTimeout(() => playTone(880, 0.18), 90); }
     function playLeaveSound() { playTone(440, 0.2); setTimeout(() => playTone(300, 0.25), 90); }
+    function playChatSound() { playTone(950, 0.08, 0.05); }
+    function playHandSound() { playTone(740, 0.12, 0.06); }
 
     // ---------------- Skeep ID generation ----------------
     // Turns a display name into a unique-ish Skeep ID by appending 5 random
@@ -922,6 +1097,7 @@
 
       peer.on('open', id => {
         myIdDisplay.textContent = id;
+        applyInviteLinkAutofill();
       });
 
       peer.on('error', err => {
@@ -941,6 +1117,7 @@
           call.answer(localStream);
           return;
         }
+        ensureTile(call.peer); // show a "Connecting…" tile right away
         rec.call = call;
         call.answer(localStream);
         wireUpCall(call.peer, call);
@@ -1028,6 +1205,38 @@
       });
     }
 
+    // ---------------- Invite links ----------------
+    // A link like https://.../skeep.html?peer=alice12345 lets a friend open
+    // the app with your Skeep ID already dropped into the "Friend ID" field,
+    // so all they have to do is hit "Add Friend".
+
+    function buildInviteLink() {
+      if (!peer || !peer.id) return null;
+      const url = new URL(location.href);
+      url.search = '';
+      url.searchParams.set('peer', peer.id);
+      return url.toString();
+    }
+
+    function copyInviteLink() {
+      const link = buildInviteLink();
+      if (!link) {
+        showToast('Set up your profile first!', 'error');
+        return;
+      }
+      navigator.clipboard.writeText(link);
+      showToast('Invite link copied!', 'success');
+    }
+
+    function applyInviteLinkAutofill() {
+      const params = new URLSearchParams(location.search);
+      const invitedPeer = params.get('peer');
+      if (invitedPeer && invitedPeer !== (peer && peer.id)) {
+        document.getElementById('target-id').value = invitedPeer;
+        showToast('Friend ID filled in from invite link — click Add Friend!', 'success');
+      }
+    }
+
     // ---------------- Local media ----------------
 
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
@@ -1065,6 +1274,78 @@
       mirrorOn = !mirrorOn;
       myVideo.classList.toggle('mirrored', mirrorOn);
       document.getElementById('mirror-toggle').classList.toggle('active', mirrorOn);
+    }
+
+    // ---------------- Raise hand ----------------
+    // Broadcasts a small "hand" signal to everyone else and shows a waving
+    // ✋ badge on the relevant tile until it's toggled off again.
+
+    function toggleHand() {
+      handRaised = !handRaised;
+      document.getElementById('my-hand-badge').classList.toggle('raised', handRaised);
+      const btn = document.getElementById('hand-toggle');
+      btn.classList.toggle('active', handRaised);
+      btn.textContent = handRaised ? '✋ Lower' : '✋ Raise';
+      if (handRaised) playHandSound();
+      peers.forEach(rec => {
+        if (rec.conn && rec.conn.open) rec.conn.send({ type: 'hand', raised: handRaised });
+      });
+    }
+
+    // ---------------- Local recording ----------------
+    // Records your own camera + mic feed locally (MediaRecorder) and
+    // downloads it as a .webm file when you stop. Purely client-side —
+    // nothing is uploaded anywhere.
+
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    function toggleRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        return;
+      }
+      if (!localStream) {
+        showToast('Camera/mic not ready yet', 'error');
+        return;
+      }
+
+      recordedChunks = [];
+      try {
+        mediaRecorder = new MediaRecorder(localStream, { mimeType: 'video/webm' });
+      } catch (e) {
+        showToast('Recording not supported in this browser', 'error');
+        return;
+      }
+
+      mediaRecorder.ondataavailable = e => {
+        if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'skeep-recording-' + Date.now() + '.webm';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+        const btn = document.getElementById('record-toggle');
+        btn.textContent = '⏺ Record';
+        btn.classList.remove('active');
+        document.getElementById('my-rec-badge').classList.remove('active');
+        showToast('Recording saved', 'success');
+      };
+
+      mediaRecorder.start();
+      const btn = document.getElementById('record-toggle');
+      btn.textContent = '⏹ Stop';
+      btn.classList.add('active');
+      document.getElementById('my-rec-badge').classList.add('active');
+      showToast('Recording started (local only)', 'success');
     }
 
     // ---------------- Screen sharing ----------------
@@ -1125,6 +1406,8 @@
         return showToast('Already connected to this person!', 'error');
       }
 
+      ensureTile(targetId); // show a "Connecting…" tile immediately
+
       const call = peer.call(targetId, localStream);
       rec.call = call;
       wireUpCall(targetId, call);
@@ -1154,9 +1437,13 @@
       dot.className = 'dot';
       const tagText = document.createElement('span');
       tagText.className = 'waiting-text';
-      tagText.textContent = 'Waiting for profile…';
+      tagText.textContent = 'Connecting…';
       tag.appendChild(dot);
       tag.appendChild(tagText);
+
+      const handBadge = document.createElement('div');
+      handBadge.className = 'hand-badge';
+      handBadge.textContent = '✋';
 
       const leaveBtn = document.createElement('button');
       leaveBtn.className = 'leave-btn';
@@ -1176,6 +1463,7 @@
 
       tile.appendChild(vid);
       tile.appendChild(tag);
+      tile.appendChild(handBadge);
       tile.appendChild(leaveBtn);
       tile.appendChild(fullscreenBtn);
       tile.appendChild(pinHint);
@@ -1185,6 +1473,7 @@
       rec.videoEl = vid;
       rec.dotEl = dot;
       rec.tagTextEl = tagText;
+      rec.handBadgeEl = handBadge;
       updateParticipantCount();
       return rec;
     }
@@ -1236,6 +1525,13 @@
       });
     });
 
+    function updateTileStatusText(peerId) {
+      const rec = peers.get(peerId);
+      if (!rec || !rec.tagTextEl) return;
+      if (rec.profile) return; // applyProfileToTile already set the real name
+      rec.tagTextEl.textContent = rec.gotStream ? 'Waiting for profile…' : 'Connecting…';
+    }
+
     function wireUpCall(peerId, call) {
       call.on('stream', remoteStream => {
         const rec = ensureTile(peerId);
@@ -1243,6 +1539,7 @@
         rec.gotStream = true;
 
         rec.videoEl.srcObject = remoteStream;
+        updateTileStatusText(peerId);
 
         // If their profile already arrived before the video did, apply it now.
         if (rec.profile) applyProfileToTile(peerId);
@@ -1264,6 +1561,9 @@
         if (myProfile.name) {
           conn.send({ type: 'profile', name: myProfile.name, color: myProfile.color });
         }
+        if (handRaised) {
+          conn.send({ type: 'hand', raised: true });
+        }
 
         conn.on('data', data => {
           if (!data) return;
@@ -1282,9 +1582,15 @@
             const name = (rec.profile && rec.profile.name) || 'Friend';
             const color = (rec.profile && rec.profile.color) || '#9aa0a6';
             addToChat(name, data.msg, color, false);
+            playChatSound();
           } else if (data.type === 'reaction') {
             const rec = getOrCreatePeerRecord(peerId);
             spawnReaction(rec.tile, data.emoji);
+          } else if (data.type === 'hand') {
+            const rec = getOrCreatePeerRecord(peerId);
+            rec.handRaised = !!data.raised;
+            if (rec.handBadgeEl) rec.handBadgeEl.classList.toggle('raised', rec.handRaised);
+            if (rec.handRaised) playHandSound();
           }
         });
       });
@@ -1397,6 +1703,93 @@
       });
     });
 
+    // ---------------- Chat typing throttle ("slow mode") ----------------
+    // If you type 5 characters within 3 seconds, the input clamps down to
+    // accepting only 1 character per second until you calm back down.
+    // Extra keystrokes aren't lost — they queue up and get drained in
+    // one at a time, so nothing you typed disappears, it just arrives slower.
+
+    const THROTTLE_TRIGGER_COUNT = 5;
+    const THROTTLE_TRIGGER_WINDOW_MS = 3000;
+    const THROTTLE_DRAIN_RATE_MS = 1000;
+
+    const chatInputEl = document.getElementById('chat-input');
+    const slowModeHintEl = document.getElementById('slow-mode-hint');
+
+    let recentKeyTimes = [];
+    let slowModeActive = false;
+    let slowModeQueue = [];
+    let slowModeDrainTimer = null;
+
+    function isThrottleableKey(e) {
+      // Only plain printable characters get rate-limited. Backspace, arrows,
+      // Enter, paste shortcuts, etc. always work normally.
+      return e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey;
+    }
+
+    function insertAtCursor(input, text) {
+      const start = input.selectionStart;
+      const end = input.selectionEnd;
+      const val = input.value;
+      input.value = val.slice(0, start) + text + val.slice(end);
+      const pos = start + text.length;
+      input.selectionStart = input.selectionEnd = pos;
+    }
+
+    function enterSlowMode() {
+      slowModeActive = true;
+      chatInputEl.classList.add('throttled');
+      slowModeHintEl.classList.add('visible');
+      showToast("Whoa, slow down! You're limited to 1 character/sec now.", 'error');
+      startDrainTimer();
+    }
+
+    function exitSlowMode() {
+      slowModeActive = false;
+      chatInputEl.classList.remove('throttled');
+      slowModeHintEl.classList.remove('visible');
+      if (slowModeDrainTimer) {
+        clearInterval(slowModeDrainTimer);
+        slowModeDrainTimer = null;
+      }
+    }
+
+    function startDrainTimer() {
+      if (slowModeDrainTimer) return;
+      slowModeDrainTimer = setInterval(() => {
+        if (slowModeQueue.length > 0) {
+          insertAtCursor(chatInputEl, slowModeQueue.shift());
+        }
+
+        const now = Date.now();
+        recentKeyTimes = recentKeyTimes.filter(t => now - t <= THROTTLE_TRIGGER_WINDOW_MS);
+
+        // Only leave slow mode once the queue is empty and typing has
+        // actually calmed down (no fresh burst still sitting in the window).
+        if (slowModeQueue.length === 0 && recentKeyTimes.length < THROTTLE_TRIGGER_COUNT) {
+          exitSlowMode();
+        }
+      }, THROTTLE_DRAIN_RATE_MS);
+    }
+
+    chatInputEl.addEventListener('keydown', e => {
+      if (!isThrottleableKey(e)) return;
+
+      const now = Date.now();
+      recentKeyTimes.push(now);
+      recentKeyTimes = recentKeyTimes.filter(t => now - t <= THROTTLE_TRIGGER_WINDOW_MS);
+
+      if (!slowModeActive && recentKeyTimes.length >= THROTTLE_TRIGGER_COUNT) {
+        enterSlowMode();
+      }
+
+      if (slowModeActive) {
+        e.preventDefault();
+        slowModeQueue.push(e.key);
+      }
+      // otherwise let the keystroke go through normally
+    });
+
     // ---------------- Chat ----------------
 
     function formatTime() {
@@ -1416,6 +1809,7 @@
     }
 
     function addToChat(name, text, color, mine) {
+      const time = formatTime();
       const div = document.createElement('div');
       div.className = 'chat-line' + (mine ? ' mine' : '');
       const nameSpan = document.createElement('span');
@@ -1424,12 +1818,30 @@
       nameSpan.textContent = name + ':';
       const timeSpan = document.createElement('span');
       timeSpan.className = 'chat-time';
-      timeSpan.textContent = formatTime();
+      timeSpan.textContent = time;
       div.appendChild(nameSpan);
       div.appendChild(document.createTextNode(' ' + text));
       div.appendChild(timeSpan);
       chatLog.appendChild(div);
       chatLog.scrollTop = chatLog.scrollHeight;
+
+      chatHistory.push('[' + time + '] ' + name + ': ' + text);
+    }
+
+    function downloadTranscript() {
+      if (!chatHistory.length) {
+        showToast('No chat messages yet', 'error');
+        return;
+      }
+      const blob = new Blob([chatHistory.join('\n')], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'skeep-chat-' + Date.now() + '.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     // ---------------- Theme ----------------
@@ -1449,6 +1861,7 @@
       if (e.key === 'm' || e.key === 'M') toggleMic();
       else if (e.key === 'c' || e.key === 'C') toggleCam();
       else if (e.key === 's' || e.key === 'S') toggleScreenShare();
+      else if (e.key === 'h' || e.key === 'H') toggleHand();
     });
 
     // ---------------- Misc ----------------

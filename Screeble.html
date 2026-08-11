@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCREEBLE</title>
+    <!-- We use PeerJS to handle the P2P connection easily -->
+    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #e74c3c;
+            font-size: 3em;
+            margin: 0 0 10px 0;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .controls-panel {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .canvas-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        canvas {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            cursor: crosshair;
+        }
+
+        .chat-container {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        #chat-box {
+            flex-grow: 1;
+            background: #1abc9c;
+            color: #1a1a1a;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-y: auto;
+            height: 340px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .message {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+
+        .sys-message {
+            color: #d35400;
+            font-size: 0.8em;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        button {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #e74c3c;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #c0392b;
+        }
+
+        .canvas-tools {
+            display: flex;
+            gap: 10px;
+            background: #34495e;
+            padding: 10px;
+            border-radius: 8px;
+            justify-content: center;
+        }
+
+        #my-id-display {
+            font-weight: bold;
+            color: #f1c40f;
+            user-select: all;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>SCREEBLE</h1>
+        <div>
+            <label for="mode-select">Mode: </label>
+            <select id="mode-select">
+                <option value="play">Playing</option>
+                <option value="learn">Learning</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="controls-panel">
+        <div>
+            Your ID: <span id="my-id-display">Generating...</span>
+            <button onclick="copyId()">Copy</button>
+        </div>
+        <div>|</div>
+        <div>
+            <input type="text" id="friend-id-input" placeholder="Enter friend's ID">
+            <button id="connect-btn">Connect</button>
+        </div>
+        <div>|</div>
+        <div id="status">🔴 Not connected</div>
+    </div>
+
+    <div class="main-container">
+        <!-- Drawing Area -->
+        <div class="canvas-container">
+            <canvas id="screeble-board" width="600" height="400"></canvas>
+            <div class="canvas-tools">
+                <input type="color" id="color-picker" value="#000000">
+                <input type="range" id="brush-size" min="1" max="20" value="5">
+                <button id="clear-btn">Clear Board</button>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-container">
+            <div id="chat-box">
+                <div class="sys-message">Welcome to SCREEBLE! Connect to a friend to start chatting and drawing.</div>
+            </div>
+            <div style="display:flex; gap:5px;">
+                <input type="text" id="chat-input" placeholder="Type a message..." style="flex-grow:1;">
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- THE "LEARNING" TOGGLE THAT DOES ABSOLUTELY NOTHING ---
+        document.getElementById('mode-select').addEventListener('change', (e) => {
+            console.log("Mode changed to: " + e.target.value);
+            // As requested, this literally changes absolutely nothing.
+            if (e.target.value === 'learn') {
+                console.log("Learning mode activated. Absolutely nothing has changed.");
+            }
+        });
+
+        // --- PEER TO PEER LOGIC ---
+        const peer = new Peer(); // Generates a random ID
+        let connection = null;
+
+        peer.on('open', (id) => {
+            document.getElementById('my-id-display').innerText = id;
+        });
+
+        function copyId() {
+            navigator.clipboard.writeText(document.getElementById('my-id-display').innerText);
+            alert("ID Copied!");
+        }
+
+        // When a friend connects to us
+        peer.on('connection', (conn) => {
+            connection = conn;
+            setupConnection();
+        });
+
+        // When we connect to a friend
+        document.getElementById('connect-btn').addEventListener('click', () => {
+            const friendId = document.getElementById('friend-id-input').value;
+            if (!friendId) return alert("Enter an ID first!");
+            connection = peer.connect(friendId);
+            setupConnection();
+        });
+
+        function setupConnection() {
+            connection.on('open', () => {
+                document.getElementById('status').innerText = "🟢 Connected!";
+                document.getElementById('status').style.color = "#2ecc71";
+                addChatMessage("System", "Friend connected! You can now draw and chat together.", true);
+            });
+
+            // Handle incoming data (drawings, chats, clears)
+            connection.on('data', (data) => {
+                if (data.type === 'chat') {
+                    addChatMessage("Friend", data.text);
+                } else if (data.type === 'draw') {
+                    drawLine(data.x0, data.y0, data.x1, data.y1, data.color, data.size, false);
+                } else if (data.type === 'clear') {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            });
+
+            connection.on('close', () => {
+                document.getElementById('status').innerText = "🔴 Disconnected";
+                document.getElementById('status').style.color = "#e74c3c";
+                addChatMessage("System", "Friend disconnected.", true);
+                connection = null;
+            });
+        }
+
+        // --- CHAT LOGIC ---
+        const chatInput = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+
+        document.getElementById('send-btn').addEventListener('click', sendChat);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChat();
+        });
+
+        function sendChat() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            addChatMessage("You", text);
+            if (connection && connection.open) {
+                connection.send({ type: 'chat', text: text });
+            }
+            chatInput.value = '';
+        }
+
+        function addChatMessage(sender, text, isSystem = false) {
+            const msgDiv = document.createElement('div');
+            if (isSystem) {
+                msgDiv.className = 'sys-message';
+                msgDiv.innerText = text;
+            } else {
+                msgDiv.className = 'message';
+                msgDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            }
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // --- DRAWING LOGIC ---
+        const canvas = document.getElementById('screeble-board');
+        const ctx = canvas.getContext('2d');
+        const colorPicker = document.getElementById('color-picker');
+        const brushSize = document.getElementById('brush-size');
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Mouse events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = getMousePos(e);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const [currentX, currentY] = getMousePos(e);
+            const color = colorPicker.value;
+            const size = brushSize.value;
+
+            // Draw locally
+            drawLine(lastX, lastY, currentX, currentY, color, size, true);
+
+            // Send to friend
+            if (connection && connection.open) {
+                connection.send({
+                    type: 'draw',
+                    x0: lastX, y0: lastY,
+                    x1: currentX, y1: currentY,
+                    color: color, size: size
+                });
+            }
+
+            lastX = currentX;
+            lastY = currentY;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function drawLine(x0, y0, x1, y1, color, size, isLocal) {
+            ctx.beginPath();
+            ctx.moveTo(x0, y0);
+            ctx.lineTo(x1, y1);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = size;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        function getMousePos(evt) {
+            const rect = canvas.getBoundingClientRect();
+            return [
+                evt.clientX - rect.left,
+                evt.clientY - rect.top
+            ];
+        }
+
+        // Clear board logic
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (connection && connection.open) {
+                connection.send({ type: 'clear' });
+            }
+        });
+
+    </script>
+</body>
+
+</html>
