@@ -11,7 +11,6 @@
         :root {
             --primary: #ff477e;
             --primary-hover: #ff3370;
-            --builder: #9b5de5;
             --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
@@ -37,7 +36,6 @@
             overflow-x: hidden;
         }
 
-        /* --- TUTORIAL OVERLAY --- */
         #tutorial-modal {
             position: fixed;
             top: 0;
@@ -89,9 +87,13 @@
             padding: 12px 30px;
             box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4);
             width: 100%;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        /* --- MAIN UI --- */
         .glass-panel {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
@@ -164,7 +166,10 @@
             font-family: 'Poppins', sans-serif;
             outline: none;
             font-size: 0.95em;
-            width: 140px;
+            width: 110px;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
         input[type="text"]:focus {
@@ -192,11 +197,13 @@
 
         #my-id-display {
             background: rgba(0, 0, 0, 0.3);
-            padding: 6px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
             font-family: monospace;
-            font-size: 1em;
+            font-size: 1.1em;
             color: #00f2fe;
+            font-weight: bold;
+            letter-spacing: 1px;
             user-select: all;
         }
 
@@ -208,7 +215,6 @@
             font-size: 0.9em;
         }
 
-        /* --- GAME PANEL CSS --- */
         #game-panel {
             width: 100%;
             max-width: 900px;
@@ -259,9 +265,12 @@
             padding: 8px 12px;
             margin: 4px;
             box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        /* --- RESPONSIVE LAYOUT CONTAINER --- */
         .main-container {
             display: flex;
             gap: 20px;
@@ -409,7 +418,6 @@
             text-align: center;
         }
 
-        /* Tablet & Desktop Tweaks */
         @media (min-width: 768px) {
             .main-container {
                 flex-wrap: nowrap;
@@ -430,17 +438,15 @@
 
 <body>
 
-    <!-- TUTORIAL MODAL -->
     <div id="tutorial-modal">
         <div class="tutorial-content">
             <h2>Welcome to SCREEBLE! 🎨</h2>
             <ul>
-                <li><strong>Connect:</strong> Copy your ID and share it, or paste a friend's to connect.</li>
-                <li><strong>Teaching Mode:</strong> Free draw and chat together freely.</li>
-                <li><strong>Playing Mode:</strong> Roll for prompts. One draws, the other rates out of 5 stars.</li>
-                <li><strong>Better Builder Mode:</strong> Both draw the same secret prompt for 3 minutes, then swap
-                    canvases and rate each other!</li>
-                <li><strong>Mobile Friendly:</strong> Draw using your mouse or touch screen with your finger!</li>
+                <li><strong>4-Digit Rooms:</strong> Share your 4-digit code or enter your friend's to connect instantly!
+                </li>
+                <li><strong>Teaching Mode:</strong> Free draw and chat together.</li>
+                <li><strong>Playing Mode:</strong> Roll for prompts, one draws, the other rates.</li>
+                <li><strong>Better Builder Mode:</strong> Both draw the same secret prompt, then swap & rate!</li>
             </ul>
             <button class="tutorial-btn" onclick="closeTutorial()">Let's Play!</button>
         </div>
@@ -457,18 +463,17 @@
 
     <div class="glass-panel controls-panel">
         <div class="control-group">
-            <span style="font-weight: 600; font-size: 0.9em;">ID:</span>
-            <span id="my-id-display">Loading...</span>
+            <span style="font-weight: 600; font-size: 0.9em;">Code:</span>
+            <span id="my-id-display">----</span>
             <button onclick="copyId()" style="padding: 6px 10px; font-size: 0.85em;">Copy</button>
         </div>
         <div class="control-group">
-            <input type="text" id="friend-id-input" placeholder="Friend's ID">
+            <input type="text" id="friend-id-input" maxlength="4" placeholder="4-digit">
             <button id="connect-btn" style="padding: 8px 12px; font-size: 0.9em;">Connect</button>
         </div>
         <div id="status" style="color: #ffb703;">🔴 Offline</div>
     </div>
 
-    <!-- GAME PANEL -->
     <div id="game-panel" class="glass-panel">
         <div id="game-setup">
             <h2 id="setup-title" style="margin-bottom: 8px; font-size: 1.5em;">Play Mode</h2>
@@ -519,7 +524,9 @@
                 <div class="msg-sys">Welcome to SCREEBLE!</div>
             </div>
             <div style="display: flex; gap: 8px;">
-                <input type="text" id="chat-input" placeholder="Message..." style="flex-grow: 1; width: auto;">
+                <input type="text" id="chat-input" placeholder="Message..."
+                    style="flex-grow: 1; width: auto; text-align: left; font-weight: normal; letter-spacing: normal;"
+                    maxlength="200">
                 <button id="send-btn" style="padding: 8px 14px;">Send</button>
             </div>
         </div>
@@ -724,14 +731,23 @@
             revealedImg.src = "";
         }
 
-        // --- P2P NETWORK SETUP ---
-        const peer = new Peer();
+        // --- 4-DIGIT ROOM P2P LOGIC ---
+        const fourDigitCode = Math.floor(1000 + Math.random() * 9000).toString();
+        const fullPeerId = "screeble_" + fourDigitCode;
+        const peer = new Peer(fullPeerId);
         let connection = null;
 
-        peer.on('open', (id) => { document.getElementById('my-id-display').innerText = id; });
+        peer.on('open', () => {
+            document.getElementById('my-id-display').innerText = fourDigitCode;
+        });
+
+        peer.on('error', () => {
+            // Fallback if 4-digit code clashes
+            location.reload();
+        });
 
         function copyId() {
-            navigator.clipboard.writeText(document.getElementById('my-id-display').innerText);
+            navigator.clipboard.writeText(fourDigitCode);
             const btn = event.target;
             btn.innerText = "Copied!";
             setTimeout(() => btn.innerText = "Copy", 2000);
@@ -740,9 +756,10 @@
         peer.on('connection', (conn) => { connection = conn; setupConnection(); });
 
         document.getElementById('connect-btn').addEventListener('click', () => {
-            const friendId = document.getElementById('friend-id-input').value.trim();
-            if (!friendId) return alert("Enter an ID first!");
-            connection = peer.connect(friendId);
+            const codeInput = document.getElementById('friend-id-input').value.trim();
+            if (codeInput.length !== 4) return alert("Please enter a valid 4-digit code!");
+
+            connection = peer.connect("screeble_" + codeInput);
             setupConnection();
         });
 
@@ -775,7 +792,6 @@
             });
         }
 
-        // --- CHAT LOGIC ---
         const chatInput = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
 
@@ -799,7 +815,6 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // --- DRAWING LOGIC (MOUSE + TOUCH SUPPORT) ---
         const canvas = document.getElementById('screeble-board');
         const ctx = canvas.getContext('2d');
         ctx.lineJoin = 'round';
@@ -813,13 +828,11 @@
         let isDrawing = false;
         let lastX = 0, lastY = 0;
 
-        // Mouse Events
         canvas.addEventListener('mousedown', (e) => { isDrawing = true;[lastX, lastY] = getPos(e); });
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', () => isDrawing = false);
         canvas.addEventListener('mouseout', () => isDrawing = false);
 
-        // Touch Events for Mobile / Tablets
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             isDrawing = true;
@@ -859,7 +872,6 @@
 
         function getPos(evt) {
             const rect = canvas.getBoundingClientRect();
-            // Scale coordinates properly based on actual canvas resolution vs display size
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
             return [
