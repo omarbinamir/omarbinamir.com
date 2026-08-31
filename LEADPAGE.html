@@ -4,151 +4,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OmarBinAmir | Pro Dashboard</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <title>omarbinamir.com</title>
     <style>
-        /* --- 1. CORE THEME & VARIABLES --- */
         :root {
-            --bg-deep: #000000;
-            --bg-sidebar: #050505;
-            --bg-card: rgba(15, 15, 18, 0.6);
-            --accent: #6366f1;
-            --accent-dim: rgba(99, 102, 241, 0.15);
-            --border-glow: rgba(99, 102, 241, 0.15);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --glass-blur: blur(20px);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="light"] {
-            --bg-deep: #f8fafc;
-            --bg-sidebar: #ffffff;
-            --bg-card: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-glow: #e2e8f0;
-        }
-
-        /* --- 2. LAYOUT & RESET --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            outline: none;
+            --primary-blue: #0056b3;
+            --bg-light: #f4f7f6;
+            --text-dark: #333;
+            --white: #ffffff;
         }
 
         body {
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
-            transition: background 0.4s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+            /* Fade transition setup */
         }
 
-        /* --- 3. SIDEBAR (EMPIRELY STYLE) --- */
-        .sidebar {
-            width: 270px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border-glow);
+        /* Navigation Bar */
+        .navbar {
+            background-color: var(--white);
             display: flex;
-            flex-direction: column;
-            padding: 30px 20px;
-            z-index: 100;
-        }
-
-        .brand-header {
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-            padding-left: 10px;
+            padding: 15px 50px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .brand-icon {
-            width: 28px;
-            height: 28px;
-            background: linear-gradient(135deg, var(--accent), #06b6d4);
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-        }
-
-        .nav-section {
-            margin-bottom: 25px;
-        }
-
-        .nav-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            padding-left: 10px;
-            font-weight: 600;
-            opacity: 0.6;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            color: var(--text-muted);
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--primary-blue);
             text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: var(--transition);
             cursor: pointer;
-            margin-bottom: 4px;
         }
 
-        .nav-link:hover {
-            background: var(--accent-dim);
-            color: var(--text-main);
-            transform: translateX(5px);
+        .nav-links {
+            display: flex;
+            align-items: center;
         }
 
-        .nav-link.active {
-            background: var(--accent-dim);
-            color: var(--accent);
-            box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.3);
+        .nav-links button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 15px;
+            text-decoration: none;
+            color: #555;
+            margin: 0 10px;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
         }
 
-        .sidebar-bottom {
-            margin-top: auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
+        .nav-links button:hover,
+        .nav-links button.active {
+            background-color: var(--primary-blue);
+            color: var(--white);
         }
 
-        /* --- 4. MAIN WORKSPACE --- */
-        .workspace {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .view {
+        /* Full-Screen / Container Loader Overlay */
+        #loader-overlay {
             display: none;
-            max-width: 1000px;
-            margin: 0 auto;
-            animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 60vh;
         }
 
-        .view.active {
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            color: #666;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Tab Content Containers */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .tab-content.active-tab {
             display: block;
         }
 
-        @keyframes slideIn {
+        @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
@@ -160,390 +130,394 @@
             }
         }
 
-        header h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -0.8px;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            margin-bottom: 40px;
-        }
-
-        /* --- 5. COMPONENT: CARDS & GRIDS --- */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .glass-card {
-            background: var(--bg-card);
-            backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border-glow);
-            border-radius: 20px;
-            padding: 24px;
-            transition: var(--transition);
-        }
-
-        .glass-card:hover {
-            border-color: rgba(99, 102, 241, 0.4);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
-        }
-
-        /* --- 6. COMPONENT: ANALYTICS OPTIONS --- */
-        .analytics-nav {
-            display: flex;
-            gap: 20px;
-            border-bottom: 1px solid var(--border-glow);
-            margin-bottom: 30px;
-        }
-
-        .a-nav-item {
-            padding: 12px 4px;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            position: relative;
-        }
-
-        .a-nav-item.active {
-            color: var(--accent);
-        }
-
-        .a-nav-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--accent);
-        }
-
-        .analytics-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .analytics-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* --- 7. COMPONENT: SETTINGS UI --- */
-        .setting-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border-glow);
-        }
-
-        .share-field {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-glow);
-            padding: 10px 15px;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .share-field input {
-            background: transparent;
-            border: none;
-            color: #06b6d4;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            flex: 1;
-        }
-
-        .btn-action {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        /* --- 8. THEME TOGGLE --- */
-        .toggle {
-            width: 48px;
-            height: 24px;
-            background: #222;
-            border-radius: 20px;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .toggle-dot {
-            width: 18px;
-            height: 18px;
-            background: #fff;
-            border-radius: 50%;
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        [data-theme="light"] .toggle {
-            background: var(--accent);
-        }
-
-        [data-theme="light"] .toggle-dot {
-            transform: translateX(24px);
-        }
-
-        /* --- 9. COMING SOON SPLASH --- */
-        .coming-soon {
-            height: 60vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0056b3, #0080ff);
+            color: var(--white);
             text-align: center;
+            padding: 90px 20px 140px 20px;
         }
 
-        .coming-soon h2 {
-            font-size: 3rem;
-            font-weight: 900;
-            background: linear-gradient(to right, #6366f1, #06b6d4);
+        .hero h1 {
+            font-size: 40px;
+            margin: 0;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Quick Action Cards with Custom Themes */
+        .action-cards {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: -60px;
+            padding: 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 160px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card .icon-container {
+            font-size: 32px;
+            margin-bottom: 15px;
+            display: inline-block;
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* VBOOKS Theme */
+        .card.vbooks .icon-container {
+            background-color: #fdf3e6;
+            color: #8b4513;
+        }
+
+        .card.vbooks h3 {
+            color: #5a2e0b;
+        }
+
+        /* Skeep Theme */
+        .card.skeep .icon-container {
+            background-color: #e6f2ff;
+            color: #00aff0;
+        }
+
+        .card.skeep h3 {
+            color: #0078d4;
+        }
+
+        /* Screeble Theme */
+        .card.screeble .icon-container {
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #1dd1a1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-color: #fff0f5;
+        }
+
+        .card.screeble h3 {
+            background: linear-gradient(45deg, #ff6b6b, #ff9ff3, #48dbfb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .badge {
-            background: var(--accent-dim);
-            color: var(--accent);
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 15px;
+        /* Improved Profile Design */
+        .profile-container {
+            max-width: 650px;
+            margin: 60px auto;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            text-align: center;
         }
 
-        /* Statistics Styling */
-        .stat-huge {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--accent);
-            font-family: 'JetBrains Mono';
+        .profile-header {
+            background: linear-gradient(135deg, #0056b3, #0080ff);
+            padding: 40px 20px;
+            color: white;
         }
 
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-top: 5px;
-            display: block;
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #fff;
+            color: #0056b3;
+            font-size: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+
+        .profile-body {
+            padding: 30px;
+        }
+
+        .profile-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        .profile-info-row span:first-child {
+            color: #777;
+            font-weight: 500;
+        }
+
+        .profile-info-row span:last-child {
+            color: #222;
+            font-weight: 600;
+        }
+
+        /* Improved Settings Design */
+        .settings-container {
+            max-width: 650px;
+            margin: 60px auto;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+        }
+
+        .settings-container h2 {
+            margin-top: 0;
+            color: var(--primary-blue);
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #f4f7f6;
+        }
+
+        .setting-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .setting-info p {
+            margin: 0;
+            font-size: 13px;
+            color: #777;
+        }
+
+        /* Switch Toggle Style */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 26px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary-blue);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
         }
     </style>
 </head>
 
-<body data-theme="dark">
+<body>
 
-    <aside class="sidebar">
-        <div class="brand-header">
-            <div class="brand-icon"></div>
-            omarbinamir
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a class="logo" onclick="switchTab('home')">omarbinamir.com</a>
+        <div class="nav-links">
+            <button id="btn-home" class="active" onclick="switchTab('home')">HOME</button>
+            <button id="btn-settings" onclick="switchTab('settings')">SETTINGS</button>
+            <button id="btn-profile" onclick="switchTab('profile')">PROFILE</button>
         </div>
+    </nav>
 
-        <div class="nav-section">
-            <div class="nav-label">📂 Workspace</div>
-            <div class="nav-link active" onclick="navigate('overview', this)">Overview</div>
-            <div class="nav-link" onclick="navigate('analytics', this)">📈 Analytics</div>
-        </div>
+    <!-- Global 1-Second Loading Spinner Container -->
+    <div id="loader-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
 
-        <div class="nav-section">
-            <div class="nav-label">⚙️ Account</div>
-            <div class="nav-link" onclick="navigate('settings', this)">Settings</div>
-            <div class="nav-link" onclick="navigate('security', this)">🛡️ Security</div>
-        </div>
-
-        <div class="sidebar-bottom">
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;">Current Plan</div>
-            <div style="font-size: 0.95rem; font-weight: 600; color: #06b6d4;">Pro Enterprise</div>
-        </div>
-    </aside>
-
-    <main class="workspace">
-
-        <section id="view-overview" class="view active">
-            <header>
-                <h1>-Sites-</h1>
-                <p>My Work Built For You.</p>
-            </header>
-            <div class="card-grid">
-                <div class="glass-card">
-                    <div style="font-size: 1.5rem; margin-bottom: 15px;">🍕</div>
-                    <h3>Skeep</h3>
-
-                    <!-- The link to Index.html is right here -->
-                    <p style="font-size: 0.9rem; margin-bottom: 20px;">
-                        <a href="skeepskype.html"
-                            style="color: var(--text-muted); text-decoration: none; display: inline-block;">
-                            A high-end interactive Social Platform.
-                        </a>
-                    </p>
-
-                    <div style="display: flex; gap: 8px;">
-                        <span
-                            style="font-size: 0.7rem; color: var(--accent); background: var(--accent-dim); padding: 4px 8px; border-radius: 4px;">Working</span>
-                    </div>
-                </div>
-            </div>
-            <div class="glass-card">
-                <div style="font-size: 1.5rem; margin-bottom: 15px;">🔗</div>
-                <h3>Ideal Linc</h3>
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Minimalist performance
-                    tool for ultra-fast redirection and architecture.</p>
-                <div style="display: flex; gap: 8px;">
-                    <span
-                        style="font-size: 0.7rem; color: #06b6d4; background: rgba(6,182,212,0.1); padding: 4px 8px; border-radius: 4px;">STABLE</span>
-                </div>
-            </div>
-            </div>
+    <!-- HOME TAB -->
+    <div id="tab-home" class="tab-content active-tab">
+        <section class="hero">
+            <h1>Innovation Beyond Imagination</h1>
         </section>
 
-        <section id="view-analytics" class="view">
-            <header>
-                <h1>User Features </h1>
-                <p>Simple Account Features.</p>
-            </header>
+        <div class="action-cards">
+            <a href="https://omarbinamir.com/Vbooks.vm.html" class="card vbooks"
+                onclick="fadeOutAndNavigate(event, this.href)">
+                <div class="icon-container">📖</div>
+                <h3>VBOOKS</h3>
+            </a>
+            <a href="https://omarbinamir.com/skeepskype.html" class="card skeep"
+                onclick="fadeOutAndNavigate(event, this.href)">
+                <div class="icon-container">💬</div>
+                <h3>Skeep</h3>
+            </a>
+            <a href="https://omarbinamir.com/Screeble.html" class="card screeble"
+                onclick="fadeOutAndNavigate(event, this.href)">
+                <div class="icon-container">✏️</div>
+                <h3>Screeble</h3>
+            </a>
+        </div>
+    </div>
 
+    <!-- SETTINGS TAB -->
+    <div id="tab-settings" class="tab-content">
+        <div class="settings-container">
+            <h2>Preferences & Control</h2>
 
-            <div class="glass-card">
-                <span class="stat-label">Website Level</span>
-                <div class="stat-huge" style="color: #727272;">User</div>
-                <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Active until Jan 2027
-                </p>
-            </div>
-            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Dynamic Sites</h4>
+                    <p>Enable dynamic layout rendering and live updates across omarbinamir.com components.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="dynamicSitesToggle" onchange="toggleDynamicSites(this)">
+                    <span class="slider"></span>
+                </label>
             </div>
 
-            <div id="builder-content" class="analytics-content">
-                <div class="coming-soon">
-                    <span class="badge">BETA v0.1</span>
-                    <h2>Pro Features Soon Free</h2>
-                    <p style="color: var(--text-muted); max-width: 400px; margin-top: 15px;">/|\Website
-                        Customizeing,ColorPicker /\ND More .</p>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Push Notifications</h4>
+                    <p>Receive alerts regarding account updates and system activity.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h4>Dark Mode Appearance</h4>
+                    <p>Switch interface palette to dark tones.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE TAB -->
+    <div id="tab-profile" class="tab-content">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar" id="authAvatar">O</div>
+                <h2 id="authName" style="margin: 0; font-size: 22px;">Omar Bin Amir</h2>
+                <p id="authEmail" style="margin: 5px 0 0 0; opacity: 0.85; font-size: 14px;">omar@omarbinamir.com</p>
+            </div>
+            <div class="profile-body">
+                <div class="profile-info-row">
+                    <span>Domain Provider</span>
+                    <span>omarbinamir.com</span>
+                </div>
+                <div class="profile-info-row">
+                    <span>Account Status</span>
+                    <span style="color: #28a745;">● Active & Online</span>
+                </div>
+                <div class="profile-info-row">
+                    <span>Dynamic Sites Feature</span>
+                    <span id="profileDynamicStatus" style="color: #777;">Disabled</span>
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <section id="view-settings" class="view">
-            <header>
-                <h1>System Settings</h1>
-                <p>Adjust your interface and profile sharing.</p>
-            </header>
-            <div class="glass-card" style="padding: 0 30px;">
-                <div class="setting-row">
-                    <div>
-                        <h4 style="font-weight: 600;">Theme Mode</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Toggle between dark and light themes.
-                        </p>
-                    </div>
-                    <div class="toggle" onclick="toggleTheme()">
-                        <div class="toggle-dot"></div>
-                    </div>
-                </div>
-                <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
-                    <h4 style="font-weight: 600;">Short Sharing Link</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Share your unique dashboard profile with
-                        others.</p>
-                    <div class="share-field">
-                        <input type="text" readonly value="https://clickly.net/short-shareing-link" id="share-input">
-                        <button class="btn-action" onclick="copyLink(this)">Copy</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-security" class="view">
-            <header>
-                <h1>Security</h1>
-                <p>Manage your account authentication and security protocols.</p>
-            </header>
-            <div class="glass-card">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                    <div style="color: #10b981; font-size: 1.5rem;">🛡️</div>
-                    <h4 style="font-weight: 600;">Account Protection Active</h4>
-                </div>
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 30px;">Two-factor authentication
-                    is enabled for your Google login.</p>
-                <button class="btn-action" style="background: transparent; border: 1px solid var(--border-glow);">View
-                    Access Logs</button>
-            </div>
-        </section>
-
-    </main>
-
+    <!-- Interactive Scripts -->
     <script>
-        // 1. Navigation Controller
-        function navigate(viewId, el) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        let currentActiveTab = 'home';
 
-            document.getElementById(`view-${viewId}`).classList.add('active');
-            el.classList.add('active');
+        function switchTab(tabName) {
+            if (tabName === currentActiveTab) return;
+
+            // Update button states immediately
+            document.querySelectorAll('.nav-links button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('btn-' + tabName).classList.add('active');
+
+            // Hide all tabs and show the 1-second loading spinner
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active-tab');
+            });
+            document.getElementById('loader-overlay').style.display = 'flex';
+
+            // Wait exactly 1 second then display the target tab
+            setTimeout(() => {
+                document.getElementById('loader-overlay').style.display = 'none';
+                const targetTab = document.getElementById('tab-' + tabName);
+                targetTab.classList.add('active-tab');
+                currentActiveTab = tabName;
+            }, 1000);
         }
 
-        // 2. Analytics Sub-navigation
-        function switchAnalytics(contentId, el) {
-            document.querySelectorAll('.analytics-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.a-nav-item').forEach(i => i.classList.remove('active'));
+        function fadeOutAndNavigate(event, url) {
+            event.preventDefault(); // Stop immediate jump
+            document.body.style.opacity = '0'; // Trigger CSS transition to white
 
-            document.getElementById(`${contentId}-content`).classList.add('active');
-            el.classList.add('active');
+            // Wait for the 0.5s fade transition to finish, then go to the link
+            setTimeout(() => {
+                window.location.href = url;
+            }, 500);
         }
 
-        // 3. Theme Management
-        function toggleTheme() {
-            const body = document.body;
-            const current = body.getAttribute('data-theme');
-            body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+        function toggleDynamicSites(checkbox) {
+            const statusLabel = document.getElementById('profileDynamicStatus');
+            if (checkbox.checked) {
+                statusLabel.innerText = "Enabled";
+                statusLabel.style.color = "#0056b3";
+            } else {
+                statusLabel.innerText = "Disabled";
+                statusLabel.style.color = "#777";
+            }
         }
-
-        // 4. Utility: Copy Link
-        function copyLink(btn) {
-            const input = document.getElementById('share-input');
-            input.select();
-            navigator.clipboard.writeText(input.value);
-            const origText = btn.innerText;
-            btn.innerText = "COPIED";
-            btn.style.background = "#10b981";
-            setTimeout(() => { btn.innerText = origText; btn.style.background = ""; }, 2000);
-        }
-
-        // 5. Analytics Clock: Fake Real-time Usage Update
-        let totalSeconds = 463335; // Approx 128 hours
-        setInterval(() => {
-            totalSeconds++;
-            const hrs = Math.floor(totalSeconds / 3600);
-            const mins = Math.floor((totalSeconds % 3600) / 60);
-            const secs = totalSeconds % 60;
-            document.getElementById('usage-clock').innerText =
-                `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }, 1000);
     </script>
+
 </body>
 
 </html>
