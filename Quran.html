@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <title>Quran Recitation Checker</title>
+  <style>
+    :root {
+      --bg: #f4f1e8;
+      --bg2: #e6efe6;
+      --card: #fffdf8;
+      --ink: #1b2a22;
+      --muted: #66746b;
+      --line: #e1dccb;
+      --accent: #17694a;
+      --accent2: #0f4d37;
+      --gold: #b8923a;
+      --ok: #1c8a57;
+      --bad: #c4332b;
+      --cur: #f3ead0;
+      --shadow: 0 6px 24px rgba(23, 60, 43, .10)
+    }
+
+    @media (prefers-color-scheme:dark) {
+      :root {
+        --bg: #0c1511;
+        --bg2: #10201a;
+        --card: #14211b;
+        --ink: #eaf1ec;
+        --muted: #93a69b;
+        --line: #26382f;
+        --accent: #3fb381;
+        --accent2: #2a8a62;
+        --gold: #d9b25a;
+        --ok: #4fcf93;
+        --bad: #ff6b61;
+        --cur: #2a3a2a;
+        --shadow: 0 6px 24px rgba(0, 0, 0, .4)
+      }
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font: 16px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      padding: 20px 16px 40px;
+      background: radial-gradient(circle at 15% 0%, var(--bg2), transparent 55%), radial-gradient(circle at 100% 100%, var(--bg2), transparent 50%), var(--bg)
+    }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto
+    }
+
+    header {
+      text-align: center;
+      padding: 18px 8px 22px
+    }
+
+    .bism {
+      font-family: "Amiri", "Traditional Arabic", serif;
+      font-size: 2rem;
+      color: var(--gold);
+      line-height: 1.8
+    }
+
+    h1 {
+      font-size: 1.7rem;
+      margin: 0;
+      letter-spacing: .2px
+    }
+
+    .sub {
+      color: var(--muted);
+      margin: 6px auto 0;
+      max-width: 520px;
+      font-size: .95rem
+    }
+
+    .orn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin: 12px auto 0;
+      color: var(--gold)
+    }
+
+    .orn::before,
+    .orn::after {
+      content: "";
+      height: 1px;
+      width: 70px;
+      background: linear-gradient(90deg, transparent, var(--gold))
+    }
+
+    .orn::after {
+      transform: scaleX(-1)
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow)
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: end
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-size: .78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      gap: 6px;
+      flex: 1;
+      min-width: 150px
+    }
+
+    label.chk {
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: none;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--ink);
+      cursor: pointer
+    }
+
+    input[type=checkbox] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent)
+    }
+
+    select,
+    input[type=number] {
+      font: inherit;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--ink)
+    }
+
+    button {
+      font: inherit;
+      font-weight: 700;
+      padding: 12px 30px;
+      border-radius: 999px;
+      border: 0;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 6px 16px rgba(23, 105, 74, .35);
+      transition: transform .15s, box-shadow .15s
+    }
+
+    button:hover {
+      transform: translateY(-1px)
+    }
+
+    button:active {
+      transform: translateY(1px)
+    }
+
+    button.stop {
+      background: linear-gradient(135deg, #d9473e, #a62a23);
+      box-shadow: 0 6px 16px rgba(196, 51, 43, .35)
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 2px
+    }
+
+    #box {
+      cursor: pointer;
+      padding: 26px 18px;
+      border: 1px solid var(--gold);
+      position: relative
+    }
+
+    #ayah {
+      direction: rtl;
+      font-family: "Amiri", "Traditional Arabic", "Scheherazade New", serif;
+      font-size: 2.3rem;
+      line-height: 2.5;
+      text-align: center;
+      min-height: 150px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0 6px
+    }
+
+    .w {
+      padding: 0 6px;
+      border-radius: 10px;
+      transition: color .15s, background .15s
+    }
+
+    .w.done {
+      color: var(--ok)
+    }
+
+    .w.cur {
+      background: var(--cur);
+      box-shadow: inset 0 -3px 0 var(--gold)
+    }
+
+    .w.err {
+      color: var(--bad)
+    }
+
+    .tr {
+      direction: ltr;
+      text-align: center;
+      margin-top: 10px;
+      font-size: .9rem;
+      color: var(--muted)
+    }
+
+    .tr.on {
+      color: var(--ink);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      border-top: 1px solid var(--line);
+      padding-top: 14px
+    }
+
+    .hid {
+      direction: ltr;
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 1.15rem;
+      color: var(--muted);
+      line-height: 1.7
+    }
+
+    .hid::before {
+      content: "\1F54C";
+      display: block;
+      font-size: 2.4rem;
+      margin-bottom: 6px
+    }
+
+    .miss {
+      width: 100%;
+      font-size: 4rem;
+      color: var(--bad);
+      line-height: 1.5
+    }
+
+    .said {
+      width: 100%;
+      direction: ltr;
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: .95rem;
+      color: var(--muted);
+      line-height: 1.4
+    }
+
+    #status {
+      font-weight: 700;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    #status::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex: none
+    }
+
+    #status.live::before {
+      background: var(--ok);
+      animation: pulse 1.4s infinite
+    }
+
+    #status.bad::before {
+      background: var(--bad)
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(31, 170, 110, .6)
+      }
+
+      100% {
+        box-shadow: 0 0 0 12px rgba(31, 170, 110, 0)
+      }
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px
+    }
+
+    .stats span {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: .85rem;
+      color: var(--muted)
+    }
+
+    .stats b {
+      color: var(--ink)
+    }
+
+    #heard {
+      color: var(--muted);
+      font-size: .9rem;
+      direction: rtl;
+      text-align: right;
+      min-height: 1.4em
+    }
+
+    .flash {
+      animation: fl .45s
+    }
+
+    @keyframes fl {
+      0% {
+        background: var(--bad)
+      }
+
+      100% {
+        background: var(--card)
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      .flash,
+      #status.live::before {
+        animation: none
+      }
+    }
+
+    @media (max-width:520px) {
+      #ayah {
+        font-size: 1.9rem
+      }
+
+      .miss {
+        font-size: 3rem
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <header>
+      <div class="bism">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+      <h1>Quran Recitation Checker</h1>
+      <p class="sub">Recite out loud. Reading mode shows the ayah; No-look mode hides it and shows only the word you
+        missed.</p>
+      <div class="orn">✦</div>
+    </header>
+
+    <div class="card">
+      <div class="row">
+        <label>Surah <select id="surah"></select></label>
+        <label>Start from ayah <input id="from" type="number" min="1" value="1"></label>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <label>Mode <select id="mode">
+            <option value="read">Reading mode</option>
+            <option value="nolook">No-look mode</option>
+          </select></label>
+        <label>Strictness <select id="strict">
+            <option value="0.5">Relaxed</option>
+            <option value="0.62" selected>Normal</option>
+            <option value="0.78">Strict</option>
+          </select></label>
+        <label class="chk"><input id="say" type="checkbox" checked> Say the word aloud</label>
+        <label class="chk"><input id="playay" type="checkbox" checked> No-look: play the ayah after a mistake</label>
+        <button id="go">Start</button>
+      </div>
+    </div>
+
+    <div class="card flashbox" id="box" tabindex="0" role="button" aria-label="Show or hide English translation">
+      <div id="ayah" aria-live="polite">Choose a surah and press Start.</div>
+      <div id="tr" class="tr">Tap here to show the English translation</div>
+    </div>
+
+    <div class="card">
+      <div id="status">Ready</div>
+      <div class="stats"><span>Ayah: <b id="sAyah">-</b></span><span>Mistakes in this ayah: <b
+            id="sMis">0</b></span><span>Total mistakes: <b id="sTot">0</b></span></div>
+      <p id="heard" style="margin:10px 0 0"></p>
+    </div>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const API = "https://api.alquran.cloud/v1";
+    const pad3 = n => String(n).padStart(3, "0");
+    const names = "Al-Fatihah,Al-Baqarah,Aal-Imran,An-Nisa,Al-Ma'idah,Al-An'am,Al-A'raf,Al-Anfal,At-Tawbah,Yunus,Hud,Yusuf,Ar-Ra'd,Ibrahim,Al-Hijr,An-Nahl,Al-Isra,Al-Kahf,Maryam,Ta-Ha,Al-Anbiya,Al-Hajj,Al-Mu'minun,An-Nur,Al-Furqan,Ash-Shu'ara,An-Naml,Al-Qasas,Al-Ankabut,Ar-Rum,Luqman,As-Sajdah,Al-Ahzab,Saba,Fatir,Ya-Sin,As-Saffat,Sad,Az-Zumar,Ghafir,Fussilat,Ash-Shura,Az-Zukhruf,Ad-Dukhan,Al-Jathiyah,Al-Ahqaf,Muhammad,Al-Fath,Al-Hujurat,Qaf,Adh-Dhariyat,At-Tur,An-Najm,Al-Qamar,Ar-Rahman,Al-Waqi'ah,Al-Hadid,Al-Mujadila,Al-Hashr,Al-Mumtahanah,As-Saff,Al-Jumu'ah,Al-Munafiqun,At-Taghabun,At-Talaq,At-Tahrim,Al-Mulk,Al-Qalam,Al-Haqqah,Al-Ma'arij,Nuh,Al-Jinn,Al-Muzzammil,Al-Muddaththir,Al-Qiyamah,Al-Insan,Al-Mursalat,An-Naba,An-Nazi'at,Abasa,At-Takwir,Al-Infitar,Al-Mutaffifin,Al-Inshiqaq,Al-Buruj,At-Tariq,Al-A'la,Al-Ghashiyah,Al-Fajr,Al-Balad,Ash-Shams,Al-Layl,Ad-Duha,Ash-Sharh,At-Tin,Al-Alaq,Al-Qadr,Al-Bayyinah,Az-Zalzalah,Al-Adiyat,Al-Qari'ah,At-Takathur,Al-Asr,Al-Humazah,Al-Fil,Quraysh,Al-Ma'un,Al-Kawthar,Al-Kafirun,An-Nasr,Al-Masad,Al-Ikhlas,Al-Falaq,An-Nas".split(",");
+    $("surah").innerHTML = names.map((n, i) => `<option value="${i + 1}">${i + 1}. ${n}</option>`).join("");
+    if (!SR) { $("status").textContent = "Speech recognition is not supported here. Use Google Chrome or Microsoft Edge."; $("go").disabled = true; }
+
+    if (location.protocol !== "https:" && location.hostname !== "localhost") $("heard").textContent = "Tip: this page is not on https, so Chrome will ask for the microphone every time. Upload it to an https website to be asked only once.";
+    function norm(s) {
+      return s.replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, "")
+        .replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
+        .replace(/ؤ/g, "و").replace(/ئ/g, "ي").replace(/[^\u0621-\u064A\s]/g, " ")
+        .replace(/\s+/g, " ").trim();
+    }
+    // Letters the recogniser often confuses: cheaper to substitute unless Strict
+    const CONF = new Set("سص سث ثص ذز ذظ زظ ضظ دض تط قك حه خح غخ عا ءا".split(" "));
+    let TH = 0.62;
+    const cost = (a, b) => a === b ? 0 : ((CONF.has(a + b) || CONF.has(b + a)) && TH < 0.7 ? 0.5 : 1);
+    function sim(a, b) {
+      if (a === b) return 1; const m = a.length, n = b.length; if (!m || !n) return 0;
+      let prev = []; for (let j = 0; j <= n; j++)prev[j] = j;
+      for (let i = 1; i <= m; i++) { const cur = [i]; for (let j = 1; j <= n; j++)cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost(a[i - 1], b[j - 1])); prev = cur; }
+      return 1 - prev[n] / Math.max(m, n);
+    }
+    const noA = s => s.replace(/(?!^)ا/g, "");
+    const same = (a, b) => sim(a, b) >= TH || sim(noA(a), noA(b)) >= TH;
+
+    let ayahs = [], surahNo = 1, idx = 0, ptr = 0, ptr0 = 0, sessBase = 0, mistakes = 0, total = 0, lastErr = null;
+    let showTr = false, rec = null, running = false, busy = false, pend = null, audioCtx = null, curAudio = null, mode = "read";
+
+    async function loadSurah(n) {
+      let raw = null; const k = "qd" + n;
+      try { raw = JSON.parse(localStorage.getItem(k)); } catch (e) { }
+      if (!raw) {
+        const r = await (await fetch(`${API}/surah/${n}/editions/quran-uthmani,quran-simple-clean,en.sahih`)).json();
+        raw = [r.data[0].ayahs.map(x => x.text), r.data[1].ayahs.map(x => x.text), r.data[2].ayahs.map(x => x.text)];
+        try { localStorage.setItem(k, JSON.stringify(raw)); } catch (e) { }
+      }
+      return raw[0].map((ut, i) => {
+        let cw = raw[1][i].trim().split(/\s+/), uw = ut.trim().split(/\s+/);
+        if (i === 0 && n !== 1 && n !== 9 && norm(cw.slice(0, 4).join(" ")) === "بسم الله الرحمن الرحيم") { cw = cw.slice(4); uw = uw.slice(4); }
+        const words = cw.map(norm).filter(Boolean);
+        return { n: i + 1, tr: raw[2][i] || "", text: uw.join(" "), words, show: uw.length === words.length ? uw : cw };
+      });
+    }
+
+    function beep() {
+      return new Promise(res => {
+        try {
+          audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+          const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+          o.type = "square"; o.frequency.value = 900; g.gain.value = 1;
+          o.connect(g); g.connect(audioCtx.destination);
+          o.start(); o.stop(audioCtx.currentTime + 0.5); o.onended = res;
+        } catch (e) { res(); }
+      });
+    }
+    function speak(text) {
+      return new Promise(res => {
+        if (!window.speechSynthesis) return res();
+        const u = new SpeechSynthesisUtterance(text); u.lang = "ar-SA"; u.rate = 0.85;
+        u.onend = u.onerror = () => res();
+        speechSynthesis.cancel(); speechSynthesis.speak(u);
+      });
+    }
+    function playAyah(a) {
+      return new Promise(res => {
+        const au = new Audio(`https://everyayah.com/data/Alafasy_128kbps/${pad3(surahNo)}${pad3(a.n)}.mp3`);
+        curAudio = au; au.onended = () => res();
+        au.onerror = () => speak(a.text).then(res);
+        au.play().catch(() => speak(a.text).then(res));
+      });
+    }
+
+    function render(errIdx, heard) {
+      const a = ayahs[idx];
+      if (mode === "read") {
+        $("ayah").innerHTML = a.show.map((w, i) => `<span class="w ${i < ptr ? "done" : i === ptr ? "cur" : ""}${i === errIdx ? " err" : ""}">${w}</span>`).join(" ") + ` <span class="w">﴿${a.n}﴾</span>`;
+      } else {
+        $("ayah").innerHTML = lastErr
+          ? `<div class="said">Mistake in ayah ${a.n}</div><div class="miss">${lastErr.w}</div><div class="said">you said: ${lastErr.h || "…"}</div>`
+          : `<div class="hid">Recite from memory<br>Ayah ${a.n}</div>`;
+      }
+      { const t = $("tr"); t.className = showTr ? "tr on" : "tr"; t.textContent = showTr ? a.tr : "Tap here to show the English translation"; }
+      $("sAyah").textContent = `${surahNo}:${a.n}`; $("sMis").textContent = mistakes; $("sTot").textContent = total;
+    }
+    const setStatus = t => { $("status").textContent = t; $("status").className = /Listening/.test(t) ? "live" : /Mistake/.test(t) ? "bad" : ""; };
+
+    function startRec() {
+      if (!running || busy) return;
+      rec = new SR(); rec.lang = "ar-SA"; rec.continuous = true; rec.interimResults = true;
+      sessBase = 0; ptr0 = ptr;
+      rec.onresult = ev => {
+        if (busy) return;
+        let t = ""; for (let i = 0; i < ev.results.length; i++)t += ev.results[i][0].transcript + " ";
+        $("heard").textContent = t.trim();
+        process(norm(t).split(" ").filter(Boolean), ev.results[ev.results.length - 1].isFinal);
+      };
+      rec.onerror = e => { if (e.error === "not-allowed" || e.error === "service-not-allowed") { setStatus("Microphone blocked. Allow mic access and try again."); stop(); } };
+      rec.onend = () => { if (running && !busy) setTimeout(startRec, 30); };
+      try { rec.start(); setStatus("Listening... recite now"); } catch (e) { }
+    }
+    function stopRec() { if (rec) { rec.onend = null; rec.onresult = null; try { rec.abort(); } catch (e) { } rec = null; } }
+
+    // Re-aligns everything the mic heard in this session against the ayah, every time results change
+    function process(words, final) {
+      clearTimeout(pend);
+      let i = sessBase, p = ptr0, a = ayahs[idx];
+      while (i < words.length) {
+        const w = words[i], e = a.words[p];
+        const last = !final && i >= words.length - 1;
+        let used = 0;
+        if (same(w, e)) used = 1;
+        else if (i + 1 < words.length && same(w + words[i + 1], e)) used = 2;                         // recogniser split a word
+        else if (p + 1 < a.words.length && same(w, e + a.words[p + 1])) { used = 1; p++; }                // recogniser merged two words
+        else if (e.length <= 2 && p + 1 < a.words.length && same(w, a.words[p + 1])) { used = 1; p++; }     // tiny word not caught by mic
+        if (used) {
+          i += used; p++; lastErr = null;
+          if (p >= a.words.length) {
+            idx++; mistakes = 0; sessBase = i; ptr0 = 0; p = 0;
+            if (idx >= ayahs.length) { finish(); return; }
+            a = ayahs[idx];
+          }
+          continue;
+        }
+        ptr = p;
+        if (last) { render(); pend = setTimeout(() => mistake(p, w), 450); return; }  // wait briefly in case the word is still changing
+        mistake(p, w); return;
+      }
+      ptr = p; render();
+    }
+
+    async function mistake(p, heard) {
+      if (busy || !running) return;
+      busy = true; stopRec(); mistakes++; total++;
+      const a = ayahs[idx], wrong = a.show[p];
+      ptr = p; lastErr = { w: wrong, h: heard };
+      render(p);
+      const b = $("box"); b.classList.remove("flash"); void b.offsetWidth; b.classList.add("flash");
+      const bp = beep();
+      if (mode === "read" && mistakes === 1) {
+        await bp; setStatus("Mistake. Listen, then recite the ayah again.");
+        await playAyah(a); ptr = 0; lastErr = null;
+      } else {
+        setStatus(mode === "read" ? "Mistake. The correct word is highlighted." : "Mistake. This is the word.");
+        await bp;
+        if ($("say").checked) await speak(wrong);
+        if (mode === "nolook" && $("playay").checked) {
+          setStatus(`Mistake in ayah ${a.n}. Listen, then recite it again.`);
+          await playAyah(a); ptr = 0;
+        } else {
+          ptr = p + 1;
+          if (ptr >= a.words.length) { idx++; mistakes = 0; ptr = 0; if (idx >= ayahs.length) { finish(); return; } }
+        }
+      }
+      if (!running) return;
+      busy = false; render(); startRec();
+    }
+    function finish() { setStatus("Surah complete. Well done!"); stop(); $("ayah").innerHTML = "Surah complete"; }
+
+    async function begin() {
+      setStatus("Starting...");
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      surahNo = +$("surah").value;
+      try { ayahs = await loadSurah(surahNo); }
+      catch (e) { setStatus("Could not load the Quran text. Open this file in Chrome from your own https website and check your internet."); return; }
+      idx = Math.min(Math.max(+$("from").value || 1, 1), ayahs.length) - 1;
+      ptr = 0; mistakes = 0; total = 0; lastErr = null; busy = false; running = true;
+      $("go").textContent = "Stop"; $("go").className = "stop";
+      render(); startRec();
+    }
+    function stop() {
+      running = false; busy = false; clearTimeout(pend); stopRec();
+      if (curAudio) curAudio.pause(); if (window.speechSynthesis) speechSynthesis.cancel();
+      $("go").textContent = "Start"; $("go").className = "";
+    }
+    $("go").onclick = () => running ? (stop(), setStatus("Stopped")) : begin();
+    $("mode").onchange = () => { mode = $("mode").value; lastErr = null; if (ayahs.length && running) render(); };
+    const toggleTr = () => { showTr = !showTr; if (ayahs.length) { render(); } else { $("tr").className = showTr ? "tr on" : "tr"; $("tr").textContent = showTr ? "The English translation will appear here for each ayah." : "Tap here to show the English translation"; } };
+    $("box").onclick = toggleTr;
+    $("box").onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleTr(); } };
+    $("strict").onchange = () => { TH = +$("strict").value; };
+  </script>
+</body>
+
+</html>
