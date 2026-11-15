@@ -411,6 +411,16 @@
         <label>Mode <select id="mode">
             <option value="read">Reading mode</option>
             <option value="nolook">No-look mode</option>
+            <option value="qari">Qari mode (repeat after the reciter)</option>
+          </select></label>
+        <label>Reciter <select id="qari">
+            <option value="Alafasy_128kbps">Mishary Alafasy</option>
+            <option value="Abdurrahmaan_As-Sudais_192kbps">Abdul Rahman As-Sudais</option>
+            <option value="Husary_128kbps">Mahmoud Khalil Al-Husary</option>
+            <option value="Minshawy_Murattal_128kbps">Al-Minshawi</option>
+            <option value="Abdul_Basit_Murattal_192kbps">Abdul Basit</option>
+            <option value="Maher_AlMuaiqly_128kbps">Maher Al-Muaiqly</option>
+            <option value="Saood_ash-Shuraym_128kbps">Saud Ash-Shuraim</option>
           </select></label>
         <label>Strictness <select id="strict">
             <option value="0.5">Relaxed</option>
@@ -431,7 +441,8 @@
     <div class="card">
       <div id="status">Ready</div>
       <div class="stats"><span>Ayah: <b id="sAyah">-</b></span><span>Mistakes in this ayah: <b
-            id="sMis">0</b></span><span>Total mistakes: <b id="sTot">0</b></span></div>
+            id="sMis">0</b></span><span>Total mistakes: <b id="sTot">0</b></span><span>Pace: <b id="sPace">-</b></span>
+      </div>
       <p id="heard" style="margin:10px 0 0"></p>
     </div>
   </main>
@@ -466,7 +477,7 @@
     const same = (a, b) => sim(a, b) >= TH || sim(noA(a), noA(b)) >= TH;
 
     let ayahs = [], surahNo = 1, idx = 0, ptr = 0, ptr0 = 0, sessBase = 0, mistakes = 0, total = 0, lastErr = null;
-    let showTr = false, rec = null, running = false, busy = false, pend = null, audioCtx = null, curAudio = null, mode = "read";
+    let showTr = false, tStart = 0, refDur = 0, rec = null, running = false, busy = false, pend = null, audioCtx = null, curAudio = null, mode = "read";
 
     async function loadSurah(n) {
       let raw = null; const k = "qd" + n;
@@ -505,8 +516,8 @@
     }
     function playAyah(a) {
       return new Promise(res => {
-        const au = new Audio(`https://everyayah.com/data/Alafasy_128kbps/${pad3(surahNo)}${pad3(a.n)}.mp3`);
-        curAudio = au; au.onended = () => res();
+        const au = new Audio(`https://everyayah.com/data/${$("qari").value}/${pad3(surahNo)}${pad3(a.n)}.mp3`);
+        curAudio = au; refDur = 0; au.onloadedmetadata = () => { refDur = au.duration; }; au.onended = () => res();
         au.onerror = () => speak(a.text).then(res);
         au.play().catch(() => speak(a.text).then(res));
       });
@@ -514,7 +525,7 @@
 
     function render(errIdx, heard) {
       const a = ayahs[idx];
-      if (mode === "read") {
+      if (mode !== "nolook") {
         $("ayah").innerHTML = a.show.map((w, i) => `<span class="w ${i < ptr ? "done" : i === ptr ? "cur" : ""}${i === errIdx ? " err" : ""}">${w}</span>`).join(" ") + ` <span class="w">﴿${a.n}﴾</span>`;
       } else {
         $("ayah").innerHTML = lastErr
@@ -529,11 +540,11 @@
     function startRec() {
       if (!running || busy) return;
       rec = new SR(); rec.lang = "ar-SA"; rec.continuous = true; rec.interimResults = true;
-      sessBase = 0; ptr0 = ptr;
+      sessBase = 0; ptr0 = ptr; tStart = 0;
       rec.onresult = ev => {
         if (busy) return;
         let t = ""; for (let i = 0; i < ev.results.length; i++)t += ev.results[i][0].transcript + " ";
-        $("heard").textContent = t.trim();
+        $("heard").textContent = t.trim(); if (!tStart && t.trim()) tStart = performance.now();
         process(norm(t).split(" ").filter(Boolean), ev.results[ev.results.length - 1].isFinal);
       };
       rec.onerror = e => { if (e.error === "not-allowed" || e.error === "service-not-allowed") { setStatus("Microphone blocked. Allow mic access and try again."); stop(); } };
@@ -557,9 +568,11 @@
         if (used) {
           i += used; p++; lastErr = null;
           if (p >= a.words.length) {
+            if (mode === "qari") paceCheck();
             idx++; mistakes = 0; sessBase = i; ptr0 = 0; p = 0;
             if (idx >= ayahs.length) { finish(); return; }
             a = ayahs[idx];
+            if (mode === "qari") { ptr = 0; qariPlay(); return; }
           }
           continue;
         }
@@ -573,16 +586,16 @@
     async function mistake(p, heard) {
       if (busy || !running) return;
       busy = true; stopRec(); mistakes++; total++;
-      const a = ayahs[idx], wrong = a.show[p];
+      const a = ayahs[idx], wrong = a.show[p]; let nextPlay = false;
       ptr = p; lastErr = { w: wrong, h: heard };
       render(p);
       const b = $("box"); b.classList.remove("flash"); void b.offsetWidth; b.classList.add("flash");
       const bp = beep();
-      if (mode === "read" && mistakes === 1) {
+      if (mode !== "nolook" && mistakes === 1) {
         await bp; setStatus("Mistake. Listen, then recite the ayah again.");
         await playAyah(a); ptr = 0; lastErr = null;
       } else {
-        setStatus(mode === "read" ? "Mistake. The correct word is highlighted." : "Mistake. This is the word.");
+        setStatus(mode !== "nolook" ? "Mistake. The correct word is highlighted." : "Mistake. This is the word.");
         await bp;
         if ($("say").checked) await speak(wrong);
         if (mode === "nolook" && $("playay").checked) {
@@ -590,24 +603,37 @@
           await playAyah(a); ptr = 0;
         } else {
           ptr = p + 1;
-          if (ptr >= a.words.length) { idx++; mistakes = 0; ptr = 0; if (idx >= ayahs.length) { finish(); return; } }
+          if (ptr >= a.words.length) { idx++; mistakes = 0; ptr = 0; if (idx >= ayahs.length) { finish(); return; } if (mode === "qari") nextPlay = true; }
         }
       }
       if (!running) return;
-      busy = false; render(); startRec();
+      busy = false; render(); if (nextPlay) qariPlay(); else startRec();
     }
+    async function qariPlay() {
+      busy = true; stopRec(); clearTimeout(pend);
+      setStatus("Listen to the reciter..."); render();
+      await playAyah(ayahs[idx]);
+      if (!running) return;
+      busy = false; ptr = 0; render(); startRec();
+    }
+    function paceCheck() {
+      if (!tStart || !refDur) return;
+      const r = (performance.now() - tStart) / 1000 / refDur;
+      $("sPace").textContent = Math.round(r * 100) + "% " + (r < 0.75 ? "(faster than the reciter)" : r > 1.3 ? "(slower than the reciter)" : "(close to the reciter)");
+    }
+    const applyTH = () => { const v = +$("strict").value; TH = mode === "qari" ? Math.max(v, 0.78) : v; };
     function finish() { setStatus("Surah complete. Well done!"); stop(); $("ayah").innerHTML = "Surah complete"; }
 
     async function begin() {
       setStatus("Starting...");
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      surahNo = +$("surah").value;
+      surahNo = +$("surah").value; mode = $("mode").value; applyTH(); $("sPace").textContent = "-";
       try { ayahs = await loadSurah(surahNo); }
       catch (e) { setStatus("Could not load the Quran text. Open this file in Chrome from your own https website and check your internet."); return; }
       idx = Math.min(Math.max(+$("from").value || 1, 1), ayahs.length) - 1;
       ptr = 0; mistakes = 0; total = 0; lastErr = null; busy = false; running = true;
       $("go").textContent = "Stop"; $("go").className = "stop";
-      render(); startRec();
+      render(); mode === "qari" ? qariPlay() : startRec();
     }
     function stop() {
       running = false; busy = false; clearTimeout(pend); stopRec();
@@ -615,11 +641,11 @@
       $("go").textContent = "Start"; $("go").className = "";
     }
     $("go").onclick = () => running ? (stop(), setStatus("Stopped")) : begin();
-    $("mode").onchange = () => { mode = $("mode").value; lastErr = null; if (ayahs.length && running) render(); };
+    $("mode").onchange = () => { mode = $("mode").value; applyTH(); lastErr = null; if (ayahs.length && running) render(); };
     const toggleTr = () => { showTr = !showTr; if (ayahs.length) { render(); } else { $("tr").className = showTr ? "tr on" : "tr"; $("tr").textContent = showTr ? "The English translation will appear here for each ayah." : "Tap here to show the English translation"; } };
     $("box").onclick = toggleTr;
     $("box").onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleTr(); } };
-    $("strict").onchange = () => { TH = +$("strict").value; };
+    $("strict").onchange = () => { applyTH(); };
   </script>
 </body>
 
