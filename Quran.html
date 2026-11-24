@@ -9,6 +9,13 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet">
+  <meta name="theme-color" content="#17694a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%95%8C%3C/text%3E%3C/svg%3E">
   <title>Quran Recitation Checker</title>
   <style>
     :root {
@@ -389,6 +396,208 @@
         font-size: 3rem
       }
     }
+
+    .tools {
+      justify-content: center;
+      margin-bottom: 14px
+    }
+
+    .sec {
+      background: var(--card);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      box-shadow: none;
+      padding: 9px 16px;
+      font-weight: 600;
+      font-size: .9rem
+    }
+
+    .sec:hover {
+      box-shadow: var(--shadow)
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px
+    }
+
+    .chip {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 14px;
+      font-family: "Amiri", "Traditional Arabic", serif;
+      font-size: 1.4rem;
+      direction: rtl
+    }
+
+    .chip small {
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: .7rem;
+      color: var(--muted);
+      direction: ltr;
+      margin-right: 8px;
+      display: inline-block
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 99px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      margin-bottom: 12px
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+      transition: width .3s
+    }
+
+    .how summary {
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .how ol {
+      margin: 10px 0 0;
+      padding-left: 20px;
+      color: var(--muted);
+      font-size: .92rem;
+      line-height: 1.7
+    }
+
+    .how b {
+      color: var(--ink)
+    }
+
+    @media (max-width:520px) {
+      #go {
+        width: 100%
+      }
+
+      .tools .sec {
+        flex: 1
+      }
+    }
+
+    input[type=text] {
+      font: inherit;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--ink)
+    }
+
+    input[type=range] {
+      accent-color: var(--accent);
+      padding: 0;
+      height: 28px
+    }
+
+    #settings summary {
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .sgrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+      align-items: end
+    }
+
+    .sgrid label.chk {
+      align-self: center
+    }
+
+    .sbtns {
+      margin-top: 16px
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: .85rem;
+      margin: 12px 0 0
+    }
+
+    [hidden] {
+      display: none !important
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f4f1e8;
+      --bg2: #e6efe6;
+      --card: #fffdf8;
+      --ink: #1b2a22;
+      --muted: #66746b;
+      --line: #e1dccb;
+      --accent: #17694a;
+      --accent2: #0f4d37;
+      --gold: #b8923a;
+      --ok: #1c8a57;
+      --bad: #c4332b;
+      --cur: #f3ead0;
+      --shadow: 0 6px 24px rgba(23, 60, 43, .10)
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0c1511;
+      --bg2: #10201a;
+      --card: #14211b;
+      --ink: #eaf1ec;
+      --muted: #93a69b;
+      --line: #26382f;
+      --accent: #3fb381;
+      --accent2: #2a8a62;
+      --gold: #d9b25a;
+      --ok: #4fcf93;
+      --bad: #ff6b61;
+      --cur: #2a3a2a;
+      --shadow: 0 6px 24px rgba(0, 0, 0, .4)
+    }
+
+    .sim {
+      border-top: 1px solid var(--line);
+      padding: 12px 0
+    }
+
+    .shead {
+      font-weight: 600;
+      font-size: .9rem;
+      margin-bottom: 6px
+    }
+
+    .stxt {
+      direction: rtl;
+      font-family: "Amiri", "Traditional Arabic", serif;
+      font-size: 1.5rem;
+      line-height: 2
+    }
+
+    .stxt mark {
+      background: rgba(184, 146, 58, .28);
+      color: inherit;
+      border-radius: 6px;
+      padding: 0 4px
+    }
+
+    .w.dif {
+      text-decoration: underline;
+      text-decoration-color: var(--gold);
+      text-decoration-thickness: 3px;
+      text-underline-offset: 9px
+    }
   </style>
 </head>
 
@@ -402,16 +611,33 @@
       <div class="orn">✦</div>
     </header>
 
+    <details class="card how">
+      <summary>How to use</summary>
+      <ol>
+        <li>Choose a surah, the ayah to start from, and a mode, then press <b>Start</b> and allow the microphone.</li>
+        <li><b>Reading mode:</b> the ayah is shown. <b>No-look mode:</b> it is hidden, and you only see the word you
+          missed. <b>Qari mode:</b> the reciter plays an ayah and you repeat it.</li>
+        <li>A wrong word gives a beep. The ayah is played, and an ayah is never skipped until you recite it fully.</li>
+        <li><b>Mutashabihat mode:</b> works like Reading mode, but it also shows other ayahs that look alike. The
+          gold-underlined words are where your ayah differs from them. If you say a word from a similar ayah, it tells
+          you which one.</li>
+        <li>Tap the ayah card to show or hide the English translation.</li>
+        <li>Use Chrome or Edge, and open the page over https so the mic is only asked once.</li>
+      </ol>
+    </details>
+
     <div class="card">
       <div class="row">
         <label>Surah <select id="surah"></select></label>
         <label>Start from ayah <input id="from" type="number" min="1" value="1"></label>
+        <label>To ayah (optional) <input id="to" type="number" min="1" placeholder="end of surah"></label>
       </div>
       <div class="row" style="margin-top:10px">
         <label>Mode <select id="mode">
             <option value="read">Reading mode</option>
             <option value="nolook">No-look mode</option>
             <option value="qari">Qari mode (repeat after the reciter)</option>
+            <option value="mutash">Mutashabihat mode (similar verses)</option>
           </select></label>
         <label>Reciter <select id="qari">
             <option value="Alafasy_128kbps">Mishary Alafasy</option>
@@ -422,23 +648,84 @@
             <option value="Maher_AlMuaiqly_128kbps">Maher Al-Muaiqly</option>
             <option value="Saood_ash-Shuraym_128kbps">Saud Ash-Shuraim</option>
           </select></label>
+        <button id="go">Start</button>
+      </div>
+    </div>
+
+    <details class="card" id="settings">
+      <summary>&#9881; Settings</summary>
+      <div class="sgrid">
+        <label>When I make a mistake <select id="snd">
+            <option value="beep">Beep</option>
+            <option value="say">Say a word</option>
+            <option value="both">Beep + say a word</option>
+            <option value="none">Silent</option>
+          </select></label>
+        <label>Word to say <input id="sword" type="text" value="Wrong" maxlength="30"></label>
+        <label>Beep volume <input id="bvol" type="range" min="5" max="100" value="30"></label>
+        <label>Beep pitch <input id="bpitch" type="range" min="400" max="1400" step="50" value="800"></label>
+        <label>Voice speed <input id="vrate" type="range" min="0.5" max="1.3" step="0.05" value="0.85"></label>
+        <label>Reciter volume <input id="avol" type="range" min="10" max="100" value="100"></label>
+        <label>Reciter audio speed <select id="spd">
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1x</option>
+            <option value="1.25">1.25x</option>
+          </select></label>
         <label>Strictness <select id="strict">
             <option value="0.5">Relaxed</option>
             <option value="0.62" selected>Normal</option>
             <option value="0.78">Strict</option>
           </select></label>
-        <label class="chk"><input id="say" type="checkbox" checked> Say the word aloud</label>
+        <label>Speech accent <select id="lang">
+            <option value="ar-SA">Arabic (Saudi Arabia)</option>
+            <option value="ar-EG">Arabic (Egypt)</option>
+            <option value="ar-AE">Arabic (UAE)</option>
+            <option value="ar-JO">Arabic (Jordan)</option>
+            <option value="ar-MA">Arabic (Morocco)</option>
+          </select></label>
+        <label>Theme <select id="theme">
+            <option value="auto">Auto</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select></label>
+        <label class="chk"><input id="say" type="checkbox" checked> Say the correct word aloud</label>
+        <label class="chk"><input id="rfirst" type="checkbox" checked> Replay the ayah after the first mistake</label>
         <label class="chk"><input id="playay" type="checkbox" checked> No-look: play the ayah after a mistake</label>
-        <button id="go">Start</button>
+        <label class="chk"><input id="showheard" type="checkbox" checked> Show what the mic heard</label>
       </div>
-    </div>
+      <div class="row sbtns">
+        <button class="sec" id="tsnd">Test mistake sound</button>
+        <button class="sec" id="install" hidden>Install app</button>
+        <button class="sec" id="reset">Reset settings</button>
+      </div>
+      <p class="note">Install on your phone: Android Chrome menu, then Install app. iPhone Safari: Share, then Add to
+        Home Screen. The page must be on https.</p>
+    </details>
 
     <div class="card flashbox" id="box" tabindex="0" role="button" aria-label="Show or hide English translation">
       <div id="ayah" aria-live="polite">Choose a surah and press Start.</div>
       <div id="tr" class="tr">Tap here to show the English translation</div>
     </div>
 
+    <div class="row tools">
+      <button class="sec" id="prev" disabled>&#9198; Previous ayah</button>
+      <button class="sec" id="rep" disabled>&#128257; Repeat ayah</button>
+      <button class="sec" id="fm" aria-label="Smaller text">A&minus;</button>
+      <button class="sec" id="fp" aria-label="Larger text">A+</button>
+    </div>
+
+    <div class="card" id="simcard" hidden>
+      <b>Similar verses (mutashabihat)</b>
+      <p class="note">Highlighted words are where the similar ayah is different from yours. Learn these words well.</p>
+      <div id="simlist"></div>
+    </div>
+
+    <div class="card" id="rev" hidden><b>Words to review</b>
+      <div id="revlist" class="chips"></div>
+    </div>
+
     <div class="card">
+      <div class="bar"><i id="barfill"></i></div>
       <div id="status">Ready</div>
       <div class="stats"><span>Ayah: <b id="sAyah">-</b></span><span>Mistakes in this ayah: <b
             id="sMis">0</b></span><span>Total mistakes: <b id="sTot">0</b></span><span>Pace: <b id="sPace">-</b></span>
@@ -477,7 +764,8 @@
     const same = (a, b) => sim(a, b) >= TH || sim(noA(a), noA(b)) >= TH;
 
     let ayahs = [], surahNo = 1, idx = 0, ptr = 0, ptr0 = 0, sessBase = 0, mistakes = 0, total = 0, lastErr = null;
-    let showTr = false, tStart = 0, refDur = 0, rec = null, running = false, busy = false, pend = null, audioCtx = null, curAudio = null, mode = "read";
+    let simKey = "", simInfo = null, QURAN = null;
+    let fs = (window.innerWidth && window.innerWidth < 520) ? 1.9 : 2.3, startIdx = 0, epoch = 0, starting = false, endIdx = 0, lastMiss = null, missed = {}, showTr = false, tStart = 0, refDur = 0, rec = null, running = false, busy = false, pend = null, audioCtx = null, curAudio = null, mode = "read";
 
     async function loadSurah(n) {
       let raw = null; const k = "qd" + n;
@@ -499,57 +787,80 @@
       return new Promise(res => {
         try {
           audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === "suspended") audioCtx.resume();
           const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-          o.type = "square"; o.frequency.value = 900; g.gain.value = 1;
+          const v = Math.max(0.02, (+$("bvol").value || 30) / 100), t = audioCtx.currentTime;
+          o.type = "sine"; o.frequency.value = +$("bpitch").value || 800;
+          g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + 0.02); g.gain.setValueAtTime(v, t + 0.4); g.gain.linearRampToValueAtTime(0, t + 0.5);
           o.connect(g); g.connect(audioCtx.destination);
-          o.start(); o.stop(audioCtx.currentTime + 0.5); o.onended = res;
+          o.start(); o.stop(t + 0.5); o.onended = res;
         } catch (e) { res(); }
       });
+    }
+    function errSound() {
+      const m = $("snd").value;
+      if (m === "none") return Promise.resolve();
+      if (m === "beep") return beep();
+      const w = ($("sword").value || "Wrong").trim();
+      if (m === "say") return speak(w);
+      return beep().then(() => speak(w));
     }
     function speak(text) {
       return new Promise(res => {
         if (!window.speechSynthesis) return res();
-        const u = new SpeechSynthesisUtterance(text); u.lang = "ar-SA"; u.rate = 0.85;
-        u.onend = u.onerror = () => res();
+        const u = new SpeechSynthesisUtterance(text); u.lang = /[\u0600-\u06FF]/.test(text) ? "ar-SA" : "en-US"; u.rate = +$("vrate").value || 0.85;
+        const t = setTimeout(res, 8000); u.onend = u.onerror = () => { clearTimeout(t); res(); };
         speechSynthesis.cancel(); speechSynthesis.speak(u);
       });
     }
     function playAyah(a) {
       return new Promise(res => {
+        let fin = false;
+        const end = () => { if (!fin) { fin = true; clearTimeout(t); res(); } };
+        const t = setTimeout(() => { try { au.pause(); } catch (e) { } end(); }, 45000);
+        const fb = () => speak(a.text).then(end);
         const au = new Audio(`https://everyayah.com/data/${$("qari").value}/${pad3(surahNo)}${pad3(a.n)}.mp3`);
-        curAudio = au; refDur = 0; au.onloadedmetadata = () => { refDur = au.duration; }; au.onended = () => res();
-        au.onerror = () => speak(a.text).then(res);
-        au.play().catch(() => speak(a.text).then(res));
+        curAudio = au; au.playbackRate = +$("spd").value || 1; au.volume = Math.min(1, Math.max(0, (+$("avol").value || 100) / 100)); refDur = 0; au.onloadedmetadata = () => { refDur = au.duration; };
+        au.onended = end; au.onerror = fb; au.play().catch(fb);
       });
     }
 
     function render(errIdx, heard) {
-      const a = ayahs[idx];
+      const a = ayahs[idx]; if (!a) return;
+      if (mode === "mutash") simUpdate(a); else { simInfo = null; simKey = ""; }
+      $("simcard").hidden = !(mode === "mutash" && simInfo);
       if (mode !== "nolook") {
-        $("ayah").innerHTML = a.show.map((w, i) => `<span class="w ${i < ptr ? "done" : i === ptr ? "cur" : ""}${i === errIdx ? " err" : ""}">${w}</span>`).join(" ") + ` <span class="w">﴿${a.n}﴾</span>`;
+        $("ayah").innerHTML = a.show.map((w, i) => `<span class="w ${i < ptr ? "done" : i === ptr ? "cur" : ""}${i === errIdx ? " err" : ""}${simInfo && simInfo.dif.has(i) ? " dif" : ""}">${w}</span>`).join(" ") + ` <span class="w">﴿${a.n}﴾</span>`;
       } else {
         $("ayah").innerHTML = lastErr
-          ? `<div class="said">Mistake in ayah ${a.n}</div><div class="miss">${lastErr.w}</div><div class="said">you said: ${lastErr.h || "…"}</div>`
+          ? (lastErr.hint ? `<div class="said">Hint for ayah ${a.n}</div><div class="miss" style="color:var(--gold)">${lastErr.w}</div>`
+            : `<div class="said">Mistake in ayah ${a.n}</div><div class="miss">${lastErr.w}</div><div class="said">you said: ${lastErr.h || "…"}</div>`)
           : `<div class="hid">Recite from memory<br>Ayah ${a.n}</div>`;
       }
       { const t = $("tr"); t.className = showTr ? "tr on" : "tr"; t.textContent = showTr ? a.tr : "Tap here to show the English translation"; }
-      $("sAyah").textContent = `${surahNo}:${a.n}`; $("sMis").textContent = mistakes; $("sTot").textContent = total;
+      { const tot = endIdx - startIdx + 1, pr = ((idx - startIdx) + ptr / Math.max(1, a.words.length)) / tot; $("barfill").style.width = Math.min(100, Math.max(0, pr * 100)) + "%"; }
+      $("sAyah").textContent = `${surahNo}:${a.n} (${idx - startIdx + 1}/${endIdx - startIdx + 1})`; $("sMis").textContent = mistakes; $("sTot").textContent = total;
     }
     const setStatus = t => { $("status").textContent = t; $("status").className = /Listening/.test(t) ? "live" : /Mistake/.test(t) ? "bad" : ""; };
 
     function startRec() {
-      if (!running || busy) return;
-      rec = new SR(); rec.lang = "ar-SA"; rec.continuous = true; rec.interimResults = true;
+      if (!running || busy || rec) return;
+      rec = new SR(); rec.lang = $("lang").value || "ar-SA"; rec.continuous = true; rec.interimResults = true;
       sessBase = 0; ptr0 = ptr; tStart = 0;
       rec.onresult = ev => {
         if (busy) return;
         let t = ""; for (let i = 0; i < ev.results.length; i++)t += ev.results[i][0].transcript + " ";
-        $("heard").textContent = t.trim(); if (!tStart && t.trim()) tStart = performance.now();
+        $("heard").textContent = $("showheard").checked ? t.trim() : ""; if (!tStart && t.trim()) tStart = performance.now();
         process(norm(t).split(" ").filter(Boolean), ev.results[ev.results.length - 1].isFinal);
       };
-      rec.onerror = e => { if (e.error === "not-allowed" || e.error === "service-not-allowed") { setStatus("Microphone blocked. Allow mic access and try again."); stop(); } };
-      rec.onend = () => { if (running && !busy) setTimeout(startRec, 30); };
-      try { rec.start(); setStatus("Listening... recite now"); } catch (e) { }
+      rec.onerror = e => {
+        const er = e.error;
+        if (er === "not-allowed" || er === "service-not-allowed") { stop(); setStatus("Microphone blocked. Allow mic access and try again."); }
+        else if (er === "audio-capture") { stop(); setStatus("No microphone found."); }
+        else if (er === "network") { stop(); setStatus("Speech service unreachable. Check your internet connection."); }
+      };
+      rec.onend = () => { rec = null; if (running && !busy) setTimeout(startRec, 60); };
+      try { rec.start(); setStatus("Listening... recite now"); } catch (e) { rec = null; if (running) setTimeout(startRec, 300); }
     }
     function stopRec() { if (rec) { rec.onend = null; rec.onresult = null; try { rec.abort(); } catch (e) { } rec = null; } }
 
@@ -569,8 +880,8 @@
           i += used; p++; lastErr = null;
           if (p >= a.words.length) {
             if (mode === "qari") paceCheck();
-            idx++; mistakes = 0; sessBase = i; ptr0 = 0; p = 0;
-            if (idx >= ayahs.length) { finish(); return; }
+            idx++; mistakes = 0; lastMiss = null; sessBase = i; ptr0 = 0; p = 0;
+            if (idx > endIdx) { finish(); return; }
             a = ayahs[idx];
             if (mode === "qari") { ptr = 0; qariPlay(); return; }
           }
@@ -585,58 +896,137 @@
 
     async function mistake(p, heard) {
       if (busy || !running) return;
+      const ep = epoch;
       busy = true; stopRec(); mistakes++; total++;
       const a = ayahs[idx], wrong = a.show[p]; let nextPlay = false;
-      ptr = p; lastErr = { w: wrong, h: heard };
+      ptr = p; lastErr = { w: wrong, h: heard }; lastMiss = { idx, p };
+      if (mode === "mutash") { const c = simConfusion(heard); if (c) $("heard").textContent = c; }
+      { const k = idx + ":" + p; missed[k] = missed[k] || { n: a.n, w: wrong, c: 0 }; missed[k].c++; showReview(); }
       render(p);
       const b = $("box"); b.classList.remove("flash"); void b.offsetWidth; b.classList.add("flash");
-      const bp = beep();
-      if (mode !== "nolook" && mistakes === 1) {
-        await bp; setStatus("Mistake. Listen, then recite the ayah again.");
-        await playAyah(a); ptr = 0; lastErr = null;
+      const bp = errSound();
+      if (mode !== "nolook" && ((mistakes === 1 && $("rfirst").checked) || mistakes >= 3)) {
+        await bp; if (ep !== epoch) return; setStatus("Mistake. Listen, then recite the ayah again.");
+        await playAyah(a); if (ep !== epoch) return; ptr = 0; lastErr = null;
       } else {
         setStatus(mode !== "nolook" ? "Mistake. The correct word is highlighted." : "Mistake. This is the word.");
-        await bp;
-        if ($("say").checked) await speak(wrong);
+        await bp; if (ep !== epoch) return;
+        if ($("say").checked) await speak(wrong); if (ep !== epoch) return;
         if (mode === "nolook" && $("playay").checked) {
           setStatus(`Mistake in ayah ${a.n}. Listen, then recite it again.`);
-          await playAyah(a); ptr = 0;
+          await playAyah(a); if (ep !== epoch) return; ptr = 0;
         } else {
-          ptr = p + 1;
-          if (ptr >= a.words.length) { idx++; mistakes = 0; ptr = 0; if (idx >= ayahs.length) { finish(); return; } if (mode === "qari") nextPlay = true; }
+          ptr = p + 1; if (ptr >= a.words.length) ptr = 0;   // never skip an ayah because of mistakes
         }
       }
-      if (!running) return;
+      if (!running || ep !== epoch) return;
       busy = false; render(); if (nextPlay) qariPlay(); else startRec();
     }
     async function qariPlay() {
+      const ep = epoch;
       busy = true; stopRec(); clearTimeout(pend);
       setStatus("Listen to the reciter..."); render();
       await playAyah(ayahs[idx]);
-      if (!running) return;
+      if (!running || ep !== epoch) return;
       busy = false; ptr = 0; render(); startRec();
+    }
+    function showReview() {
+      const L = Object.values(missed).sort((x, y) => y.c - x.c || x.n - y.n);
+      $("rev").hidden = !L.length;
+      $("revlist").innerHTML = L.map(m => `<span class="chip">${m.w}<small>ayah ${m.n}${m.c > 1 ? " x" + m.c : ""}</small></span>`).join("");
+    }
+    function halt() { epoch++; busy = false; stopRec(); clearTimeout(pend); if (curAudio) curAudio.pause(); if (window.speechSynthesis) speechSynthesis.cancel(); }
+    function gotoAyah(i) {
+      if (!running || !ayahs.length) return;
+      halt();
+      if (i > endIdx) { finish(); return; }
+      idx = Math.max(0, i); ptr = 0; mistakes = 0; lastErr = null; lastMiss = null;
+      render();
+      if (mode === "qari") qariPlay(); else startRec();
+    }
+    function repeatAyah() { if (!running) return; halt(); ptr = 0; lastErr = null; render(); qariPlay(); }
+    // ---------- Mutashabihat ----------
+    async function loadQuran() {
+      if (QURAN) return;
+      let raw = null; try { raw = JSON.parse(localStorage.getItem("qall1")); } catch (e) { }
+      if (!raw) {
+        const r = await (await fetch(`${API}/quran/quran-simple-clean`)).json();
+        raw = r.data.surahs.map((s, si) => s.ayahs.map(a => {
+          let w = a.text.trim().split(/\s+/);
+          if (a.numberInSurah === 1 && si !== 0 && si !== 8 && norm(w.slice(0, 4).join(" ")) === "بسم الله الرحمن الرحيم") w = w.slice(4);
+          return w.map(norm).filter(Boolean).join(" ");
+        }));
+        try { localStorage.setItem("qall1", JSON.stringify(raw)); } catch (e) { }
+      }
+      QURAN = raw.map(s => s.map(t => t.split(" ").filter(Boolean)));
+    }
+    function lcsLen(a, b) {
+      let p = new Uint8Array(b.length + 1), c = new Uint8Array(b.length + 1);
+      for (let i = 0; i < a.length; i++) { for (let j = 0; j < b.length; j++)c[j + 1] = a[i] === b[j] ? p[j] + 1 : Math.max(p[j + 1], c[j]); const t = p; p = c; c = t; }
+      return p[b.length];
+    }
+    function lcsIdx(a, b) {
+      const n = a.length, m = b.length, t = Array.from({ length: n + 1 }, () => new Uint8Array(m + 1));
+      for (let i = n - 1; i >= 0; i--)for (let j = m - 1; j >= 0; j--)t[i][j] = a[i] === b[j] ? t[i + 1][j + 1] + 1 : Math.max(t[i + 1][j], t[i][j + 1]);
+      const ia = new Set(), ib = new Set(); let i = 0, j = 0;
+      while (i < n && j < m) { if (a[i] === b[j]) { ia.add(i); ib.add(j); i++; j++; } else if (t[i + 1][j] >= t[i][j + 1]) i++; else j++; }
+      return { ia, ib };
+    }
+    function simFor(s, n) {
+      const A = QURAN[s][n - 1], res = []; let exact = 0;
+      if (A.length < 3) return { list: [], exact: 0, dif: new Set() };
+      for (let si = 0; si < QURAN.length; si++) {
+        const S = QURAN[si]; for (let ai = 0; ai < S.length; ai++) {
+          if (si === s && ai === n - 1) continue;
+          const B = S[ai]; if (B.length < 3) continue;
+          const L = lcsLen(A, B), sc = L / Math.max(A.length, B.length);
+          if (L >= 3 && sc >= 0.5) { res.push({ s: si, n: ai + 1, sc }); if (sc === 1) exact++; }
+        }
+      }
+      res.sort((x, y) => y.sc - x.sc || Math.abs(x.s - s) - Math.abs(y.s - s));
+      const list = res.slice(0, 4), dif = new Set();
+      list.forEach(it => { const B = QURAN[it.s][it.n - 1], r = lcsIdx(A, B); it.B = B; it.ib = r.ib; if (it.sc < 1) A.forEach((_, i) => { if (!r.ia.has(i)) dif.add(i); }); });
+      return { list, exact: Math.max(0, exact - list.filter(x => x.sc === 1).length), dif };
+    }
+    function simUpdate(a) {
+      if (!QURAN) return;
+      const key = surahNo + ":" + a.n; if (key === simKey) return;
+      simKey = key; simInfo = simFor(surahNo - 1, a.n);
+      const L = simInfo.list;
+      $("simlist").innerHTML = !L.length ? '<p class="note">No close matches found for this ayah.</p>'
+        : (simInfo.exact ? `<p class="note">This exact ayah appears ${simInfo.exact} more time(s) in the Quran.</p>` : "")
+        + L.map(it => `<div class="sim"><div class="shead">${names[it.s]} ${it.s + 1}:${it.n} &middot; ${Math.round(it.sc * 100)}% similar</div><div class="stxt">${it.B.map((w, i) => it.ib.has(i) ? w : `<mark>${w}</mark>`).join(" ")}</div></div>`).join("");
+    }
+    function simConfusion(heard) {
+      const a = ayahs[idx]; if (!simInfo || !a || a.words.includes(heard)) return "";
+      const it = simInfo.list.find(x => x.B.some(w => w === heard || sim(w, heard) >= 0.85));
+      return it ? `That word belongs to a similar ayah: ${names[it.s]} ${it.s + 1}:${it.n}` : "";
     }
     function paceCheck() {
       if (!tStart || !refDur) return;
       const r = (performance.now() - tStart) / 1000 / refDur;
       $("sPace").textContent = Math.round(r * 100) + "% " + (r < 0.75 ? "(faster than the reciter)" : r > 1.3 ? "(slower than the reciter)" : "(close to the reciter)");
     }
+    const setLock = on => { ["surah", "from", "to", "mode"].forEach(id => { $(id).disabled = on; });["prev", "rep"].forEach(id => { $(id).disabled = !on; }); };
     const applyTH = () => { const v = +$("strict").value; TH = mode === "qari" ? Math.max(v, 0.78) : v; };
-    function finish() { setStatus("Surah complete. Well done!"); stop(); $("ayah").innerHTML = "Surah complete"; }
+    function finish() { setStatus("Done. Well done!"); stop(); $("barfill").style.width = "100%"; $("ayah").innerHTML = `<div class="hid">Recitation complete. Well done!<br>Mistakes: ${total} &middot; Words to review: ${Object.keys(missed).length}</div>`; }
 
-    async function begin() {
+    async function begin() { if (starting) return; starting = true; try { await beginInner(); } finally { starting = false; } }
+    async function beginInner() {
+      epoch++;
       setStatus("Starting...");
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
       surahNo = +$("surah").value; mode = $("mode").value; applyTH(); $("sPace").textContent = "-";
-      try { ayahs = await loadSurah(surahNo); }
+      try { ayahs = await loadSurah(surahNo); if (mode === "mutash") { setStatus("Loading the whole Quran for comparison (first time only)..."); await loadQuran(); } }
       catch (e) { setStatus("Could not load the Quran text. Open this file in Chrome from your own https website and check your internet."); return; }
       idx = Math.min(Math.max(+$("from").value || 1, 1), ayahs.length) - 1;
-      ptr = 0; mistakes = 0; total = 0; lastErr = null; busy = false; running = true;
+      startIdx = idx; { const to = +$("to").value; endIdx = to > 0 ? Math.min(Math.max(to - 1, idx), ayahs.length - 1) : ayahs.length - 1; }
+      ptr = 0; mistakes = 0; total = 0; lastErr = null; busy = false; running = true; setLock(true); lastMiss = null; missed = {}; showReview();
       $("go").textContent = "Stop"; $("go").className = "stop";
       render(); mode === "qari" ? qariPlay() : startRec();
     }
     function stop() {
-      running = false; busy = false; clearTimeout(pend); stopRec();
+      epoch++; running = false; busy = false; setLock(false); clearTimeout(pend); stopRec();
       if (curAudio) curAudio.pause(); if (window.speechSynthesis) speechSynthesis.cancel();
       $("go").textContent = "Start"; $("go").className = "";
     }
@@ -645,7 +1035,34 @@
     const toggleTr = () => { showTr = !showTr; if (ayahs.length) { render(); } else { $("tr").className = showTr ? "tr on" : "tr"; $("tr").textContent = showTr ? "The English translation will appear here for each ayah." : "Tap here to show the English translation"; } };
     $("box").onclick = toggleTr;
     $("box").onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleTr(); } };
+    $("prev").onclick = () => gotoAyah(idx - 1);
+    $("rep").onclick = repeatAyah;
     $("strict").onchange = () => { applyTH(); };
+    (function () {
+      const ids = ["surah", "from", "to", "mode", "qari", "spd", "strict", "snd", "sword", "bvol", "bpitch", "vrate", "avol", "lang", "theme"], cks = ["say", "playay", "rfirst", "showheard"];
+      try {
+        const s = JSON.parse(localStorage.getItem("qcset") || "{}");
+        ids.forEach(i => { if (s[i] !== undefined && s[i] !== null) $(i).value = s[i]; });
+        cks.forEach(i => { if (typeof s[i] === "boolean") $(i).checked = s[i]; });
+        if (s.fs) fs = s.fs;
+      } catch (e) { }
+      const applyTheme = () => { const de = document.documentElement; if (!de) return; const v = $("theme").value; if (v === "auto") de.removeAttribute("data-theme"); else de.setAttribute("data-theme", v); };
+      applyTheme(); $("theme").addEventListener("change", applyTheme);
+      $("tsnd").onclick = () => { errSound(); };
+      $("reset").onclick = () => { try { localStorage.removeItem("qcset"); } catch (e) { } location.reload(); };
+      mode = $("mode").value; applyTH(); $("ayah").style.fontSize = fs + "rem";
+      const save = () => { try { const o = { fs }; ids.forEach(i => { o[i] = $(i).value; }); cks.forEach(i => { o[i] = $(i).checked; }); localStorage.setItem("qcset", JSON.stringify(o)); } catch (e) { } };
+      ids.concat(cks).forEach(i => $(i).addEventListener("change", save));
+      const size = d => { fs = Math.min(4, Math.max(1.4, fs + d)); $("ayah").style.fontSize = fs + "rem"; save(); };
+      $("fm").onclick = () => size(-0.2); $("fp").onclick = () => size(0.2);
+      if (window.addEventListener) {
+        let dip = null;
+        window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); dip = e; $("install").hidden = false; });
+        window.addEventListener("appinstalled", () => { $("install").hidden = true; });
+        $("install").onclick = async () => { if (!dip) return; dip.prompt(); try { await dip.userChoice; } catch (e) { } dip = null; $("install").hidden = true; };
+        if ("serviceWorker" in navigator && location.protocol === "https:") window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => { }); });
+      }
+    })();
   </script>
 </body>
 
